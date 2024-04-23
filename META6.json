@@ -1,0 +1,39 @@
+{
+  "auth": "hythm",
+  "authors": [
+    "Haytham Elganiny"
+  ],
+  "build-depends": [
+  ],
+  "depends": [
+    "DB::Pg",
+    "Badger",
+    "Dev::ContainerizedService",
+    "Cro::HTTP::Session::Pg",
+    "Cro::HTTP",
+    "Cro::WebApp",
+    "Crypt::Argon2"
+  ],
+  "description": "Recommendation Manager for Raku distributions",
+  "license": "Artistic-2.0",
+  "name": "distributions-storage",
+  "perl": "6.d",
+  "provides": {
+    "distributions-storage": "lib/distributions-storage.rakumod",
+    "distributions-storage-database": "lib/distributions-storage/database.rakumod",
+    "distributions-storage-model-user": "lib/distributions-storage/model/user.rakumod",
+    "distributions-storage-model-distribution": "lib/distributions-storage/model/distribution.rakumod",
+    "distributions-storage-session": "lib/distributions-storage/session.rakumod",
+    "distributions-storage-routes": "lib/distributions-storage/routes.rakumod",
+    "distributions-storage-routes-user": "lib/distributions-storage/routes/user.rakumod",
+    "distributions-storage-routes-distribution": "lib/distributions-storage/routes/distribution.rakumod"
+  },
+  "resources": [
+  ],
+  "source-url": "",
+  "tags": [
+  ],
+  "test-depends": [
+  ],
+  "version": "0.0.1"
+}

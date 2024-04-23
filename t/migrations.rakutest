@@ -1,0 +1,10 @@
+use Test;
+
+use DB::Migration::Declare::Test;
+use DB::Migration::Declare::Database::Postgres;
+
+check-migrations
+  source => $*PROGRAM.parent.parent.add('migrations.raku'),
+  database => DB::Migration::Declare::Database::Postgres.new;
+
+done-testing;

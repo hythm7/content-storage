@@ -1,0 +1,15 @@
+---
+"cro": 1
+"endpoints": 
+  - 
+    "host-env": "DISTRIBUTIONS_STORAGE_HOST"
+    "id": "http"
+    "name": "HTTP"
+    "port-env": "DISTRIBUTIONS_STORAGE_PORT"
+    "protocol": "http"
+"entrypoint": "service.raku"
+"env":  []
+"id": "distributions-storage"
+"links":  []
+"name": "distributions-storage"
+...
