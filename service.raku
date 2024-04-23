@@ -25,13 +25,15 @@ my $status = $applicator.to-latest;
 note "Applied $status.migrations.elems() migration(s)";
 
 
+my $ds = DistributionsStorage.new: :$pg;
+
 my Cro::Service $http = Cro::HTTP::Server.new(
   http => <1.1>,
   host => %*ENV<DISTRIBUTIONS_STORAGE_HOST> ||
   die("Missing DISTRIBUTIONS_STORAGE_HOST in environment"),
   port => %*ENV<DISTRIBUTIONS_STORAGE_PORT> ||
   die("Missing DISTRIBUTIONS_STORAGE_PORT in environment"),
-  application => routes( DistributionsStorage.new: :$pg ),
+  application => routes( $ds ),
   before => [
     Cro::HTTP::Session::Pg[DistributionsStorage::Session].new(
       db => $pg,
