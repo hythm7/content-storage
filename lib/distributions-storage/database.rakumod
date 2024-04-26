@@ -28,7 +28,7 @@ multi method get-user( Str :$username! ) {
 
 method add-dist(:$name!, :$, :$user!) {
 
-  my $meta = slurp '/home/helganiny/dev/Pakku/META6.json';
+  my $meta = slurp '/home/hythm/dev/Pakku/META6.json';
 
   say '-------------';
   dd $meta;
