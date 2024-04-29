@@ -1,5 +1,5 @@
 <:use 'templates/base.crotmp'>
-<|page('Log In', 'login', 0)>
+<|page( :title( 'New Dist' ), :active( 'newdist' ), :user( 0 ) )>
   <div class="page-content">
     <h2>Login</h2>
     <?.error>

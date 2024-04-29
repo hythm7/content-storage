@@ -30,9 +30,6 @@ method add-dist(:$name!, :$, :$user!) {
 
   my $meta = slurp '/home/hythm/dev/Pakku/META6.json';
 
-  say '-------------';
-  dd $meta;
-  dd  '-------------';
   add-dist( db =>$!pg.db, :$name, :$meta, userid => $user )
 
 }

@@ -1,0 +1,7 @@
+use Cro::WebApp::Template;
+use Test;
+
+lives-ok { template-location 'templates/', :compile-all },
+    'All templates have valid syntax';
+
+done-testing;
