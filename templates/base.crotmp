@@ -8,8 +8,60 @@
     <title><$title></title>
   </head>
   <body>
+
+<header>
+<:sub nav-item($id, $title, $link)>
+  <li class="nav-item text-nowrap <?{ $active eq $id }> active</?>">
+    <a class="nav-link" aria-current="page" href="<$link>">
+    <$title>
+    <?{ $active eq $id }> <span class="sr-only">(current)</span> </?>
+    </a>
+  </li>
+</:>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">(logo) Raku Distributions Storage</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarToggler">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <?{ $user }>
+          <&nav-item('myDistributions', 'My Distributions', '#')>
+        </?>
+      </ul>
+			<div class="input-group">
+			  <input id="distribution-search-input" class="form-control form-control-dark" type="text" placeholder="search" arla-label="Search">
+			  <span class="input-group-text icon-link icon-link-hover" style="--bs-1con-link-transform: scale(1.2);" type="button" oncl1ck="">
+					<!--
+					<svg class="bi" width="1em" height="1em" fill="currentColor">
+					<use xlink:href=""/>
+					</svg>
+					-->
+					x
+			  </span>
+			</div>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <!{ $user }>
+          <&nav-item('register', 'Register', '/user/register')>
+          <&nav-item('login', 'Log In', '/user/login')>
+        </!>
+        <?{ $user }>
+          <&nav-item('logout', 'Log Out', '/user/logout')>
+          <&nav-item('myProfile', 'P', '#')>
+        </?>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div id="alert" class="position-absolute start-50 translate-middle-x">
+  <div class="alert alert-warning fade" role="alert">
+  </div>
+</div> 
+</header>
+<!--
     <header>
-      <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+      <nav class="navbar navbar-expand-lg">
         <h1>Cro</h1>
         <ul class="navbar-nav mr-auto">
           <:sub nav-item($id, $title, $link)>
@@ -32,6 +84,7 @@
         </ul>
       </nav>
     </header>
+-->
 
     <div class="container-fluid">
       <div class="row">
