@@ -5,12 +5,12 @@ INSERT
 INTO   users (  username,  password )
 values       ( $username, $password )
 
--- sub get-user(Int :$id! --> DistributionsStorage::Model::User $)
+-- sub get-user(Int :$id! --> %)
 SELECT id username, password, 'is-admin'
 FROM users
 WHERE id = $id
 
--- sub get-user(Str :$username --> DistributionsStorage::Model::User $)
+-- sub get-user(Str :$username! --> %)
 SELECT id, username, password, 'is-admin'
 FROM users
 WHERE username = $username
@@ -28,6 +28,11 @@ values       ({@provides.map({ 1, .key, .value}})
 
 -- sub get-dists(--> @)
 SELECT * FROM distributions
+
+-- sub get-user-dists(Int :$userid! --> @)
+SELECT * FROM distributions
+WHERE userid = $userid
+
 
 -- sub delete-dist(Str :$identity! --> +)
 DELETE FROM distributions WHERE identity = $identity

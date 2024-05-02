@@ -18,12 +18,14 @@ method add-user(:$username!, :$password! ) {
 
 multi method get-user(Int :$id!) {
 
+  #my DistributionsStorage::Model::User $user = get-user( $!pg, :$id );
   get-user( $!pg, :$id );
 
 }
 
 multi method get-user( Str :$username! ) {
-  my DistributionsStorage::Model::User $user = get-user( $!pg, :$username );
+  #my DistributionsStorage::Model::User $user = get-user( $!pg, :$username );
+  get-user( $!pg, :$username );
 }
 
 method add-dist(:$name!, :$, :$user!) {
@@ -38,14 +40,25 @@ method get-dist(UInt $id) {
   #%!dist{$id}
 }
 
-method get-dists {
-  
-  my @dist = get-dists( $!pg );
+multi method get-user-dists ( :$userid! ) {
 
-  dd @dist.map(*.<identity>);
+  say 'calling get-dists( :$userid )';
+  
+  my @dist = get-user-dists( $!pg, :$userid );
+
   @dist;
 
 }
+
+multi method get-dists ( ) {
+  
+  say 'calling get-dists( )';
+  my @dist = get-dists( $!pg );
+
+  @dist;
+
+}
+
 
 method delete-dist(:$identity!) {
   delete-dist( $!pg, :$identity )

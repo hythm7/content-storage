@@ -4,7 +4,7 @@ use distributions-storage-database;
 
 unit class DistributionsStorage;
 
-has DistributionsStorage::Database $!db handles <add-user get-user add-dist get-dists delete-dist>;
+has DistributionsStorage::Database $!db handles <add-user get-user add-dist get-dists get-user-dists delete-dist>;
 
 
 submethod BUILD( DB::Pg :$pg! ) {

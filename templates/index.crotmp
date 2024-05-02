@@ -7,17 +7,17 @@
       <header>
         <div>
           <h1><$dist.name></h1>
-          <span><$dist.userid>, <$dist.created></span>
+          <p class="dist"><$dist.identity></p>
+          <span><$dist.created></span>
         </div>
-        <?{ $dist.userid == .user }>
-            <a class="action" href="/distribution/<$dist.identity>/update">Edit</a>
-						<form action="/distribution/delete/<$dist.identity>" method="post">
-						<input class="danger" type="submit" value="Delete">
-						</form>
-
+        <?{ .user }>
+					<?{ $dist.userid == .user.id }>
+							<form action="/distribution/delete/<$dist.identity>" method="post">
+							  <input class="btn btn-danger" type="submit" value="Delete">
+							</form>
+					</?>
         </?>
       </header>
-      <p class="dist"><$dist.identity></p>
     </article>
     </@>
   </div>

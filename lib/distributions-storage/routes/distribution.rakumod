@@ -10,22 +10,35 @@ sub distribution-routes(DistributionsStorage $ds) is export {
     get -> DistributionsStorage::Session $session {
 
       my $user =  $session.user;
-
-      my $dists = $ds.get-dists.map( -> $dist {
+      my @dists = $ds.get-dists.map( -> $dist {
         $dist<created> = Date.new($dist<created>).Str;
         $dist;
       });
-      template 'index.crotmp', { :$user, :$dists };
+      template 'index.crotmp', { :$user, :@dists };
+    }
+
+    get -> LoggedIn $session, 'my' {
+
+      
+      my $user =  $session.user;
+      #my $dists = $ds.get-dists( userid => $user.id ).map( -> $dist {
+      my @dists = $ds.get-user-dists( userid => $user.<id> ).map( -> $dist {
+        $dist<created> = Date.new($dist<created>).Str;
+        $dist;
+      });
+      template 'index.crotmp', { :$user, :@dists };
     }
 
     include <distribution> => route {
       get -> LoggedIn $session, 'add' {
-        template 'add-distribution.crotmp';
+        my $user =  $session.user;
+        template 'add-distribution.crotmp', { :$user };
       }
 
       post -> LoggedIn $session, 'add' {
         request-body -> (:$name!, :$dist!, *%) {
-          $ds.add-dist(:$name, :$dist, user => $session.user);
+          #$ds.add-dist(:$name, :$dist, user => $session.user.id);
+          $ds.add-dist(:$name, :$dist, user => $session.user.<id>);
           redirect :see-other, '/';
         }
       }
@@ -39,7 +52,8 @@ sub distribution-routes(DistributionsStorage $ds) is export {
 
       sub process-dist($session, $id, &process) {
         with $ds.get-dist($id) -> $dist {
-          if $dist<user> == $session.user {
+          #if $dist<user> == $session.user.id {
+          if $dist<user> == $session.user.<id> {
             &process($dist);
           } else {
             forbidden;

@@ -26,8 +26,9 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarToggler">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <&nav-item('distributions', 'Distributions', '/')>
         <?{ $user }>
-          <&nav-item('myDistributions', 'My Distributions', '#')>
+          <&nav-item('myDistributions', 'My Distributions', '/my')>
         </?>
       </ul>
 			<div class="input-group">
@@ -46,11 +47,26 @@
           <&nav-item('register', 'Register', '/user/register')>
           <&nav-item('login', 'Log In', '/user/login')>
         </!>
-        <?{ $user }>
-          <&nav-item('logout', 'Log Out', '/user/logout')>
-          <&nav-item('myProfile', 'P', '#')>
-        </?>
       </ul>
+      <?{ $user }>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <&nav-item('addDistribution', 'Add Distribution', '/distribution/add')>
+        </ul>
+				<div class="dropdown">
+					<button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<!--
+						<svg class="bi" width="1em" height="1em" fill="currentColor">
+						<use xlink:href=""/>
+						</svg>
+						-->
+						P
+					</button>
+					<ul class="dropdown-menu dropdown-menu-lg-end">
+						<li><a class="dropdown-item" href="#"><$user.username></a></li>
+						<li><a class="dropdown-item" href="/user/logout">logout</a></li>
+					</ul>
+				</div>
+      </?>
     </div>
   </div>
 </nav>

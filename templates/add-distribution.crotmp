@@ -1,5 +1,5 @@
 <:use 'templates/base.crotmp'>
-<|page( :title( 'New Dist' ), :active( 'newdist' ), :user( .user ) )>
+<|page( :title( 'New Dist' ), :active( 'newDistribution' ), :user( .user ) )>
   <div class="page-content">
     <h2>New dist</h2>
     <form method="post">
