@@ -20,19 +20,18 @@
 </:>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">(logo) Raku Distributions Storage</a>
+    <a class="navbar-brand" href="/">(logo) Raku Distributions Storage</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarToggler">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <&nav-item('distributions', 'Distributions', '/')>
         <?{ $user }>
           <&nav-item('myDistributions', 'My Distributions', '/my')>
         </?>
       </ul>
 			<div class="input-group">
-			  <input id="distribution-search-input" class="form-control form-control-dark" type="text" placeholder="search" arla-label="Search">
+			  <input id="distribution-search-input" class="form-control form-control-dark" type="text" placeholder="⌕" arla-label="Search">
 			  <span class="input-group-text icon-link icon-link-hover" style="--bs-1con-link-transform: scale(1.2);" type="button" oncl1ck="">
 					<!--
 					<svg class="bi" width="1em" height="1em" fill="currentColor">
@@ -75,43 +74,16 @@
   </div>
 </div> 
 </header>
-<!--
-    <header>
-      <nav class="navbar navbar-expand-lg">
-        <h1>Cro</h1>
-        <ul class="navbar-nav mr-auto">
-          <:sub nav-item($id, $title, $link)>
-            <li class="nav-item<?{ $active eq $id }> active</?>">
-              <a class="nav-link" href="<$link>">
-              <$title>
-              <?{ $active eq $id }> <span class="sr-only">(current)</span> </?>
-              </a>
-            </li>
-          </:>
-          <!{ $user }>
-            <&nav-item('register', 'Register', '/user/register')>
-            <&nav-item('login', 'Log In', '/user/login')>
-          </!>
-          <?{ $user }>
-            <&nav-item('dists', 'Dists', '/')>
-            <&nav-item('newdist', 'Add new dist', '/distribution/add')>
-            <&nav-item('logout', 'Log Out', '/user/logout')>
-          </?>
-        </ul>
-      </nav>
-    </header>
--->
-
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col"></div>
-        <div class="col-4">
-          <:body>
-        </div>
-        <div class="col"></div>
-       </div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col"></div>
+    <div class="col-4">
+      <:body>
     </div>
-  <script src="/main.js"></script>
-  </body>
+    <div class="col"></div>
+   </div>
+</div>
+<script src="/main.js"></script>
+</body>
 </html>
 </:macro>
