@@ -40,25 +40,10 @@ method get-dist(UInt $id) {
   #%!dist{$id}
 }
 
-multi method get-user-dists ( :$userid! ) {
 
-  say 'calling get-dists( :$userid )';
-  
-  my @dist = get-user-dists( $!pg, :$userid );
+method get-dists ( ) { get-dists( $!pg ) }
 
-  @dist;
-
-}
-
-multi method get-dists ( ) {
-  
-  say 'calling get-dists( )';
-  my @dist = get-dists( $!pg );
-
-  @dist;
-
-}
-
+method get-user-dists ( :$userid! ) { get-user-dists( $!pg, :$userid ) }
 
 method delete-dist(:$identity!) {
   delete-dist( $!pg, :$identity )

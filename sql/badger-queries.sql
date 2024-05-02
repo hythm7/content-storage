@@ -33,7 +33,6 @@ SELECT * FROM distributions
 SELECT * FROM distributions
 WHERE userid = $userid
 
-
 -- sub delete-dist(Str :$identity! --> +)
 DELETE FROM distributions WHERE identity = $identity
 
