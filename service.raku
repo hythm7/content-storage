@@ -28,16 +28,12 @@ note "Applied $status.migrations.elems() migration(s)";
 my $ds = DistributionsStorage.new: :$pg;
 
 class SessionStore does Cro::HTTP::Session::Pg[DistributionsStorage::Session] {
-  method serialize(DistributionsStorage::Session $s) {
-    # Replace this with your serialization logic.
-    say to-json $s.Capture.hash;
-    to-json $s.Capture.hash
+  method serialize( DistributionsStorage::Session $s ) {
+    $s.to-json
   }
 
-  method deserialize($d --> DistributionsStorage::Session) {
-    # Replace this with your deserialization logic.
-    say from-json($d);
-    DistributionsStorage::Session.new(|from-json($d))
+  method deserialize( $json --> DistributionsStorage::Session ) {
+    DistributionsStorage::Session.from-json( $json )
   }
 }
 

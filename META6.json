@@ -12,7 +12,8 @@
     "Cro::HTTP::Session::Pg",
     "Cro::HTTP",
     "Cro::WebApp",
-    "Crypt::Argon2"
+    "Crypt::Argon2",
+    "JSON::Class:auth<zef:vrurg>"
   ],
   "description": "Recommendation Manager for Raku distributions",
   "license": "Artistic-2.0",

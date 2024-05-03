@@ -1,6 +1,6 @@
 -- use distributions-storage-model-user
 
--- sub add-user(Str :$username!, :$password! --> +)
+-- sub add-user(Str :$username!, Str :$password! --> +)
 INSERT
 INTO   users (  username,  password )
 values       ( $username, $password )

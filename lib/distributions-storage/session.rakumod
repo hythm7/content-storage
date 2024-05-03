@@ -1,18 +1,19 @@
+use JSON::Class:auth<zef:vrurg>;
+
 use Cro::HTTP::Auth;
 
-class DistributionsStorage::Session does Cro::HTTP::Auth {
+use distributions-storage-model-user;
 
-  has $.user;
+class DistributionsStorage::Session is json does Cro::HTTP::Auth {
+
+  has DistributionsStorage::Model::User $.user;
+
 
   method set-logged-in-user($!user --> Nil) { }
 
   method is-admin(     --> Bool ) { $!user.is-admin }
   method is-logged-in( --> Bool ) { $!user.defined }
 
-  method hash ( ) {
-
-    %( id => $!user.id, username => $!user.username )
-  }
 }
 
 
