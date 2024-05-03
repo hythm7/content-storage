@@ -18,14 +18,12 @@ method add-user(:$username!, :$password! ) {
 
 multi method get-user(Int :$id!) {
 
-  #my DistributionsStorage::Model::User $user = get-user( $!pg, :$id );
-  get-user( $!pg, :$id );
+  my DistributionsStorage::Model::User $user = get-user( $!pg, :$id );
 
 }
 
 multi method get-user( Str :$username! ) {
-  #my DistributionsStorage::Model::User $user = get-user( $!pg, :$username );
-  get-user( $!pg, :$username );
+  my DistributionsStorage::Model::User $user = get-user( $!pg, :$username );
 }
 
 method add-dist(:$name!, :$, :$user!) {

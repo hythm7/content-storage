@@ -21,8 +21,7 @@ sub distribution-routes(DistributionsStorage $ds) is export {
 
       
       my $user =  $session.user;
-      #my $dists = $ds.get-dists( userid => $user.id ).map( -> $dist {
-      my @dists = $ds.get-user-dists( userid => $user.<id> ).map( -> $dist {
+      my @dists = $ds.get-user-dists( userid => $user.id ).map( -> $dist {
         $dist<created> = Date.new($dist<created>).Str;
         $dist;
       });
@@ -37,8 +36,7 @@ sub distribution-routes(DistributionsStorage $ds) is export {
 
       post -> LoggedIn $session, 'add' {
         request-body -> (:$name!, :$dist!, *%) {
-          #$ds.add-dist(:$name, :$dist, user => $session.user.id);
-          $ds.add-dist(:$name, :$dist, user => $session.user.<id>);
+          $ds.add-dist(:$name, :$dist, user => $session.user.id);
           redirect :see-other, '/';
         }
       }
@@ -52,8 +50,7 @@ sub distribution-routes(DistributionsStorage $ds) is export {
 
       sub process-dist($session, $id, &process) {
         with $ds.get-dist($id) -> $dist {
-          #if $dist<user> == $session.user.id {
-          if $dist<user> == $session.user.<id> {
+          if $dist<user> == $session.user.id {
             &process($dist);
           } else {
             forbidden;

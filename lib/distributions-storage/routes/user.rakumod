@@ -31,8 +31,7 @@ sub user-routes(DistributionsStorage $ds) is export {
       request-body -> (:$username!, :$password!, *%) {
         my $user = $ds.get-user( :$username );
         with $user {
-          #if (argon2-verify(.password, $password)) {
-          if (argon2-verify(.<password>, $password)) {
+          if (argon2-verify(.password, $password)) {
             $session.set-logged-in-user( $user );
             redirect :see-other, '/';
           } else {

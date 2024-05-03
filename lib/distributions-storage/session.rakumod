@@ -9,6 +9,10 @@ class DistributionsStorage::Session does Cro::HTTP::Auth {
   method is-admin(     --> Bool ) { $!user.is-admin }
   method is-logged-in( --> Bool ) { $!user.defined }
 
+  method hash ( ) {
+
+    %( id => $!user.id, username => $!user.username )
+  }
 }
 
 

@@ -27,6 +27,20 @@ note "Applied $status.migrations.elems() migration(s)";
 
 my $ds = DistributionsStorage.new: :$pg;
 
+class SessionStore does Cro::HTTP::Session::Pg[DistributionsStorage::Session] {
+  method serialize(DistributionsStorage::Session $s) {
+    # Replace this with your serialization logic.
+    say to-json $s.Capture.hash;
+    to-json $s.Capture.hash
+  }
+
+  method deserialize($d --> DistributionsStorage::Session) {
+    # Replace this with your deserialization logic.
+    say from-json($d);
+    DistributionsStorage::Session.new(|from-json($d))
+  }
+}
+
 my Cro::Service $http = Cro::HTTP::Server.new(
   http => <1.1>,
   host => %*ENV<DISTRIBUTIONS_STORAGE_HOST> ||
@@ -35,7 +49,7 @@ my Cro::Service $http = Cro::HTTP::Server.new(
   die("Missing DISTRIBUTIONS_STORAGE_PORT in environment"),
   application => routes( $ds ),
   before => [
-    Cro::HTTP::Session::Pg[DistributionsStorage::Session].new(
+    SessionStore.new(
       db => $pg,
       cookie-name => '_distributions-storage-session')
     ], 

@@ -5,12 +5,12 @@ INSERT
 INTO   users (  username,  password )
 values       ( $username, $password )
 
--- sub get-user(Int :$id! --> %)
+-- sub get-user(Int :$id! --> DistributionsStorage::Model::User $)
 SELECT id username, password, 'is-admin'
 FROM users
 WHERE id = $id
 
--- sub get-user(Str :$username! --> %)
+-- sub get-user(Str :$username! --> DistributionsStorage::Model::User $)
 SELECT id, username, password, 'is-admin'
 FROM users
 WHERE username = $username
