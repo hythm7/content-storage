@@ -58,7 +58,7 @@
 						<use xlink:href=""/>
 						</svg>
 						-->
-						P
+						<i class="bi-person"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-lg-end">
 						<li><a class="dropdown-item" href="#"><$user.username></a></li>
