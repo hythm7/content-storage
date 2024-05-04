@@ -1,4 +1,4 @@
-<:use 'templates/base.crotmp'>
+<:use 'templates/common.crotmp'>
 <|page( :title( 'New Dist' ), :active( 'newdist' ), :user( 0 ) )>
   <div class="page-content">
     <h2>Register</h2>

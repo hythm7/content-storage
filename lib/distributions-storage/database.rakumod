@@ -26,11 +26,11 @@ multi method get-user( Str :$username! ) {
   my DistributionsStorage::Model::User $user = get-user( $!pg, :$username );
 }
 
-method add-dist(:$name!, :$, :$user!) {
+method add-distribution( Str:D :$content!, :$user! ) {
 
-  my $meta = slurp '/home/hythm/dev/Pakku/META6.json';
+  my $meta = $content;
 
-  add-dist( db =>$!pg.db, :$name, :$meta, userid => $user )
+  add-distribution( db =>$!pg.db, :$meta, userid => $user )
 
 }
 
@@ -47,11 +47,12 @@ method delete-dist(:$identity!) {
   delete-dist( $!pg, :$identity )
 }
 
-my sub add-dist ( :$db!, :$name!, :$meta!, :$userid! ) {
+my sub add-distribution ( :$db!, :$meta!, :$userid! ) {
 
   my %meta = Rakudo::Internals::JSON.from-json($meta);
 
 
+  my $name = %meta<name>;
   my $version = %meta<version>;
   my $auth = %meta<auth>;
   #my $owner = %meta<auth>.split(':').tail;
@@ -65,6 +66,7 @@ my sub add-dist ( :$db!, :$name!, :$meta!, :$userid! ) {
   my @emulates = |%meta<emulates>;
   my @resourcs = |%meta<resourcs>;
   
+  say $identity;
   $db.begin;
   
   $db.query(q:to/END/, $name, $version, $auth, $api, $identity, $meta, $userid );

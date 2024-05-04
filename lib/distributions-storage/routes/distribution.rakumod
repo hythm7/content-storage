@@ -1,9 +1,14 @@
 use Cro::HTTP::Router;
 use Cro::WebApp::Template;
+use Cro::WebApp::Form;
 
 use distributions-storage;
 use distributions-storage-routes-user;
 use distributions-storage-session;
+
+class DistributionUploadForm does Cro::WebApp::Form {
+  has Cro::HTTP::Body::MultiPartFormData::Part $.distribution-file is file is required;
+}
 
 sub distribution-routes(DistributionsStorage $ds) is export {
   route {
@@ -17,7 +22,7 @@ sub distribution-routes(DistributionsStorage $ds) is export {
       template 'index.crotmp', { :$user, :@dists };
     }
 
-    get -> LoggedIn $session, 'my' {
+    get -> LoggedIn $session, 'my-distributions' {
 
       
       my $user =  $session.user;
@@ -25,7 +30,7 @@ sub distribution-routes(DistributionsStorage $ds) is export {
         $dist<created> = Date.new($dist<created>).Str;
         $dist;
       });
-      template 'index.crotmp', { :$user, :@dists };
+      template 'my-distributions.crotmp', { :$user, :@dists };
     }
 
     include <distribution> => route {
@@ -35,9 +40,16 @@ sub distribution-routes(DistributionsStorage $ds) is export {
       }
 
       post -> LoggedIn $session, 'add' {
-        request-body -> (:$name!, :$dist!, *%) {
-          $ds.add-dist(:$name, :$dist, user => $session.user.id);
+        form-data -> DistributionUploadForm $form {
+
+          #my $filename =  $form.distribution-file.filename;
+          #my $blob     =  $form.distribution-file.body-blob;
+          my $content  =  $form.distribution-file.body-text;
+
+          $ds.add-distribution( :$content, user => $session.user.id);
+
           redirect :see-other, '/';
+
         }
       }
 

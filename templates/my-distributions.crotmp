@@ -1,7 +1,7 @@
 <:use 'templates/common.crotmp'>
-<|page( :title( 'Distributions' ), :active( 'distributions' ), :user( .user ) )>
+<|page( :title( 'My Distributions' ), :active( 'my-distributions' ), :user( .user ) )>
   <div class="page-content">
-    <h2>Distributions</h2>
+    <h2>My Distributions</h2>
 		<table class="table">
 			<thead>
 				<tr>

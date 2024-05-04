@@ -27,18 +27,13 @@
     <div class="collapse navbar-collapse" id="navbarToggler">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <?{ $user }>
-          <&nav-item('myDistributions', 'My Distributions', '/my')>
+          <&nav-item('my-distributions', 'My Distributions', '/my-distributions')>
         </?>
       </ul>
 			<div class="input-group">
 			  <input id="distribution-search-input" class="form-control form-control-dark" type="text" placeholder="⌕" arla-label="Search">
 			  <span class="input-group-text icon-link icon-link-hover" style="--bs-1con-link-transform: scale(1.2);" type="button" oncl1ck="">
-					<!--
-					<svg class="bi" width="1em" height="1em" fill="currentColor">
-					<use xlink:href=""/>
-					</svg>
-					-->
-					x
+          <i class="bi-x"></i>
 			  </span>
 			</div>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -53,11 +48,6 @@
         </ul>
 				<div class="dropdown">
 					<button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-						<!--
-						<svg class="bi" width="1em" height="1em" fill="currentColor">
-						<use xlink:href=""/>
-						</svg>
-						-->
 						<i class="bi-person"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-lg-end">
@@ -73,15 +63,11 @@
   <div class="alert alert-warning fade" role="alert">
   </div>
 </div> 
+
 </header>
-<div class="container-fluid">
-  <div class="row">
-    <div class="col"></div>
-    <div class="col-4">
-      <:body>
-    </div>
-    <div class="col"></div>
-   </div>
+
+<div class="container">
+  <:body>
 </div>
 <script src="/main.js"></script>
 </body>

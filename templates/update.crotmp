@@ -1,4 +1,4 @@
-<:use 'templates/base.crotmp'>
+<:use 'templates/common.crotmp'>
 <|page('Edit ' ~ .title, 'edit', 1)>
   <div class="page-content">
     <h2>Edit <.title></h2>
