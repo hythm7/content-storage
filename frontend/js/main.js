@@ -44,3 +44,65 @@ function handleSubmit(event) {
   event.preventDefault();
   console.log('prevented')
 }
+
+  let dropArea                = document.getElementById('drop-area');
+  let fileElem                = document.getElementById('fileElem');
+  let distributionsProcessing = document.getElementById('distributions-processing');
+
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, preventDefaults, false);
+    document.body.addEventListener(eventName, preventDefaults, false);
+  });
+
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropArea.addEventListener(eventName, highlight, false);
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, unhighlight, false);
+  });
+
+  dropArea.addEventListener('drop', handleDrop, false);
+
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  function highlight(e) {
+    dropArea.classList.add('highlight');
+  }
+
+  function unhighlight(e) {
+    dropArea.classList.remove('highlight');
+  }
+
+  function handleDrop(e) {
+    let dt = e.dataTransfer;
+    let files = dt.files;
+    handleFiles(files);
+  }
+
+  dropArea.addEventListener('click', () => {
+    fileElem.click();
+  });
+
+  fileElem.addEventListener('change', function (e) {
+    handleFiles(this.files);
+  });
+
+  function handleFiles(files) {
+    files = [...files];
+    files.forEach(distributionProcessing);
+  }
+
+  function distributionProcessing(file) {
+		console.log(file.name)
+    let reader = new FileReader();
+    reader.readAsText(file);
+    reader.onloadend = function () {
+      let distribution = document.createElement('label');
+      distribution.text = reader.result;
+      distributionsProcessing.appendChild(distribution);
+    }
+  }
