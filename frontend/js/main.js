@@ -5,18 +5,85 @@ import '../scss/styles.scss'
 import * as bootstrap from 'bootstrap'
 
 
+
+
+var dropArea = document.getElementById('drop-area');
+var distributionsArchiveFiles = document.getElementById('distributions-archive-files');
+var distributionsAddSubmit = document.getElementById('distributions-add');
 const form = document.getElementById('distribution-add-form');
 
-if (form) {
+if (dropArea) {
   form.addEventListener('submit', handleSubmit);
+
+// drop area
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (event) {
+	dropArea.addEventListener(event, function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	});
+});
+
+['dragenter', 'dragover'].forEach(function (event) {
+	dropArea.addEventListener(event, function () {
+		dropArea.classList.add('highlight');
+	});
+});
+
+['dragleave', 'drop'].forEach(function (event) {
+	dropArea.addEventListener(event, function () {
+		dropArea.classList.remove('highlight');
+	});
+});
+
+// Handle dropped files
+dropArea.addEventListener('drop', function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+
+	// Access the dropped files
+  var files = e.dataTransfer.files;
+	showDropzoneFiles(files);
+
+	distributionsArchiveFiles.files = files;
+
+});
+
+
+distributionsArchiveFiles.addEventListener('change', function (event) {
+
+  var files = distributionsArchiveFiles.files;
+  showDropzoneFiles(files)
+
+});
+
+function showDropzoneFiles( files ) {
+
+	var distributionsArchiveFilesLabel = document.querySelector('.distributions-archive-files-label');
+
+  if (files.length > 0) {
+
+		files = [...files];
+		distributionsArchiveFilesLabel.innerText = '';
+		files.forEach((file) => {
+			distributionsArchiveFilesLabel.innerText += file.name + "\n";
+		});
+    distributionsAddSubmit.classList.remove('disabled');
+	} else {
+
+		distributionsArchiveFilesLabel.innerText = 'Drag and drop your distribution here or click to select a file.';
+    distributionsAddSubmit.classList.add('disabled');
+
+	}
+
+
 }
+
+
 
 /** @param {Event} event */
 function handleSubmit(event) {
-  console.log('handling')
   /** @type {HTMLFormElement} */
-
-
 
   const form = event.currentTarget;
   const url = new URL(form.action);
@@ -38,71 +105,28 @@ function handleSubmit(event) {
     url.search = searchParams;
   }
 
-  fetch(url, fetchOptions);
-
-  console.log('prevent default')
-  event.preventDefault();
-  console.log('prevented')
+	fetch(url, fetchOptions)
+		.then(response => response.json()) // Assuming the server responds with JSON
+		.then(data => {
+			console.log('Upload successful:', data);
+			// Handle the server response as needed
+		})
+		.catch(error => {
+			console.error('Error uploading files:', error);
+			// Handle errors
+		});
+	event.preventDefault();
 }
 
-  let dropArea                = document.getElementById('drop-area');
-  let fileElem                = document.getElementById('fileElem');
-  let distributionsProcessing = document.getElementById('distributions-processing');
+//  function distributionProcessing(file) {
+//		console.log(file.name)
+//    let reader = new FileReader();
+//    reader.readAsText(file);
+//    reader.onloadend = function () {
+//      let distribution = document.createElement('label');
+//      distribution.text = reader.result;
+//      distributionsProcessing.appendChild(distribution);
+//    }
+//  }
 
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    dropArea.addEventListener(eventName, preventDefaults, false);
-    document.body.addEventListener(eventName, preventDefaults, false);
-  });
-
-  ['dragenter', 'dragover'].forEach(eventName => {
-    dropArea.addEventListener(eventName, highlight, false);
-  });
-
-  ['dragleave', 'drop'].forEach(eventName => {
-    dropArea.addEventListener(eventName, unhighlight, false);
-  });
-
-  dropArea.addEventListener('drop', handleDrop, false);
-
-  function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-
-  function highlight(e) {
-    dropArea.classList.add('highlight');
-  }
-
-  function unhighlight(e) {
-    dropArea.classList.remove('highlight');
-  }
-
-  function handleDrop(e) {
-    let dt = e.dataTransfer;
-    let files = dt.files;
-    handleFiles(files);
-  }
-
-  dropArea.addEventListener('click', () => {
-    fileElem.click();
-  });
-
-  fileElem.addEventListener('change', function (e) {
-    handleFiles(this.files);
-  });
-
-  function handleFiles(files) {
-    files = [...files];
-    files.forEach(distributionProcessing);
-  }
-
-  function distributionProcessing(file) {
-		console.log(file.name)
-    let reader = new FileReader();
-    reader.readAsText(file);
-    reader.onloadend = function () {
-      let distribution = document.createElement('label');
-      distribution.text = reader.result;
-      distributionsProcessing.appendChild(distribution);
-    }
-  }
+}

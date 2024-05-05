@@ -92,6 +92,18 @@ $bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
 // Custom styles
 //
 
+#drop-area {
+  border: 2px dashed #ccc; /* Dashed border with a light gray color */
+  padding: 20px; /* Add padding for better visibility */
+  text-align: center; /* Center text horizontally */
+  cursor: pointer; /* Set cursor to pointer to indicate interaction */
+}
+
+#drop-area.highlight {
+  border-color: #007bff; /* Highlighted border color */
+  background-color: #f0f8ff; /* Highlighted background color */
+}
+
 //@import "icon-list";
 //
 //body {
