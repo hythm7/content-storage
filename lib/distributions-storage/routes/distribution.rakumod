@@ -1,3 +1,5 @@
+use EventSource::Server;
+
 use Cro::HTTP::Router;
 use Cro::WebApp::Template;
 use Cro::WebApp::Form;
@@ -9,6 +11,7 @@ use distributions-storage-session;
 class DistributionUploadForm does Cro::WebApp::Form {
   has $.distributions-archive-files is file is required;
 }
+
 
 sub distribution-routes(DistributionsStorage $ds) is export {
   route {
@@ -33,30 +36,52 @@ sub distribution-routes(DistributionsStorage $ds) is export {
       template 'my-distributions.crotmp', { :$user, :@dists };
     }
 
+
     include <distribution> => route {
+
       get -> LoggedIn $session, 'add' {
         my $user =  $session.user;
-        template 'add-distribution.crotmp', { :$user };
+
+        my @builds = $ds.get-builds( );
+
+        template 'add-distribution.crotmp', { :$user, :@builds };
       }
+
+      sub validate( $archive) { say $archive.filename ~ ' validated!' }
+
+      sub start-build( $archive) { sleep 4 }
 
       post -> LoggedIn $session, 'add' {
         form-data -> DistributionUploadForm $form {
 
           my @files = $form.distributions-archive-files;
 
-          @files.map( -> $file {
-            my $content  =  $file.body-text;
+          #content 'application/json', '[' ~ @files.map({ .body-text }).join(',') ~ ']';
 
-            $ds.add-distribution( :$content, user => $session.user.id);
+          @files.map( -> $file { $ds.add-distribution( :$file ) } );
 
-          } );
+
+          #content 'application/json', @json;
 
           
-          content 'application/json', '[' ~ @files.map({ .body-text }).join(',') ~ ']';
 
-          #redirect :see-other, '/';
+          #@files.map( -> $file {
+          #  my $content  =  $file.body-text;
+
+          #  $ds.add-distribution( :$content, user => $session.user.id);
+
+          #} );
+
+          
+
+          #redirect :see-other, '/distribution/add';
+          redirect :see-other, '/';
 
         }
+      }
+
+      get -> DistributionsStorage::Session $session, 'build' {
+        content 'text/event-stream', $ds.build-supply;
       }
 
       post -> LoggedIn $session, 'delete', $identity {

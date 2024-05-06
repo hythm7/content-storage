@@ -80,6 +80,11 @@ function showDropzoneFiles( files ) {
 }
 
 
+const evtSource = new EventSource('/distribution/build');
+
+evtSource.onerror = (err) => {
+	console.error("EventSource failed:", err);
+};
 
 /** @param {Event} event */
 function handleSubmit(event) {
@@ -106,18 +111,35 @@ function handleSubmit(event) {
   }
 
 	fetch(url, fetchOptions)
-		.then(response => response.json()) // Assuming the server responds with JSON
-		.then(data => {
-			console.log('Upload successful:', data);
+		//.then(response => response.json()) // Assuming the server responds with JSON
+		//.then(data => {
+			//const distributionsBuildsTable = document.getElementById("distributions-builds-table");
+
+      //  var tableBody = distributionsBuildsTable.getElementsByTagName('tbody')[0]
+			//	data.forEach((build, index) => {
+
+			//	tableBody.innerHTML += '<tr><td>' + index + '</td><td>' + build.status + '</td><td>' + build.filename + '</td></tr>'
+			//} )
+
+
 			// Handle the server response as needed
-		})
+
+			//evtSource.addEventListener(data.id, (event) => {
+			//	const newElement = document.createElement("li");
+			//	const eventList = document.getElementById("distributions-builds");
+
+			//	newElement.textContent = event.data;
+			//	eventList.appendChild(newElement);
+			//});
+
+
+		//})
 		.catch(error => {
 			console.error('Error uploading files:', error);
 			// Handle errors
 		});
 	event.preventDefault();
 }
-
 //  function distributionProcessing(file) {
 //		console.log(file.name)
 //    let reader = new FileReader();
@@ -128,5 +150,49 @@ function handleSubmit(event) {
 //      distributionsProcessing.appendChild(distribution);
 //    }
 //  }
+
+evtSource.addEventListener('message',  (event) => {
+
+	console.log(`message: ${event.data}`);
+});
+
+	const buildModal = document.getElementById('buildModal')
+  const buildModalBody = buildModal.querySelector('.modal-body')
+
+	var buildEvent = function (event) {
+
+			const newElement = document.createElement("li");
+
+			newElement.textContent = event.data;
+			buildModalBody.appendChild(newElement);
+
+	}
+
+	buildModal.addEventListener('show.bs.modal', event => {
+
+    var build = event.relatedTarget;
+    var buildStatus = build.getAttribute('data-build-status')
+    var buildId = build.getAttribute('data-build-id')
+
+    buildModal.setAttribute('data-build-id', buildId)
+		// do something...
+
+		evtSource.addEventListener(buildId, buildEvent, false)
+		//evtSource.addEventListener(buildId, (event) => {
+		//	const newElement = document.createElement("li");
+
+		//	newElement.textContent = event.data;
+		//	buildModalBody.appendChild(newElement);
+		//});
+	})
+
+	buildModal.addEventListener('hidden.bs.modal', event => {
+
+    var buildId = buildModal.getAttribute('data-build-id')
+
+		evtSource.removeEventListener(buildId, buildEvent, false)
+    var buildModalBody = buildModal.querySelector('.modal-body')
+	  buildModalBody.innerHTML = '';
+	})
 
 }

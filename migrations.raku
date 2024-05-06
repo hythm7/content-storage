@@ -25,6 +25,7 @@ migration 'Setup', {
     add-column 'id', integer(), :increments, :primary;
 
     add-column 'identity', text(), :!null, :unique;
+
     add-column 'name',     text(), :!null;
     add-column 'version',  text(), :!null;
     add-column 'auth',     text(), :!null;
@@ -37,6 +38,32 @@ migration 'Setup', {
     add-column 'userid', integer(), :!null;
 
   }
+
+  create-table 'builds', { 
+
+    add-column 'id', integer(), :increments, :primary;
+
+    add-column 'status', integer(), :default(3), :!null;
+
+    add-column 'filename',  text(), :!null;
+
+    add-column 'name',     text();
+    add-column 'version',  text();
+    add-column 'auth',     text();
+    add-column 'api',      text();
+
+    add-column 'identity', text();
+
+    add-column 'build',  text();
+
+    add-column 'started', timestamp(), :default(now);
+    add-column 'completed', timestamp(), :default(now);
+
+    add-column 'userid', integer(), :!null;
+
+
+  }
+
 
   create-table 'provides', { 
 

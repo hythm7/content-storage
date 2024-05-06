@@ -47,6 +47,24 @@ method delete-dist(:$identity!) {
   delete-dist( $!pg, :$identity )
 }
 
+method create-build( Str:D :$filename! ) {
+
+  my $build-id = create-build( $!pg, :$filename )
+
+}
+
+method select-builds(  ) {
+
+  select-builds( $!pg )
+
+}
+
+method select-build( Int:D :$id! ) {
+
+  select-build( $!pg, :$id )
+
+}
+
 my sub add-distribution ( :$db!, :$meta!, :$userid! ) {
 
   my %meta = Rakudo::Internals::JSON.from-json($meta);
@@ -66,7 +84,6 @@ my sub add-distribution ( :$db!, :$meta!, :$userid! ) {
   my @emulates = |%meta<emulates>;
   my @resourcs = |%meta<resourcs>;
   
-  say $identity;
   $db.begin;
   
   $db.query(q:to/END/, $name, $version, $auth, $api, $identity, $meta, $userid );

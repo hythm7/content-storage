@@ -17,8 +17,22 @@ WHERE username = $username
 
 -- sub insert-into-distributions(Str :$name!, :$version!, :$auth!, :$api, :$identity!, :$meta!, :$userid! --> +)
 INSERT
-INTO   distributions ( name, version, auth, api, identity, meta, userid )
-values       ( $name, $version, $auth, $api, $identity, $meta, $userid )
+INTO   distributions ( 'name', 'version', 'auth', 'api', 'identity', 'meta', 'userid' )
+VALUES       ( $name, $version, $auth, $api, $identity, $meta, $userid )
+
+-- sub create-build(Str :$filename! --> $)
+INSERT
+INTO   builds ( filename, userid )
+VALUES        ( $filename, 1  )
+RETURNING id
+
+
+-- sub select-builds(--> @)
+SELECT * FROM builds
+
+-- sub select-build(Int :$id! --> %)
+SELECT * FROM builds
+WHERE id = $id
 
 -- sub insert-into-provides(@provides --> +)
 INSERT

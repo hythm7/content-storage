@@ -13,6 +13,7 @@
     "Cro::HTTP",
     "Cro::WebApp",
     "Crypt::Argon2",
+    "EventSource::Server",
     "JSON::Class:auth<zef:vrurg>"
   ],
   "description": "Recommendation Manager for Raku distributions",

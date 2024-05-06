@@ -28,6 +28,7 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <?{ $user }>
           <&nav-item('my-distributions', 'My Distributions', '/my-distributions')>
+          <&nav-item('distribution-build', 'Distribution Build', '/distribution/build')>
         </?>
       </ul>
 			<div class="input-group">
