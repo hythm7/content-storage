@@ -1,5 +1,12 @@
 <:use 'templates/common.crotmp'>
-<|page( :title( 'New Dist' ), :active( 'newdist' ), :user( 0 ) )>
+
+<&head( :title( 'Login' ) )>
+
+<&body-open>
+
+<&header( :active( 'login' ), :user( 0 ) )>
+
+<|page>
   <div class="page-content">
     <h2>Login</h2>
     <?.error>
@@ -22,3 +29,7 @@
     </form>
   </div>
 </|>
+
+<&footer>
+
+<&body-close>

@@ -1,15 +1,62 @@
-<:macro page(:$title, :$active, :$user)>
+<:sub head(:$title)>
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="/static/main.css">
-    <title><$title></title>
-  </head>
-  <body>
 
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="/static/main.css">
+  <title><$title></title>
+</head>
+</:>
+
+<:sub header(:$active, :$user)>
 <header>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">(logo) Raku Distributions Storage</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarToggler">
+      <?{ $user }>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <&nav-item('my-distributions', 'My Distributions', '/my-distributions')>
+        <&nav-item('distributionAdd', 'Add Distribution', '/distribution/add')>
+      </ul>
+      </?>
+      <div class="input-group">
+        <input id="distribution-search-input" class="form-control form-control-dark" type="text" placeholder="⌕" arla-label="Search">
+        <span class="input-group-text icon-link icon-link-hover" style="--bs-1con-link-transform: scale(1.2);" type="button" oncl1ck="">
+          <i class="bi-x"></i>
+        </span>
+      </div>
+      <!{ $user }>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <&nav-item('register', 'Register', '/user/register')>
+        <&nav-item('login', 'Log In', '/user/login')>
+      </ul>
+      </!>
+      <?{ $user }>
+      <div class="dropdown">
+        <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi-person"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-lg-end">
+          <li><a class="dropdown-item" href="#"><$user.username></a></li>
+          <li><a class="dropdown-item" href="/user/logout">logout</a></li>
+        </ul>
+      </div>
+      </?>
+    </div>
+  </div>
+</nav>
+
+<div id="alert" class="position-absolute start-50 translate-middle-x">
+  <div class="alert alert-warning fade" role="alert">
+  </div>
+</div> 
+
 <:sub nav-item($id, $title, $link)>
   <li class="nav-item text-nowrap <?{ $active eq $id }> active</?>">
     <a class="nav-link" aria-current="page" href="<$link>">
@@ -18,59 +65,27 @@
     </a>
   </li>
 </:>
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">(logo) Raku Distributions Storage</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarToggler">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <?{ $user }>
-          <&nav-item('my-distributions', 'My Distributions', '/my-distributions')>
-          <&nav-item('distribution-build', 'Distribution Build', '/distribution/build')>
-        </?>
-      </ul>
-			<div class="input-group">
-			  <input id="distribution-search-input" class="form-control form-control-dark" type="text" placeholder="⌕" arla-label="Search">
-			  <span class="input-group-text icon-link icon-link-hover" style="--bs-1con-link-transform: scale(1.2);" type="button" oncl1ck="">
-          <i class="bi-x"></i>
-			  </span>
-			</div>
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <!{ $user }>
-          <&nav-item('register', 'Register', '/user/register')>
-          <&nav-item('login', 'Log In', '/user/login')>
-        </!>
-      </ul>
-      <?{ $user }>
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <&nav-item('addDistribution', 'Add Distribution', '/distribution/add')>
-        </ul>
-				<div class="dropdown">
-					<button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-						<i class="bi-person"></i>
-					</button>
-					<ul class="dropdown-menu dropdown-menu-lg-end">
-						<li><a class="dropdown-item" href="#"><$user.username></a></li>
-						<li><a class="dropdown-item" href="/user/logout">logout</a></li>
-					</ul>
-				</div>
-      </?>
-    </div>
-  </div>
-</nav>
-<div id="alert" class="position-absolute start-50 translate-middle-x">
-  <div class="alert alert-warning fade" role="alert">
-  </div>
-</div> 
-
 </header>
+</:>
 
+<:macro page>
 <div class="container">
-  <:body>
+<:body>
 </div>
-<script src="/static/main.bundle.js"></script>
-</body>
-</html>
 </:macro>
+
+<:sub script(:$src)>
+<script src="<$src>"></script>
+</:>
+
+<:sub footer>
+Footer
+</:>
+
+<:sub body-open>
+<body>
+</:>
+
+<:sub body-close>
+</body>
+</:>

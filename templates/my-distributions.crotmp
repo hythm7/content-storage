@@ -1,39 +1,53 @@
 <:use 'templates/common.crotmp'>
-<|page( :title( 'My Distributions' ), :active( 'my-distributions' ), :user( .user ) )>
+
+<&head( :title( 'Distributions' ) )>
+
+<&body-open>
+
+<&header( :active( 'my-distributions' ), :user( .user ) )>
+
+<|page>
   <div class="page-content">
     <h2>My Distributions</h2>
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">Name</th>
-					<th scope="col">Version</th>
-					<th scope="col">Auth</th>
-					<th scope="col">Api</th>
-					<th scope="col">Created</th>
-				</tr>
-			</thead>
-			<tbody>
-				<@dists : $dist>
-					<tr>
-						<td><$dist.name></td>
-						<td><$dist.version></td>
-						<td><$dist.auth></td>
-						<td><$dist.api></td>
-						<td><$dist.created></td>
-					</tr>
-				</@>
-			</tbody>
-		</table>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Version</th>
+          <th scope="col">Auth</th>
+          <th scope="col">Api</th>
+          <th scope="col">Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <@dists : $dist>
+          <tr>
+            <td><$dist.name></td>
+            <td><$dist.version></td>
+            <td><$dist.auth></td>
+            <td><$dist.api></td>
+            <td><$dist.created></td>
+          </tr>
+        </@>
+      </tbody>
+    </table>
   </div>
+  <#>
+  <?{ .user }>
+    <@dist : $dist>
+    <?{ $dist.userid == .user.id }>
+        <form action="/distribution/delete/<$dist.identity>" method="post">
+          <input class="btn btn-danger" type="submit" value="Delete">
+        </form>
+    </?>
+    </@>
+  </?>
+  </#>
 </|>
 
-<#>
-<?{ .user }>
-	<?{ $dist.userid == .user.id }>
-			<form action="/distribution/delete/<$dist.identity>" method="post">
-			  <input class="btn btn-danger" type="submit" value="Delete">
-			</form>
-	</?>
-</?>
-</#>
+<&footer>
+
+<&script( :src('/static/main.bundle.js') )>
+
+<&body-close>
 

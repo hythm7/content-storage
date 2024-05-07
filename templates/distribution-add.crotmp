@@ -1,106 +1,100 @@
 <:use 'templates/common.crotmp'>
-<|page( :title( 'New Dist' ), :active( 'addDistribution' ), :user( .user ) )>
+
+<&head( :title( 'Distributions' ) )>
+
+<&body-open>
+
+<&header( :active( 'distributionAdd' ), :user( .user ) )>
+
+<|page>
   <div class="page-content">
     <h2>Add Distribution</h2>
     <div id="drop-area" class="border rounded justify-content-center align-items-center">
       <div class="container py-4 px-3 mx-auto">
         <i class="bi bi-cloud-arrow-up-fill text-primary" style="font-size: 48px"></i>
         <form id="distribution-add-form" method="post" enctype="multipart/form-data">
-        <div class="mb-3">
-        <label for="distributions-archive-files" class="distributions-archive-files-label">Drag and drop your distribution here or click to select a file.</label>
-        <input type="file" id="distributions-archive-files" name="distributions-archive-files" multiple accept="application/json" class="form-control d-none" multiple/>
-        </div>
-        <button id="distributions-add" class="btn btn-outline-secondary form-control disabled" type="submit">Add</button>
-    </form>
+          <div class="mb-3">
+            <label for="distributions-archive-files" class="distributions-archive-files-label">Drag and drop your distribution here or click to select a file.</label>
+            <input type="file" id="distributions-archive-files" name="distributions-archive-files" multiple accept="application/json" class="form-control d-none" multiple/>
+          </div>
+          <button id="distributions-add" class="btn btn-outline-secondary form-control disabled" type="submit">Add</button>
+        </form>
       </div>
     </div>
     <div id="distributions-builds">
-<table id='distributions-builds-table' class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Status</th>
-      <th scope="col">Filename</th>
-      <th scope="col">Name</th>
-      <th scope="col">Versions</th>
-      <th scope="col">Auth</th>
-      <th scope="col">Api</th>
-      <th scope="col">Identity</th>
-      <th scope="col">Started</th>
-      <th scope="col">Completed</th>
-      <th scope="col">Userid</th>
-    </tr>
-  </thead>
-  <tbody>
-	<@builds : $build>
-	  <tr data-bs-toggle="modal" data-bs-target="#buildModal" data-build-status="<$build.status>" data-build-id="<$build.id>">
-			<td>1</td>
-			<td>
-        <?{ $build.status == 3}>
-        unknown
-        </?>
-        <!?{ $build.status == 3}>
-          <div class="spinner-grow text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </?>
-        <!?{ $build.status == 1}>
-          error
-        </?>
-        <!?{ $build.status == 0}>
-          success
-        </?>
-      </td>
-			<td><$build.filename></td>
-			<td><$build.name></td>
-			<td><$build.version></td>
-			<td><$build.auth></td>
-			<td><$build.api></td>
-			<td><$build.identity></td>
-			<td><$build.started></td>
-			<td><$build.completed></td>
-			<td><$build.userid></td>
-	  </tr>
-	</@>
+      <table id='distributions-builds-table' class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Status</th>
+            <th scope="col">Filename</th>
+            <th scope="col">Name</th>
+            <th scope="col">Versions</th>
+            <th scope="col">Auth</th>
+            <th scope="col">Api</th>
+            <th scope="col">Identity</th>
+            <th scope="col">Started</th>
+            <th scope="col">Completed</th>
+            <th scope="col">Userid</th>
+          </tr>
+        </thead>
+        <tbody>
+          <@builds : $build>
+          <tr data-bs-toggle="modal" data-bs-target="#buildModal" data-build-status="<$build.status>" data-build-id="<$build.id>">
+            <td>1</td>
+            <td>
+              <?{ $build.status == 3}>
+              unknown
+              </?>
+              <!?{ $build.status == 3}>
+                <div class="spinner-grow text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
 
-  </tbody>
-</table>
+                </div>
+              </?>
+              <!?{ $build.status == 1}>
+                error
+              </?>
+              <!?{ $build.status == 0}>
+                success
+              </?>
+            </td>
+            <td><$build.filename></td>
+            <td><$build.name></td>
+            <td><$build.version></td>
+            <td><$build.auth></td>
+            <td><$build.api></td>
+            <td><$build.identity></td>
+            <td><$build.started></td>
+            <td><$build.completed></td>
+            <td><$build.userid></td>
+          </tr>
+          </@>
+        </tbody>
+      </table>
     </div>
-    <#>
-    <form id="distribution-add-form" method="post" enctype="multipart/form-data">
-      <div class="input-group">
-        <input type="file" name="distribution-file" class="form-control" aria-label="Upload">
-        <button class="btn btn-outline-secondary" type="submit">Add</button>
+    <!-- Modal -->
+    <div class="modal fade" id="buildModal" data-build-id="" tabindex="-1" aria-labelledby="buildModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="buildModalLabel">Modal title</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
-    </form>
-    <form method="post">
-      <div class="form-group">
-        <input type="text" class="form-control" id="name" required>
-      </div>
-      <div class="form-group">
-        <textarea class="form-control" id="dist"></textarea>
-      </div>
-      <div style="padding-top: 10px">
-        <input type="submit" value="Save" class="btn btn-primary" />
-      </div>
-    </form>
-    </#>
-		<!-- Modal -->
-		<div class="modal fade" id="buildModal" data-build-id="" tabindex="-1" aria-labelledby="buildModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-xl">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h1 class="modal-title fs-5" id="buildModalLabel">Modal title</h1>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
+    </div>
   </div>
-  <script src="/static/distribution-add.bundle.js"></script>
 </|>
+
+<&footer>
+
+<&script( :src('/static/distribution-add.bundle.js') )>
+<&script( :src('/static/main.bundle.js') )>
+
+<&body-close>
