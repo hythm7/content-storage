@@ -15,11 +15,8 @@ sub routes(DistributionsStorage $ds) is export {
 
     include distribution-routes( $ds );
 
-    get -> 'main.css' {
-      static 'static/main.css'
-    }
-    get -> 'main.js' {
-      static 'static/main.js'
-    }
+    get -> 'static', *@path {
+      static 'static', @path
+    } 
   }
 }

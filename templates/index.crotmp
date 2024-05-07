@@ -26,14 +26,3 @@
 		</table>
   </div>
 </|>
-
-<#>
-<?{ .user }>
-	<?{ $dist.userid == .user.id }>
-			<form action="/distribution/delete/<$dist.identity>" method="post">
-			  <input class="btn btn-danger" type="submit" value="Delete">
-			</form>
-	</?>
-</?>
-</#>
-
