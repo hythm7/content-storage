@@ -47,7 +47,7 @@ sub distribution-routes(DistributionsStorage $ds) is export {
         template 'distribution-add.crotmp', { :$user, :@builds };
       }
 
-      sub validate( $archive) { say $archive.filename ~ ' validated!' }
+      #sub validate( $archive) { say $archive.archive ~ ' validated!' }
 
       sub start-build( $archive) { sleep 4 }
 

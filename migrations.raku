@@ -45,7 +45,10 @@ migration 'Setup', {
 
     add-column 'status', integer(), :default(3), :!null;
 
-    add-column 'filename',  text(), :!null;
+    add-column 'archive',  text(), :!null;
+
+    add-column 'extract', integer(), :default(3), :!null;
+    add-column 'meta', integer(), :default(3), :!null;
 
     add-column 'name',     text();
     add-column 'version',  text();
@@ -54,10 +57,15 @@ migration 'Setup', {
 
     add-column 'identity', text();
 
-    add-column 'build',  text();
+    add-column 'stage', integer(), :default(3), :!null;
+    add-column 'build', integer(), :default(3), :!null;
+    add-column 'test', integer(), :default(3), :!null;
+
 
     add-column 'started', timestamp(), :default(now);
-    add-column 'completed', timestamp(), :default(now);
+    add-column 'completed', timestamp(), :default(Any);
+
+    add-column 'log',  text();
 
     add-column 'userid', integer(), :!null;
 

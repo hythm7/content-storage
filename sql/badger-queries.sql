@@ -20,10 +20,10 @@ INSERT
 INTO   distributions ( 'name', 'version', 'auth', 'api', 'identity', 'meta', 'userid' )
 VALUES       ( $name, $version, $auth, $api, $identity, $meta, $userid )
 
--- sub create-build(Str :$filename! --> $)
+-- sub create-build(Str :$archive! --> $)
 INSERT
-INTO   builds ( filename, userid )
-VALUES        ( $filename, 1  )
+INTO   builds ( archive, userid )
+VALUES        ( $archive, 1  )
 RETURNING id
 
 

@@ -47,9 +47,9 @@ method delete-dist(:$identity!) {
   delete-dist( $!pg, :$identity )
 }
 
-method create-build( Str:D :$filename! ) {
+method create-build( Str:D :$archive! ) {
 
-  my $build-id = create-build( $!pg, :$filename )
+  my $build-id = create-build( $!pg, :$archive )
 
 }
 

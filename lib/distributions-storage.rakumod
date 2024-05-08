@@ -23,9 +23,9 @@ method build-supply ( ) { $!event-source.out-supply }
 
 method add-distribution ( :$file! ) {
 
-my $filename = $file.filename;
+my $archive = $file.filename;
 
-my $id = $!db.create-build( :$filename );
+my $id = $!db.create-build( :$archive );
 
 my $type = $id.Str;
 
@@ -36,7 +36,7 @@ start {
 
     my $msg   = EventSource::Server::Event.new( data => to-json({ :23update, :2status } ) );
 
-    my $event = EventSource::Server::Event.new( :$type, data => to-json({ :$filename, :$type } ) );
+    my $event = EventSource::Server::Event.new( :$type, data => to-json({ :$archive, :$type } ) );
 
     $!supplier.emit($msg);
     $!supplier.emit($event)
