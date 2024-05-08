@@ -17,7 +17,7 @@
             <label for="distributions-archive-files" class="distributions-archive-files-label">Drag and drop your distribution here or click to select a file.</label>
             <input type="file" id="distributions-archive-files" name="distributions-archive-files" multiple accept="application/json" class="form-control d-none" multiple/>
           </div>
-          <button id="distributions-add" class="btn btn-outline-secondary form-control disabled" type="submit">Add</button>
+          <button id="distributions-add" class="btn btn-outline-secondary form-control w-50 disabled" type="submit">Add</button>
         </form>
       </div>
     </div>
@@ -35,7 +35,6 @@
             <th scope="col">Versions</th>
             <th scope="col">Auth</th>
             <th scope="col">Api</th>
-            <th scope="col">Identity</th>
             <th scope="col">Stage</th>
             <th scope="col">Build</th>
             <th scope="col">Test</th>
@@ -56,7 +55,6 @@
             <td><$build.version></td>
             <td><$build.auth></td>
             <td><$build.api></td>
-            <td><$build.identity></td>
             <td><&status( $build.stage )></td>
             <td><&status( $build.build )></td>
             <td><&status( $build.test )></td>
