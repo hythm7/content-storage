@@ -23,6 +23,7 @@
     </div>
     <div id="distributions-builds">
       <table id='distributions-builds-table' class="table">
+        <caption>Builds</caption>
         <thead>
           <tr class="table-primary">
             <th scope="col">#</th>
