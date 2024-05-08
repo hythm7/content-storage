@@ -6,6 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="/static/main.css">
+  <link rel="icon" type="image/x-icon" href="/static/images/favicon/favicon.ico">
   <title><$title></title>
 </head>
 </:>
@@ -14,7 +15,10 @@
 <header>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/">(logo) Raku Distributions Storage</a>
+    <a class="navbar-brand" href="/">
+      <img src="/static/images/logo/camelia-logo.png" alt="Logo" width="42" height="42">
+      Distributions Storage
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -22,7 +26,6 @@
       <?{ $user }>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <&nav-item('my-distributions', 'My Distributions', '/my-distributions')>
-        <&nav-item('distributionAdd', 'Add Distribution', '/distribution/add')>
       </ul>
       </?>
       <div class="input-group">
@@ -31,13 +34,10 @@
           <i class="bi-x"></i>
         </span>
       </div>
-      <!{ $user }>
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <&nav-item('register', 'Register', '/user/register')>
-        <&nav-item('login', 'Log In', '/user/login')>
-      </ul>
-      </!>
       <?{ $user }>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <&nav-item('distributionAdd', 'Add Distribution', '/distribution/add')>
+      </ul>
       <div class="dropdown">
         <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="bi-person"></i>
@@ -48,6 +48,13 @@
         </ul>
       </div>
       </?>
+      <!>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <&nav-item('login', 'Login', '/user/login')>
+        <&nav-item('register', 'Register', '/user/register')>
+      </ul>
+      </!>
+
     </div>
   </div>
 </nav>
@@ -61,7 +68,7 @@
   <li class="nav-item text-nowrap <?{ $active eq $id }> active</?>">
     <a class="nav-link" aria-current="page" href="<$link>">
     <$title>
-    <?{ $active eq $id }> <span class="sr-only">(current)</span> </?>
+    <?{ $active eq $id }> <span class="visually-hidden">(current)</span> </?>
     </a>
   </li>
 </:>
