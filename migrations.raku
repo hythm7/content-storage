@@ -47,7 +47,9 @@ migration 'Setup', {
 
     add-column 'archive',  text(), :!null;
 
+    add-column 'upload',  integer(), :default(3), :!null;
     add-column 'extract', integer(), :default(3), :!null;
+
     add-column 'meta', integer(), :default(3), :!null;
 
     add-column 'name',     text();
@@ -59,11 +61,11 @@ migration 'Setup', {
 
     add-column 'stage', integer(), :default(3), :!null;
     add-column 'build', integer(), :default(3), :!null;
-    add-column 'test', integer(), :default(3), :!null;
+    add-column 'test', integer(),  :default(3), :!null;
 
 
-    add-column 'started', timestamp(), :default(now);
-    add-column 'completed', timestamp(), :default(Any);
+    add-column 'started',    timestamp(), :default(now);
+    add-column 'completed', timestamp(),  :default(Any);
 
     add-column 'log',  text();
 

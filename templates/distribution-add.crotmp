@@ -12,13 +12,17 @@
     <div id="drop-area" class="border rounded justify-content-center align-items-center">
       <div class="container py-4 px-3 mx-auto">
         <i class="bi bi-cloud-arrow-up-fill text-primary" style="font-size: 48px"></i>
+        <#>
         <form id="distribution-add-form" method="post" enctype="multipart/form-data">
+        </#>
           <div class="mb-3">
-            <label for="distributions-archive-files" class="distributions-archive-files-label">Drag and drop your distribution here or click to select a file.</label>
-            <input type="file" id="distributions-archive-files" name="distributions-archive-files" multiple accept="application/json" class="form-control d-none" multiple/>
+            <label for="file-input" class="form-label">Drag and drop your distribution here or click to select a file.</label>
+            <input type="file" id="file-input" name="file-input" multiple accept="application/json" class="form-control d-none" multiple/>
           </div>
-          <button id="distributions-add" class="btn btn-outline-secondary form-control w-50 disabled" type="submit">Add</button>
+          <button id="submit-button" class="btn btn-outline-secondary form-control w-50 disabled">Add</button>
+        <#>
         </form>
+        </#>
       </div>
     </div>
     <div id="distributions-builds">
@@ -30,6 +34,7 @@
             <th scope="col">Status</th>
             <th scope="col">Userid</th>
             <th scope="col">Archive</th>
+            <th scope="col">Upload</th>
             <th scope="col">Extract</th>
             <th scope="col">Meta</th>
             <th scope="col">Name</th>
@@ -50,6 +55,7 @@
             <td><&status( $build.status )></td>
             <td><$build.userid></td>
             <td><$build.archive></td>
+            <td><&status( $build.upload )></td>
             <td><&status( $build.extract )></td>
             <td><&status( $build.meta )></td>
             <td><$build.name></td>

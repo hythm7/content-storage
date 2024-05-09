@@ -9,7 +9,7 @@ use distributions-storage-routes-user;
 use distributions-storage-session;
 
 class DistributionUploadForm does Cro::WebApp::Form {
-  has $.distributions-archive-files is file is required;
+  has $files is file is required;
 }
 
 
@@ -52,30 +52,13 @@ sub distribution-routes(DistributionsStorage $ds) is export {
       sub start-build( $archive) { sleep 4 }
 
       post -> LoggedIn $session, 'add' {
-        form-data -> DistributionUploadForm $form {
+        #form-data -> DistributionUploadForm $form {
+        request-body -> (:$file-input) {
 
-          my @files = $form.distributions-archive-files;
+
+          $file-input.map( -> $file { $ds.add-distribution( :$file ) } );
 
           #content 'application/json', '[' ~ @files.map({ .body-text }).join(',') ~ ']';
-
-          @files.map( -> $file { $ds.add-distribution( :$file ) } );
-
-
-          #content 'application/json', @json;
-
-          
-
-          #@files.map( -> $file {
-          #  my $content  =  $file.body-text;
-
-          #  $ds.add-distribution( :$content, user => $session.user.id);
-
-          #} );
-
-          
-
-          #redirect :see-other, '/distribution/add';
-          redirect :see-other, '/';
 
         }
       }
