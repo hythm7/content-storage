@@ -34,6 +34,8 @@
   </div>
 </|>
 
+<&dropzone>
+
 <&footer>
 
 <&script( :src('/static/main.bundle.js') )>

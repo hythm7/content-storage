@@ -23,11 +23,12 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarToggler">
-      <?{ $user }>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <?{ $user }>
         <&nav-item('my-distributions', 'My Distributions', '/my-distributions')>
-      </ul>
       </?>
+        <&nav-item('builds', 'Builds', '/build')>
+      </ul>
       <div class="input-group">
         <input id="distribution-search-input" class="form-control form-control-dark" type="text" placeholder="⌕" arla-label="Search">
         <span class="input-group-text icon-link icon-link-hover" style="--bs-1con-link-transform: scale(1.2);" type="button" oncl1ck="">
@@ -35,9 +36,12 @@
         </span>
       </div>
       <?{ $user }>
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <&nav-item('distributionAdd', 'Add Distribution', '/distribution/add')>
-      </ul>
+      <div>
+        <button class="btn text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#dropzoneModal" aria-expanded="false">
+          Add Distribution
+          <#><i class="bi-person"></i></#>
+        </button>
+      </div>
       <div class="dropdown">
         <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="bi-person"></i>
@@ -75,18 +79,42 @@
 </header>
 </:>
 
+<:sub dropzone>
+<div class="modal fade" id="dropzoneModal" tabindex="-1" aria-labelledby="dropzoneModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="dropzoneModalLabel">Dropzone</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="drop-area" class="border rounded justify-content-center align-items-center">
+          <div class="container py-4 px-3 mx-auto">
+            <i class="bi bi-cloud-arrow-up-fill text-primary" style="font-size: 48px"></i>
+              <div class="mb-3">
+                <label for="file-input" class="form-label">Drag and drop your distribution here or click to select a file.</label>
+                <input type="file" id="file-input" name="file-input" multiple accept="application/json" class="form-control d-none" multiple/>
+              </div>
+              <button id="submit-button" class="btn btn-outline-secondary form-control w-50 disabled">Add</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</:>
+
 <:macro page>
 <div class="container">
 <:body>
 </div>
 </:macro>
 
-<:sub script(:$src)>
-<script src="<$src>"></script>
-</:>
-
 <:sub footer>
-<div class="container">
+<div class="container-fluid mt-5">
   <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
     <ul class="nav col-md-4">
       <li class="nav-item"><a href="/" class="nav-link px-2 text-body-secondary">Home</a></li>
@@ -109,3 +137,8 @@
 <:sub body-close>
 </body>
 </:>
+
+<:sub script(:$src)>
+<script src="<$src>"></script>
+</:>
+

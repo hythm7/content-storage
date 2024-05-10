@@ -8,26 +8,9 @@
 
 <|page>
   <div class="page-content">
-    <h2>Add Distribution</h2>
-    <div id="drop-area" class="border rounded justify-content-center align-items-center">
-      <div class="container py-4 px-3 mx-auto">
-        <i class="bi bi-cloud-arrow-up-fill text-primary" style="font-size: 48px"></i>
-        <#>
-        <form id="distribution-add-form" method="post" enctype="multipart/form-data">
-        </#>
-          <div class="mb-3">
-            <label for="file-input" class="form-label">Drag and drop your distribution here or click to select a file.</label>
-            <input type="file" id="file-input" name="file-input" multiple accept="application/json" class="form-control d-none" multiple/>
-          </div>
-          <button id="submit-button" class="btn btn-outline-secondary form-control w-50 disabled">Add</button>
-        <#>
-        </form>
-        </#>
-      </div>
-    </div>
+    <h2>Builds</h2>
     <div id="distributions-builds">
       <table id='distributions-builds-table' class="table">
-        <caption>Builds</caption>
         <thead>
           <tr class="table-primary">
             <th scope="col">Status</th>
@@ -49,7 +32,7 @@
         </thead>
         <tbody>
           <@builds : $build>
-          <tr data-bs-toggle="modal" data-bs-target="#buildModal" data-build-id="<$build.id>">
+          <tr data-bs-toggle="modal" data-bs-target="#buildLogModal" data-build-id="<$build.id>">
             <td><&status( $build.status )></td>
             <td><$build.username></td>
             <td><$build.filename></td>
@@ -71,11 +54,11 @@
       </table>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="buildModal" data-build-id="" tabindex="-1" aria-labelledby="buildModalLabel" aria-hidden="true">
+    <div class="modal fade" id="buildLogModal" data-build-id="" tabindex="-1" aria-labelledby="buildLogModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="buildModalLabel">Modal title</h1>
+            <h1 class="modal-title fs-5" id="buildLogModalLabel">Modal title</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -89,9 +72,11 @@
   </div>
 </|>
 
+<&dropzone>
+
 <&footer>
 
-<&script( :src('/static/distribution-add.bundle.js') )>
+<&script( :src('/static/build.bundle.js') )>
 <&script( :src('/static/main.bundle.js') )>
 
 <&body-close>

@@ -7,8 +7,8 @@ const miniCssExtractPlugin = require('mini-css-extract-plugin')
 module.exports = {
 	mode: 'development',
 	entry: {
-		'main':             './frontend/js/main.js',
-		'distribution-add': './frontend/js/distribution-add.js'
+		'main':  './frontend/js/main.js',
+		'build': './frontend/js/build.js'
 	},
 	output: {
 		filename: '[name].bundle.js',

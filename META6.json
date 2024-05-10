@@ -28,6 +28,7 @@
     "distributions-storage-session": "lib/distributions-storage/session.rakumod",
     "distributions-storage-routes": "lib/distributions-storage/routes.rakumod",
     "distributions-storage-routes-user": "lib/distributions-storage/routes/user.rakumod",
+    "distributions-storage-routes-build": "lib/distributions-storage/routes/build.rakumod",
     "distributions-storage-routes-distribution": "lib/distributions-storage/routes/distribution.rakumod"
   },
   "resources": [
