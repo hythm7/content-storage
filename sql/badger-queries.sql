@@ -20,19 +20,19 @@ INSERT
 INTO   distributions ( 'name', 'version', 'auth', 'api', 'identity', 'meta', 'userid' )
 VALUES       ( $name, $version, $auth, $api, $identity, $meta, $userid )
 
--- sub create-build(Str :$archive! --> $)
+-- sub insert-build(Int :$userid!, Str :$filename!, Str :$status! --> $)
 INSERT
-INTO   builds ( archive, userid )
-VALUES        ( $archive, 1  )
+INTO   builds (  status,  userid,  filename )
+VALUES        ( $status, $userid, $filename )
 RETURNING id
 
 
 -- sub select-builds(--> @)
-SELECT * FROM builds
+SELECT b.*, ( SELECT username FROM users WHERE id = b.userid ) FROM builds b
 
 -- sub select-build(Int :$id! --> %)
-SELECT * FROM builds
-WHERE id = $id
+SELECT b.*, ( SELECT username FROM users WHERE id = b.userid ) FROM builds b
+WHERE b.id = $id
 
 -- sub insert-into-provides(@provides --> +)
 INSERT

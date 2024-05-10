@@ -47,19 +47,19 @@ method delete-dist(:$identity!) {
   delete-dist( $!pg, :$identity )
 }
 
-method create-build( Str:D :$archive! ) {
+method new-build( Int:D :$userid, Str:D :$filename!, :$status! ) {
 
-  my $build-id = create-build( $!pg, :$archive )
+  my $build-id = insert-build( $!pg, :$userid, :$filename, :$status )
 
 }
 
-method select-builds(  ) {
+method get-builds(  ) {
 
   select-builds( $!pg )
 
 }
 
-method select-build( Int:D :$id! ) {
+method get-build( Int:D :$id! ) {
 
   select-build( $!pg, :$id )
 

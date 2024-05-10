@@ -21,39 +21,48 @@ has DistributionsStorage::Database $!db handles <
 
 method build-supply ( ) { $!event-source.out-supply }
 
-method add-distribution ( :$file! ) {
+my enum Target    <BUILD DISTRIBUTION>;
+my enum Operation <ADD UPDATE DELETE>;
+my enum Status    <SUCCESS ERROR UNKNOWN RUNNING>;
 
-my $archive = $file.filename;
+method add-distribution ( :$user, :$archive! ) {
 
-my $id = $!db.create-build( :$archive );
+  my $filename = $archive.filename;
 
-my $type = $id.Str;
+  my $id = $!db.new-build( :$filename, userid => $user.id, status => 'UNKNOWN' );
+
+  my %build = $!db.get-build( :$id );
+
+  my %data = %( :target<BUILD>, :operation<ADD>, :%build );
+
+  my $message = EventSource::Server::Event.new( data => to-json %data );
+
+  $!supplier.emit( $message );
 
 
-start {
-  eager $file.body-text.lines.map( -> $line {
-    sleep((^4).rand);
+  my $type = $id.Str;
 
-    my $msg   = EventSource::Server::Event.new( data => to-json({ :23update, :2status } ) );
+  start {
 
-    my $event = EventSource::Server::Event.new( :$type, data => to-json({ :$archive, :$type } ) );
+    eager $archive.body-text.lines.map( -> $line {
+      sleep((^4).rand);
 
-    $!supplier.emit($msg);
-    $!supplier.emit($event)
+      my $event = EventSource::Server::Event.new( :$type, data => to-json({ :$filename, :$type } ) );
 
-  } );
+      $!supplier.emit($event)
 
-}
+    } );
 
-my %data = $!db.select-build( :$id );
+  }
 
-%data;
+
+  %data;
 
 }
 
 method get-builds ( ) {
 
-  $!db.select-builds;
+  $!db.get-builds;
 }
 
 submethod BUILD( DB::Pg :$pg! ) {

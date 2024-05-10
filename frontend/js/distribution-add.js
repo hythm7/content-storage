@@ -1,26 +1,31 @@
 document.addEventListener('DOMContentLoaded', function () {
 
+  const buildModal = document.getElementById('buildModal')
+  const buildModalBody = buildModal.querySelector('.modal-body')
+  const evtSource = new EventSource('/distribution/build');
+
+
   var dropArea = document.getElementById('drop-area');
   var fileInput = document.getElementById('file-input');
 
-	['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (event) {
-		dropArea.addEventListener(event, function (e) {
-			e.preventDefault();
-			e.stopPropagation();
-		});
-	});
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (event) {
+    dropArea.addEventListener(event, function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  });
 
-	['dragenter', 'dragover'].forEach(function (event) {
-		dropArea.addEventListener(event, function () {
-			dropArea.classList.add('highlight');
-		});
-	});
+  ['dragenter', 'dragover'].forEach(function (event) {
+    dropArea.addEventListener(event, function () {
+      dropArea.classList.add('highlight');
+    });
+  });
 
 
   ['dragleave', 'drop'].forEach(function (event) {
-		dropArea.addEventListener(event, function () {
-			dropArea.classList.remove('highlight');
-		});
+    dropArea.addEventListener(event, function () {
+      dropArea.classList.remove('highlight');
+    });
   });
 
 // Handle dropped files
@@ -55,92 +60,122 @@ document.addEventListener('DOMContentLoaded', function () {
       method: 'POST',
       body: formData
     })
-      //.then(response => response.json()) // Assuming the server responds with JSON
+      .then(response => response.json()) // Assuming the server responds with JSON
       .then(data => {
-        console.log('Upload successful:', data);
-				window.location.reload();
+        console.log('Processing:', data);
+        //data.forEach(addBuild);
+        //window.location.reload();
         // Handle the server response as needed
       })
       .catch(error => {
-        console.error('Error uploading files:', error);
+        console.error('Error Processing:', error);
         // Handle errors
       });
   });
 
-	fileInput.addEventListener('change', function (event) {
+  fileInput.addEventListener('change', function (event) {
 
-		var files = fileInput.files;
-		showDropzoneFiles(files)
+    var files = fileInput.files;
+    showDropzoneFiles(files)
 
-	});
+  });
 
-	function showDropzoneFiles( files ) {
+  function showDropzoneFiles( files ) {
 
     var fileInputLabel = document.querySelector('.form-label');
 
-		if (files.length > 0) {
+    if (files.length > 0) {
 
-			files = [...files];
-			fileInputLabel.innerText = '';
-			files.forEach((file) => {
-				fileInputLabel.innerText += file.name + "\n";
-			});
-			submitButton.classList.remove('disabled');
-		} else {
+      files = [...files];
+      fileInputLabel.innerText = '';
+      files.forEach((file) => {
+        fileInputLabel.innerText += file.name + "\n";
+      });
+      submitButton.classList.remove('disabled');
+    } else {
 
-			fileInputLabel.innerText = 'Drag and drop your distribution here or click to select a file.';
-			submitButton.classList.add('disabled');
+      fileInputLabel.innerText = 'Drag and drop your distribution here or click to select a file.';
+      submitButton.classList.add('disabled');
 
-		}
-
-
-	}
+    }
 
 
-	const evtSource = new EventSource('/distribution/build');
+  }
 
-	evtSource.onerror = (err) => {
-		console.error("EventSource failed:", err);
-	};
+  var buildAdd = function (data) {
+
+    var buildTable = document.getElementById('distributions-builds-table');
+    var tableBody  = buildTable.getElementsByTagName('tbody')[0];
+
+    var bodyHTML = tableBody.innerHTML;
+
+    var rowHTML  = '<tr data-bs-toggle="modal" data-bs-target="#buildModal" data-build-id="' + data.id + '">';
+
+    rowHTML += '<td>' + data.status   + '</td>';
+    rowHTML += '<td>' + data.username + '</td>';
+    rowHTML += '<td>' + data.filename + '</td>';
+    rowHTML += '</tr>';
 
 
-	evtSource.addEventListener('message',  (event) => {
+    tableBody.innerHTML = rowHTML + bodyHTML;
 
-		console.log(`message: ${event.data}`);
-	});
+  }
 
-	const buildModal = document.getElementById('buildModal')
-	const buildModalBody = buildModal.querySelector('.modal-body')
 
-	var buildEvent = function (event) {
 
-			const newElement = document.createElement("li");
 
-			newElement.textContent = event.data;
-			buildModalBody.appendChild(newElement);
+  evtSource.onerror = (err) => {
+    console.error("EventSource failed:", err);
+  };
 
-	}
 
-	buildModal.addEventListener('show.bs.modal', event => {
+  evtSource.addEventListener('message',  (event) => {
 
-		var build = event.relatedTarget;
-		var buildStatus = build.getAttribute('data-build-status')
-		var buildId = build.getAttribute('data-build-id')
+    var message = JSON.parse(event.data);
 
-		buildModal.setAttribute('data-build-id', buildId)
+    if ( message.target == 'BUILD' ) {
 
-		evtSource.addEventListener(buildId, buildEvent, false)
+      if ( message.operation == 'ADD' ) {
+        console.log('BUILD ADD');
 
-	})
+        buildAdd( message.build );
 
-	buildModal.addEventListener('hidden.bs.modal', event => {
+      }
 
-		var buildId = buildModal.getAttribute('data-build-id')
+    }
+  });
 
-		evtSource.removeEventListener(buildId, buildEvent, false)
+  var buildEvent = function (event) {
 
-		var buildModalBody = buildModal.querySelector('.modal-body')
-		buildModalBody.innerHTML = '';
+      const newElement = document.createElement("li");
 
-	})
+      newElement.textContent = event.data;
+      buildModalBody.appendChild(newElement);
+
+  }
+
+  buildModal.addEventListener('show.bs.modal', event => {
+
+    var build = event.relatedTarget;
+
+    var buildId = build.getAttribute('data-build-id')
+
+    //buildModal.setAttribute('data-build-id', buildId)
+
+    evtSource.addEventListener(buildId, buildEvent, false)
+
+  })
+
+  buildModal.addEventListener('hidden.bs.modal', event => {
+
+    var buildId = buildModal.getAttribute('data-build-id')
+
+    evtSource.removeEventListener(buildId, buildEvent, false)
+
+    var buildModalBody = buildModal.querySelector('.modal-body')
+    buildModalBody.innerHTML = '';
+
+  })
+
+
 });

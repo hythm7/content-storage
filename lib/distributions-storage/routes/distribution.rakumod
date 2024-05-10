@@ -52,16 +52,19 @@ sub distribution-routes(DistributionsStorage $ds) is export {
       sub start-build( $archive) { sleep 4 }
 
       post -> LoggedIn $session, 'add' {
-        #form-data -> DistributionUploadForm $form {
+
+        my $user =  $session.user;
+
         request-body -> (:$file-input) {
 
+          my @data = $file-input.map( -> $archive { $ds.add-distribution( :$user, :$archive ) } );
 
-          $file-input.map( -> $file { $ds.add-distribution( :$file ) } );
-
-          #content 'application/json', '[' ~ @files.map({ .body-text }).join(',') ~ ']';
+          content 'application/json', @data;
 
         }
+
       }
+
 
       get -> DistributionsStorage::Session $session, 'build' {
         content 'text/event-stream', $ds.build-supply;
