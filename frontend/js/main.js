@@ -48,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function () {
   submitButton.addEventListener('click', function () {
     // Get the selected files
     var files = fileInput.files;
-    console.log(files);
 
     // Create FormData object and append files to it
     var formData = new FormData();
@@ -84,13 +83,21 @@ document.addEventListener('DOMContentLoaded', function () {
   function showDropzoneFiles( files ) {
 
     var fileInputLabel = document.querySelector('.form-label');
+    var progress = dropArea.querySelector('#progress');
 
     if (files.length > 0) {
 
       files = [...files];
-      fileInputLabel.innerText = '';
+      progress.innerHTML = '';
+
       files.forEach((file) => {
-        fileInputLabel.innerText += file.name + "\n";
+			  var max = file.size;
+        var fileProgressDiv = '<div class="progress-bar overflow-visible text-dark" style="width: 0%">' + file.name + '</div>';
+        var fileProgress = '<div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="' + max + '">'
+        fileProgress += fileProgressDiv + '</div>';
+        
+        progress.innerHTML += fileProgress;
+
       });
       submitButton.classList.remove('disabled');
     } else {
@@ -100,5 +107,74 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
   }
+
+//  function testUpload( file ) {
+//  const filename = file.name;
+//  const url = "/build";
+//
+//  const progress = document.querySelector("progress-bar");
+//  const data = new FormData();
+//
+//  const fr = new FileReader();
+//  fr.onload = () => {
+//    data.append("file-input", fr.result);
+//    const request = new Request(url, {
+//      method: "POST",
+//      body: data,
+//      cache: "no-store"
+//    });
+//
+//    const upload = settings => fetch(settings);
+//
+//    const uploadProgress = new ReadableStream({
+//      start(controller) {
+//          console.log("starting upload, request.bodyUsed:", request.bodyUsed);
+//          controller.enqueue(request.bodyUsed);
+//        },
+//        pull(controller) {
+//          if (request.bodyUsed) {
+//            controller.close();
+//          }
+//          controller.enqueue(request.bodyUsed);
+//          console.log("pull, request.bodyUsed:", request.bodyUsed);
+//        },
+//        cancel(reason) {
+//          console.log(reason);
+//        }
+//    });
+//
+//    const [fileUpload, reader] = [
+//      upload(request).catch(e => {
+//        reader.cancel();
+//        console.log(e);
+//        throw e
+//      }), uploadProgress.getReader()
+//    ];
+//
+//    const processUploadRequest = ({value, done}) => {
+//      console.log("value:", value);
+//      if (value || done) {
+//        console.log("upload complete, request.bodyUsed:", request.bodyUsed);
+//        progress.value = progress.max;
+//        return reader.closed.then(() => fileUpload);
+//      };
+//      console.log("upload progress:", value);
+//      if (progress.value < file.size) {
+//        progress.value += 1;
+//      }
+//      return reader.read().then(result => processUploadRequest(result));
+//    };
+//
+//    reader.read()
+//      .then(({value, done}) => processUploadRequest({value, done}))
+//      .then(response => response.text()).then(text => {
+//        console.log("response:", text);
+//        progress.value = progress.max;
+//        input.value = "";
+//      })
+//      .catch(err => console.log("upload error:", err));
+//  };
+//  fr.readAsDataURL(file);
+//  }
 
 });
