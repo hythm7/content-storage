@@ -1,3 +1,5 @@
+use File::Temp;
+use Libarchive::Simple;
 use EventSource::Server;
 
 use DB::Pg;
@@ -43,15 +45,20 @@ method add-distribution ( :$user, :$archive! ) {
   my $type = $id.Str;
 
   start {
+  
+    my $workdir = tempdir;
 
-    eager $archive.body-text.lines.map( -> $line {
-      sleep((^4).rand);
+    .extract for archive-read( $archive.body-blob, destpath => $workdir );
 
-      my $event = EventSource::Server::Event.new( :$type, data => to-json({ :$filename, :$type } ) );
 
-      $!supplier.emit($event)
+    #eager $archive.body-text.lines.map( -> $line {
+    #  sleep((^4).rand);
 
-    } );
+    #  my $event = EventSource::Server::Event.new( :$type, data => to-json({ :$filename, :$type } ) );
+
+    #  $!supplier.emit($event)
+
+    #} );
 
   }
 

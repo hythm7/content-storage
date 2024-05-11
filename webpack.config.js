@@ -11,11 +11,11 @@ module.exports = {
 		'build': './frontend/js/build.js'
 	},
 	output: {
-		filename: '[name].bundle.js',
+		filename: 'js/[name].bundle.js',
 		path: path.resolve(__dirname, 'static')
 	},
 	plugins: [
-		new miniCssExtractPlugin()
+		new miniCssExtractPlugin({ filename: "css/[name].css"  })
 	],
 	module: {
 		rules: [

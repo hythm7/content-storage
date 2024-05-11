@@ -76,8 +76,8 @@
 
 <&footer>
 
-<&script( :src('/static/build.bundle.js') )>
-<&script( :src('/static/main.bundle.js') )>
+<&script( :src('/static/js/build.bundle.js') )>
+<&script( :src('/static/js/main.bundle.js') )>
 
 <&body-close>
 

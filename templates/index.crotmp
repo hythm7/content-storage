@@ -38,6 +38,6 @@
 
 <&footer>
 
-<&script( :src('/static/main.bundle.js') )>
+<&script( :src('/static/js/main.bundle.js') )>
 
 <&body-close>

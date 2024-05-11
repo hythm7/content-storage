@@ -8,6 +8,9 @@
   "depends": [
     "DB::Pg",
     "Badger",
+    "File::Temp",
+    "Libarchive",
+    "Log::Dispatch",
     "Dev::ContainerizedService",
     "Cro::HTTP::Session::Pg",
     "Cro::HTTP",
