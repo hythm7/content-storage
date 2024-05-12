@@ -16,9 +16,6 @@
             <th scope="col">Status</th>
             <th scope="col">User</th>
             <th scope="col">Filename</th>
-            <th scope="col">Upload</th>
-            <th scope="col">Extract</th>
-            <th scope="col">Meta</th>
             <th scope="col">Name</th>
             <th scope="col">Versions</th>
             <th scope="col">Auth</th>
@@ -36,9 +33,6 @@
             <td><&status( $build.status )></td>
             <td><$build.username></td>
             <td><$build.filename></td>
-            <td><&status( $build.status-upload )></td>
-            <td><&status( $build.status-extract )></td>
-            <td><&status( $build.status-meta )></td>
             <td><$build.name></td>
             <td><$build.version></td>
             <td><$build.auth></td>

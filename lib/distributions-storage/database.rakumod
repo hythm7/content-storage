@@ -53,17 +53,17 @@ method new-build( Int:D :$userid, Str:D :$filename!, :$status! ) {
 
 }
 
-method get-builds(  ) {
+method get-builds(  ) { select-builds( $!pg ) }
 
-  select-builds( $!pg )
+method get-build( Int:D :$id! ) { select-build( $!pg, :$id ) }
 
+method update-build-status( Int:D :$id!, Str:D :$status! ) {
+  update-build-status $!pg, :$id, :$status;
+}
+method update-build-status-extract( Int:D :$id!, Str:D :$status-extract! ) {
+  update-build-status-extract $!pg, :$id, :$status-extract;
 }
 
-method get-build( Int:D :$id! ) {
-
-  select-build( $!pg, :$id )
-
-}
 
 my sub add-distribution ( :$db!, :$meta!, :$userid! ) {
 

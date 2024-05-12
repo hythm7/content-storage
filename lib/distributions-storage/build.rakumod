@@ -6,6 +6,8 @@ use Log::Dispatch::TTY;
 use Log::Dispatch::Destination;
 use Log::Dispatch::Source;
 
+use EventSource::Server;
+
 unit class DistributionStorage::Build;
   also does Log::Dispatch::Source;
 
@@ -13,13 +15,15 @@ unit class DistributionStorage::Build;
 my class ServerSentEventsDestination {
   also does Log::Dispatch::Destination;
 
-  has $!id is built;
+  has Str      $!type           is built;
+  has Supplier $!event-supplier is built;
 
   method report(Log::Dispatch::Msg:D $message) {
 
-   say '-----SS-----';
-   say $message.msg;
-   say '------------';
+   dd $message;
+   my $event = EventSource::Server::Event.new( :$!type, data => $message.msg );
+
+   $!event-supplier.emit( $event );
 
   }
 
@@ -27,15 +31,16 @@ my class ServerSentEventsDestination {
 
 has IO::Path:D  $!work-directory is required;
 
-has Int:D  $!id is required;
+has Str:D  $!type is built is required ;
 
 
 has Log::Dispatch $!logger;
 
 has IO::Path $!log-file;
 
-
 method extract ( Blob:D :$archive! --> Bool:D ) {
+
+  self.log: 'Extracting';
 
   my $distribution = $!work-directory.add( 'distribution' ).Str;
 
@@ -47,6 +52,8 @@ method extract ( Blob:D :$archive! --> Bool:D ) {
 
 method meta ( IO::Path:D :$distribution! --> Bool:D ) {
 
+  self.log: 'META';
+
   return False unless $distribution.add( 'META6.json' ).e;
 
   True;
@@ -55,14 +62,14 @@ method meta ( IO::Path:D :$distribution! --> Bool:D ) {
 
 method logs ( --> Str ) { slurp $!log-file; }
    
-submethod BUILD( Int:D :$!id!, IO::Path:D :$!work-directory! ) {
+submethod BUILD( Str:D :$!type!, IO::Path:D :$!work-directory!, :$event-supplier! ) {
 
   $!logger = Log::Dispatch.new;
 
   $!log-file = $!work-directory.add: 'build.log';
 
   $!logger.add: Log::Dispatch::TTY,                       max-level => LOG-LEVEL::DEBUG;
-  $!logger.add: ServerSentEventsDestination.new( :$!id ), max-level => LOG-LEVEL::DEBUG;
+  $!logger.add: ServerSentEventsDestination.new( :$!type, :$event-supplier ), max-level => LOG-LEVEL::DEBUG;
   #$!logger.add: DatabaseDestination.new( :$id ),         max-level => LOG-LEVEL::DEBUG;
   $!logger.add: self;
 

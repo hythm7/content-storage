@@ -56,12 +56,6 @@ migration 'Setup', {
 
     add-column 'status', text(), :!null;
 
-    add-column 'status-upload',  text();
-    add-column 'status-extract', text();
-
-    add-column 'status-meta', text();
-
-
     add-column 'status-stage', text();
     add-column 'status-build', text();
     add-column 'status-test',  text();

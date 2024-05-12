@@ -36,7 +36,7 @@ method add-distribution ( :$user, :$archive! ) {
 
   my %build = $!db.get-build( :$id );
 
-  my %data = %( :target<BUILD>, :operation<ADD>, :%build );
+  my %data = %( :target<BUILD>, :operation<ADD>, ID => $id, :%build );
 
   my $message = EventSource::Server::Event.new( data => to-json %data );
 
@@ -50,9 +50,22 @@ method add-distribution ( :$user, :$archive! ) {
     my $work-directory = tempdir.IO;
 
 
-    my $build = DistributionStorage::Build.new( :$id, :$work-directory );
+    my $build = DistributionStorage::Build.new( :$type, :$work-directory, event-supplier => $!supplier );
 
-    $build.extract: archive => $archive.body-blob;
+    my $status = 'RUNNING';
+
+    $!db.update-build-status: :$id, :$status; 
+
+    my %data = %( :target<BUILD>, :operation<UPDATE>,ID => $id,  build => :$status );
+
+    my $message = EventSource::Server::Event.new( data => to-json %data );
+
+    $!supplier.emit( $message );
+
+
+
+    my $extract = $build.extract: archive => $archive.body-blob;
+
 
     $build.meta( distribution => $work-directory.add( 'distribution' ) );
 

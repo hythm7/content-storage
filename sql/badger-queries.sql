@@ -27,6 +27,17 @@ VALUES        ( $status, $userid, $filename )
 RETURNING id
 
 
+-- sub update-build-status(Int :$id!, Str :$status! --> +)
+UPDATE builds
+set "status" = $status
+WHERE id = $id
+
+-- sub update-build-status-extract(Int :$id!, Str :$status-extract! --> +)
+UPDATE builds
+set "status-extract" = $status-extract
+WHERE id = $id
+
+
 -- sub select-builds(--> @)
 SELECT b.*, ( SELECT username FROM users WHERE id = b.userid ) FROM builds b
 
@@ -115,4 +126,3 @@ SELECT meta
 
 -- sub everything( --> @)
 SELECT meta FROM distributions
-
