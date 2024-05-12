@@ -5,6 +5,7 @@ use EventSource::Server;
 use DB::Pg;
 
 use distributions-storage-database;
+use distributions-storage-build;
 
 unit class DistributionsStorage;
 
@@ -46,10 +47,14 @@ method add-distribution ( :$user, :$archive! ) {
 
   start {
   
-    my $workdir = tempdir;
+    my $work-directory = tempdir.IO;
 
-    .extract for archive-read( $archive.body-blob, destpath => $workdir );
 
+    my $build = DistributionStorage::Build.new( :$id, :$work-directory );
+
+    $build.extract: archive => $archive.body-blob;
+
+    $build.meta( distribution => $work-directory.add( 'distribution' ) );
 
     #eager $archive.body-text.lines.map( -> $line {
     #  sleep((^4).rand);
