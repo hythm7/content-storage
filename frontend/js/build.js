@@ -16,17 +16,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var rowHTML  = '<tr data-bs-toggle="modal" data-bs-target="#buildLogModal" data-build-id="' + id + '">';
 
-    rowHTML += '<td>' + data["status"]   + '</td>';
-    rowHTML += '<td>' + data["username"] + '</td>';
-    rowHTML += '<td>' + data["filename"] + '</td>';
-    rowHTML += '<td></td>';
-    rowHTML += '<td></td>';
-    rowHTML += '<td></td>';
-    rowHTML += '<td></td>';
-    rowHTML += '<td></td>';
-    rowHTML += '<td></td>';
-    rowHTML += '<td></td>';
-    rowHTML += '<td>' + data["started"] + '</td>';
+    rowHTML += '<td>' + data["status"]    + '</td>';
+    rowHTML += '<td>' + data["username"]  + '</td>';
+    rowHTML += '<td>' + data["filename"]  + '</td>';
+    rowHTML += '<td>' + data["meta"]      + '</td>';
+    rowHTML += '<td>' + data["name"]      + '</td>';
+    rowHTML += '<td>' + data["version"]   + '</td>';
+    rowHTML += '<td>' + data["auth"]      + '</td>';
+    rowHTML += '<td>' + data["api"]       + '</td>';
+    rowHTML += '<td>' + data["identity"]  + '</td>';
+    rowHTML += '<td>' + data["test"]      + '</td>';
     rowHTML += '<td></td>';
 
     rowHTML += '</tr>';
@@ -47,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       var td = tds[tableHeadThs.indexOf(key)];
 
-      td.innerText = data[key];
+      td.innerHTML = data[key];
 
     } );
 

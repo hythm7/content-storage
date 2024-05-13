@@ -47,9 +47,9 @@ method delete-dist(:$identity!) {
   delete-dist( $!pg, :$identity )
 }
 
-method new-build( Int:D :$userid, Str:D :$filename!, :$status! ) {
+method new-build( Int:D :$userid, Str:D :$filename! ) {
 
-  my $build-id = insert-build( $!pg, :$userid, :$filename, :$status )
+  my $build-id = insert-build( $!pg, :$userid, :$filename )
 
 }
 
@@ -60,8 +60,8 @@ method get-build( Int:D :$id! ) { select-build( $!pg, :$id ) }
 method update-build-status( Int:D :$id!, Str:D :$status! ) {
   update-build-status $!pg, :$id, :$status;
 }
-method update-build-status-extract( Int:D :$id!, Str:D :$status-extract! ) {
-  update-build-status-extract $!pg, :$id, :$status-extract;
+method update-build-test ( Int:D :$id!, Str:D :$test! ) {
+  update-build-test  $!pg, :$id, :$test ;
 }
 
 

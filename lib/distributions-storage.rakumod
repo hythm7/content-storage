@@ -26,15 +26,24 @@ method build-supply ( ) { $!event-source.out-supply }
 
 my enum Target    <BUILD DISTRIBUTION>;
 my enum Operation <ADD UPDATE DELETE>;
-my enum Status    <SUCCESS ERROR UNKNOWN RUNNING>;
+my enum Status    (
+  UNKNOWN   => '<i class="bi bi-exclamation-triangle text-warning"></i>',
+  ERROR     => '<i class="bi bi-x text-error"></i>',
+  SUCCESS   => '<i class="bi bi-check text-success"></i>',
+  RUNNING   => '<div class="spinner-grow spinner-grow-sm text-primary" role="status"><span class="visually-hidden">Loading...</span></div>',
+);
 
 method add-distribution ( :$user, :$archive! ) {
 
   my $filename = $archive.filename;
 
-  my $id = $!db.new-build( :$filename, userid => $user.id, status => 'UNKNOWN' );
+  my $id = $!db.new-build( :$filename, userid => $user.id, status => UNKNOWN.key );
 
   my %build = $!db.get-build( :$id );
+
+  %build<status meta name version auth api identity test> X= UNKNOWN.value;
+
+  dd %build;
 
   my %data = %( :target<BUILD>, :operation<ADD>, ID => $id, :%build );
 
@@ -52,11 +61,11 @@ method add-distribution ( :$user, :$archive! ) {
 
     my $build = DistributionStorage::Build.new( :$type, :$work-directory, event-supplier => $!supplier );
 
-    my $status = 'RUNNING';
+    my $status = RUNNING;
 
-    $!db.update-build-status: :$id, :$status; 
+    $!db.update-build-status: :$id, status => $status.key; 
 
-    my %data = %( :target<BUILD>, :operation<UPDATE>,ID => $id,  build => :$status );
+    my %data = %( :target<BUILD>, :operation<UPDATE>,ID => $id,  build => status => $status.value );
 
     my $message = EventSource::Server::Event.new( data => to-json %data );
 
@@ -93,4 +102,9 @@ method get-builds ( ) {
 submethod BUILD( DB::Pg :$pg! ) {
 
   $!db = DistributionsStorage::Database.new: :$pg;
+}
+
+my sub status( Str:D :$status! --> Str:D ) {
+
+  my %status
 }

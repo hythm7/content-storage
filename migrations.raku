@@ -26,12 +26,12 @@ migration 'Setup', {
 
     add-column 'identity', text(), :!null, :unique;
 
-    add-column 'name',     text(), :!null;
-    add-column 'version',  text(), :!null;
-    add-column 'auth',     text(), :!null;
-    add-column 'api',      text();
+    add-column 'meta',    text(), :!null;
+    add-column 'name',    text(), :!null;
+    add-column 'version', text(), :!null;
+    add-column 'auth',    text(), :!null;
+    add-column 'api',     text();
 
-    add-column 'meta', text(), :!null;
 
     add-column 'created', timestamp(), :default(now), :!null;
 
@@ -43,10 +43,13 @@ migration 'Setup', {
 
     add-column 'id', integer(), :increments, :primary;
 
-    add-column 'userid', integer(), :!null;
+    add-column 'status', text();
 
-    add-column 'filename',  text(), :!null;
+    add-column 'userid',   integer(), :!null;
+    add-column 'filename', text(),    :!null;
 
+
+    add-column 'meta',     text();
     add-column 'name',     text();
     add-column 'version',  text();
     add-column 'auth',     text();
@@ -54,15 +57,11 @@ migration 'Setup', {
 
     add-column 'identity', text();
 
-    add-column 'status', text(), :!null;
 
-    add-column 'status-stage', text();
-    add-column 'status-build', text();
-    add-column 'status-test',  text();
+    add-column 'test',  text();
 
-
-    add-column 'started',    timestamp(), :default(now);
-    add-column 'completed', timestamp(),  :default(Any);
+    add-column 'started',   timestamp(), :default(Any);
+    add-column 'completed', timestamp(), :default(Any);
 
     add-column 'log',  text();
 

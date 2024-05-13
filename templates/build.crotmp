@@ -16,12 +16,12 @@
             <th scope="col">Status</th>
             <th scope="col">User</th>
             <th scope="col">Filename</th>
+            <th scope="col">Meta</th>
             <th scope="col">Name</th>
-            <th scope="col">Versions</th>
+            <th scope="col">Version</th>
             <th scope="col">Auth</th>
             <th scope="col">Api</th>
-            <th scope="col">Stage</th>
-            <th scope="col">Build</th>
+            <th scope="col">Identity</th>
             <th scope="col">Test</th>
             <th scope="col">Started</th>
             <th scope="col">Completed</th>
@@ -33,13 +33,13 @@
             <td><&status( $build.status )></td>
             <td><$build.username></td>
             <td><$build.filename></td>
-            <td><$build.name></td>
-            <td><$build.version></td>
-            <td><$build.auth></td>
-            <td><$build.api></td>
-            <td><&status( $build.status-stage )></td>
-            <td><&status( $build.status-build )></td>
-            <td><&status( $build.status-test )></td>
+            <td><&status( $build.meta )></td>
+            <td><&status( $build.name )></td>
+            <td><&status( $build.version )></td>
+            <td><&status( $build.auth )></td>
+            <td><&status( $build.api )></td>
+            <td><&status( $build.identity )></td>
+            <td><&status( $build.test )></td>
             <td><$build.started></td>
             <td><$build.completed></td>
           </tr>
@@ -77,7 +77,7 @@
 
 <:sub status( $status )>
   <?{ $status eq 'RUNNING' }>
-    <div class="spinner-grow text-primary" role="status">
+    <div class="spinner-grow spinner-grow-sm text-primary" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
   </?>

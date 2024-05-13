@@ -20,10 +20,10 @@ INSERT
 INTO   distributions ( 'name', 'version', 'auth', 'api', 'identity', 'meta', 'userid' )
 VALUES       ( $name, $version, $auth, $api, $identity, $meta, $userid )
 
--- sub insert-build(Int :$userid!, Str :$filename!, Str :$status! --> $)
+-- sub insert-build(Int :$userid!, Str :$filename! --> $)
 INSERT
-INTO   builds (  status,  userid,  filename )
-VALUES        ( $status, $userid, $filename )
+INTO   builds (  status,    userid,  filename,  meta,       name,     version,   auth,      api,       identity,  test     )
+VALUES        ( 'UNKNOWN', $userid, $filename, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', 'UNKNOWN' )
 RETURNING id
 
 
@@ -32,9 +32,9 @@ UPDATE builds
 set "status" = $status
 WHERE id = $id
 
--- sub update-build-status-extract(Int :$id!, Str :$status-extract! --> +)
+-- sub update-build-test(Int :$id!, Str :$test! --> +)
 UPDATE builds
-set "status-extract" = $status-extract
+set "test" = $test
 WHERE id = $id
 
 
