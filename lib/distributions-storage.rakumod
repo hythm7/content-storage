@@ -43,8 +43,6 @@ method add-distribution ( :$user, :$archive! ) {
 
   %build<status meta name version auth api identity test> X= UNKNOWN.value;
 
-  dd %build;
-
   my %data = %( :target<BUILD>, :operation<ADD>, ID => $id, :%build );
 
   my $message = EventSource::Server::Event.new( data => to-json %data );
@@ -58,14 +56,15 @@ method add-distribution ( :$user, :$archive! ) {
   
     my $work-directory = tempdir.IO;
 
-
     my $build = DistributionStorage::Build.new( :$type, :$work-directory, event-supplier => $!supplier );
 
-    my $status = RUNNING;
+    $!db.update-build-status: :$id, status => RUNNING.key; 
 
-    $!db.update-build-status: :$id, status => $status.key; 
+    my $started = now.DateTime;
 
-    my %data = %( :target<BUILD>, :operation<UPDATE>,ID => $id,  build => status => $status.value );
+    $!db.update-build-started: :$id, :$started; 
+
+    my %data = %( :target<BUILD>, :operation<UPDATE>, ID => $id,  build => { status => RUNNING.value, :$started } );
 
     my $message = EventSource::Server::Event.new( data => to-json %data );
 
@@ -73,10 +72,24 @@ method add-distribution ( :$user, :$archive! ) {
 
 
 
-    my $extract = $build.extract: archive => $archive.body-blob;
+    $build.extract: archive => $archive.body-blob;
 
 
-    $build.meta( distribution => $work-directory.add( 'distribution' ) );
+    my $status-meta = $build.meta( distribution => $work-directory.add( 'distribution' ) );
+
+    if $status-meta {
+
+      $!db.update-build-status-meta: :$id, meta => SUCCESS.key; 
+
+      my %data = %( :target<BUILD>, :operation<UPDATE>, ID => $id,  build => { meta => SUCCESS.value } );
+
+      my $message = EventSource::Server::Event.new( data => to-json %data );
+
+      $!supplier.emit( $message );
+      
+    } else {
+
+    }
 
     #eager $archive.body-text.lines.map( -> $line {
     #  sleep((^4).rand);

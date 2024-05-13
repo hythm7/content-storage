@@ -32,14 +32,28 @@ UPDATE builds
 set "status" = $status
 WHERE id = $id
 
--- sub update-build-test(Int :$id!, Str :$test! --> +)
+-- sub update-build-started(Int :$id!, DateTime :$started! --> +)
+UPDATE builds
+set "started" = $started
+WHERE id = $id
+
+-- sub update-build-status-meta(Int :$id!, Str :$meta! --> +)
+UPDATE builds
+set "meta" = $meta
+WHERE id = $id
+
+
+-- sub update-build-status-test(Int :$id!, Str :$test! --> +)
 UPDATE builds
 set "test" = $test
 WHERE id = $id
 
 
 -- sub select-builds(--> @)
-SELECT b.*, ( SELECT username FROM users WHERE id = b.userid ) FROM builds b
+SELECT   b.*,
+       ( SELECT username FROM users WHERE id = b.userid )
+FROM builds b
+ORDER BY started
 
 -- sub select-build(Int :$id! --> %)
 SELECT b.*, ( SELECT username FROM users WHERE id = b.userid ) FROM builds b

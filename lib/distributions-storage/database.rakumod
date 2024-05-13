@@ -60,8 +60,17 @@ method get-build( Int:D :$id! ) { select-build( $!pg, :$id ) }
 method update-build-status( Int:D :$id!, Str:D :$status! ) {
   update-build-status $!pg, :$id, :$status;
 }
-method update-build-test ( Int:D :$id!, Str:D :$test! ) {
-  update-build-test  $!pg, :$id, :$test ;
+
+method update-build-started( Int:D :$id!, DateTime:D :$started! ) {
+  update-build-started $!pg, :$id, :$started;
+}
+
+method update-build-status-meta ( Int:D :$id!, Str:D :$meta! ) {
+  update-build-status-meta  $!pg, :$id, :$meta ;
+}
+
+method update-build-status-test ( Int:D :$id!, Str:D :$test! ) {
+  update-build-status-test  $!pg, :$id, :$test ;
 }
 
 
