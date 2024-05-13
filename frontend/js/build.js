@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if ( message.target == 'BUILD' ) {
 
       if ( message.operation == 'UPDATE' ) {
+			  console.log(message.build)
         buildUpdate( message.ID, message.build );
       } else if ( message.operation == 'ADD' ) {
         buildAdd( message.ID, message.build );

@@ -61,8 +61,21 @@ method update-build-status( Int:D :$id!, Str:D :$status! ) {
   update-build-status $!pg, :$id, :$status;
 }
 
-method update-build-started( Int:D :$id!, DateTime:D :$started! ) {
-  update-build-started $!pg, :$id, :$started;
+method update-build-started( Int:D :$id! ) {
+  update-build-started $!pg, :$id;
+}
+
+method update-build-completed( Int:D :$id! ) {
+  update-build-completed $!pg, :$id;
+}
+
+
+method get-build-started( Int:D :$id! ) {
+  select-build-started $!pg, :$id;
+}
+
+method get-build-completed( Int:D :$id! ) {
+  select-build-completed $!pg, :$id;
 }
 
 method update-build-status-meta ( Int:D :$id!, Str:D :$meta! ) {

@@ -60,9 +60,9 @@ method add-distribution ( :$user, :$archive! ) {
 
     $!db.update-build-status: :$id, status => RUNNING.key; 
 
-    my $started = now.DateTime;
+    $!db.update-build-started: :$id; 
 
-    $!db.update-build-started: :$id, :$started; 
+    my $started = $!db.get-build-started: :$id; 
 
     my %data = %( :target<BUILD>, :operation<UPDATE>, ID => $id,  build => { status => RUNNING.value, :$started } );
 

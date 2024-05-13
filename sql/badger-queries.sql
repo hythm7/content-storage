@@ -32,10 +32,32 @@ UPDATE builds
 set "status" = $status
 WHERE id = $id
 
--- sub update-build-started(Int :$id!, DateTime :$started! --> +)
+-- sub update-build-started(Int :$id! --> +)
 UPDATE builds
-set "started" = $started
+set "started" = 'now'
 WHERE id = $id
+
+-- sub update-build-completed(Int :$id! --> +)
+UPDATE builds
+set "completed" = 'now'
+WHERE id = $id
+
+-- sub select-build-started(Int :$id! --> $)
+SELECT started
+FROM builds
+WHERE id = $id
+
+-- sub select-build-completed(Int :$id! --> $)
+SELECT completed
+FROM builds
+WHERE id = $id
+
+-- sub get-user(Str :$username! --> DistributionsStorage::Model::User $)
+SELECT id, username, password, 'is-admin'
+FROM users
+WHERE username = $username
+
+
 
 -- sub update-build-status-meta(Int :$id!, Str :$meta! --> +)
 UPDATE builds
