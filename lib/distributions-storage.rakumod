@@ -26,72 +26,33 @@ method build-supply ( ) { $!event-source.out-supply }
 
 my enum Target    <BUILD DISTRIBUTION>;
 my enum Operation <ADD UPDATE DELETE>;
-my enum Status    (
-  UNKNOWN   => '<i class="bi bi-exclamation-triangle text-warning"></i>',
-  ERROR     => '<i class="bi bi-x text-error"></i>',
-  SUCCESS   => '<i class="bi bi-check text-success"></i>',
-  RUNNING   => '<div class="spinner-grow spinner-grow-sm text-primary" role="status"><span class="visually-hidden">Loading...</span></div>',
-);
 
 method add-distribution ( :$user, :$archive! ) {
 
-  my $filename = $archive.filename;
+  my $build = DistributionStorage::Build.new( :$archive, :$!db, userid => $user.id, event-supplier => $!supplier );
 
-  my $id = $!db.new-build( :$filename, userid => $user.id );
+  my %data = $build.get-build;
 
-  my %build = $!db.get-build( :$id );
+  start $build.build;
 
-  %build<status meta name version auth api identity test> X= UNKNOWN.value;
-
-  my %data = %( :target<BUILD>, :operation<ADD>, ID => $id, :%build );
-
-  my $message = EventSource::Server::Event.new( data => to-json %data );
-
-  $!supplier.emit( $message );
+    #$build.extract: archive => $archive.body-blob;
 
 
-  my $type = $id.Str;
+    #my $status-meta = $build.meta( distribution => $work-directory.add( 'distribution' ) );
 
-  start {
-  
-    my $work-directory = tempdir.IO;
+    #if $status-meta {
 
-    my $build = DistributionStorage::Build.new( :$type, :$work-directory, event-supplier => $!supplier );
+    #  $!db.update-build-status-meta: :$id, meta => SUCCESS.key; 
 
-    $!db.update-build-status: :$id, status => RUNNING.key; 
+    #  my %data = %( :target<BUILD>, :operation<UPDATE>, ID => $id,  build => { meta => SUCCESS.value } );
 
-    $!db.update-build-started: :$id; 
+    #  my $message = EventSource::Server::Event.new( data => to-json %data );
 
-    my $datetime = $!db.get-build-started: :$id; 
+    #  $!supplier.emit( $message );
+    #  
+    #} else {
 
-    my $started = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
-
-    my %data = %( :target<BUILD>, :operation<UPDATE>, ID => $id,  build => { status => RUNNING.value, :$started } );
-
-    my $message = EventSource::Server::Event.new( data => to-json %data );
-
-    $!supplier.emit( $message );
-
-
-
-    $build.extract: archive => $archive.body-blob;
-
-
-    my $status-meta = $build.meta( distribution => $work-directory.add( 'distribution' ) );
-
-    if $status-meta {
-
-      $!db.update-build-status-meta: :$id, meta => SUCCESS.key; 
-
-      my %data = %( :target<BUILD>, :operation<UPDATE>, ID => $id,  build => { meta => SUCCESS.value } );
-
-      my $message = EventSource::Server::Event.new( data => to-json %data );
-
-      $!supplier.emit( $message );
-      
-    } else {
-
-    }
+    #}
 
     #eager $archive.body-text.lines.map( -> $line {
     #  sleep((^4).rand);
@@ -102,7 +63,7 @@ method add-distribution ( :$user, :$archive! ) {
 
     #} );
 
-  }
+  #}
 
 
   %data;

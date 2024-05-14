@@ -40,7 +40,10 @@
             <td><&status( $build.api )></td>
             <td><&status( $build.identity )></td>
             <td><&status( $build.test )></td>
-            <td><$build.started.yyyy-mm-dd> <$build.started.hh-mm-ss> </td>
+            <#>
+            <td><$build.started.yyyy-mm-dd> <$build.started.hh-mm-ss></td>
+            </#>
+            <td><$build.started></td>
             <td><$build.completed></td>
           </tr>
           </@>

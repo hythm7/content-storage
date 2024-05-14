@@ -1,15 +1,22 @@
 use File::Temp;
 use Libarchive::Simple;
+use EventSource::Server;
 
 use Log::Dispatch;
 use Log::Dispatch::TTY;
 use Log::Dispatch::Destination;
 use Log::Dispatch::Source;
 
-use EventSource::Server;
 
 unit class DistributionStorage::Build;
   also does Log::Dispatch::Source;
+
+my enum Status  is export  (
+  UNKNOWN   => '<i class="bi bi-exclamation-triangle text-warning"></i>',
+  ERROR     => '<i class="bi bi-x text-error"></i>',
+  SUCCESS   => '<i class="bi bi-check text-success"></i>',
+  RUNNING   => '<div class="spinner-grow spinner-grow-sm text-primary" role="status"><span class="visually-hidden">Loading...</span></div>',
+);
 
 
 my class ServerSentEventsDestination {
@@ -20,7 +27,6 @@ my class ServerSentEventsDestination {
 
   method report(Log::Dispatch::Msg:D $message) {
 
-   dd $message;
    my $event = EventSource::Server::Event.new( :$!type, data => $message.msg );
 
    $!event-supplier.emit( $event );
@@ -29,14 +35,20 @@ my class ServerSentEventsDestination {
 
 }
 
-has IO::Path:D  $!work-directory is required;
 
-has Str:D  $!type is built is required ;
+has $!db;
 
+has Int:D $!id is required;
 
-has Log::Dispatch $!logger;
+has $!archive is required;
 
-has IO::Path $!log-file;
+has IO::Path:D $!work-directory is required;
+has IO::Path:D $!log-file is required;
+
+has Supplier $!event-supplier;
+
+has Log::Dispatch:D $!logger is required;
+
 
 method extract ( Blob:D :$archive! --> Bool:D ) {
 
@@ -62,18 +74,64 @@ method meta ( IO::Path:D :$distribution! --> Bool:D ) {
 
 method logs ( --> Str ) { slurp $!log-file; }
    
-submethod BUILD( Str:D :$!type!, IO::Path:D :$!work-directory!, :$event-supplier! ) {
+method get-build ( --> Hash ) {
+
+  $!db.get-build( :$!id );
+
+}
+
+method build ( --> Bool:D ) {
+
+  self.log: :debug, 'Build ' ~ $!archive.filename;
+  
+  my %build = $!db.get-build( :$!id );
+
+  %build<status meta name version auth api identity test> X= UNKNOWN.value;
+
+  my %data = %( :target<BUILD>, :operation<ADD>, ID => $!id, :%build );
+
+  my $message = EventSource::Server::Event.new( data => to-json %data );
+
+  $!event-supplier.emit( $message );
+
+  $!db.update-build-status: :$!id, status => RUNNING.key;
+
+  $!db.update-build-started: :$!id;
+
+  my $datetime = $!db.get-build-started: :$!id;
+
+  my $started = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
+
+  %data = %( :target<BUILD>, :operation<UPDATE>, ID => $!id,  build => { status => RUNNING.value, :$started } );
+
+  $message = EventSource::Server::Event.new( data => to-json %data );
+
+  $!event-supplier.emit( $message );
+
+  say 'Built!';
+
+}
+
+
+submethod BUILD( :$!db!, Int:D :$userid, :$!archive!, :$!event-supplier! ) {
+
+  my $filename = $!archive.filename;
+
+  $!id = $!db.new-build: :$filename, :$userid;
+
+  my $type = $!id.Str;
+
+  $!work-directory = tempdir.IO;
+  $!log-file       = $!work-directory.add: 'build.log';
+
 
   $!logger = Log::Dispatch.new;
 
-  $!log-file = $!work-directory.add: 'build.log';
-
   $!logger.add: Log::Dispatch::TTY,                       max-level => LOG-LEVEL::DEBUG;
-  $!logger.add: ServerSentEventsDestination.new( :$!type, :$event-supplier ), max-level => LOG-LEVEL::DEBUG;
-  #$!logger.add: DatabaseDestination.new( :$id ),         max-level => LOG-LEVEL::DEBUG;
+  $!logger.add: ServerSentEventsDestination.new( :$type, :$!event-supplier ), max-level => LOG-LEVEL::DEBUG;
   $!logger.add: self;
 
-  self.log: :critical, "Something is wrong! Cause: ", 'kokokoko';
+  #self.log: :critical, "Something is wrong! Cause: ", 'kokokoko';
 
 }  
 
