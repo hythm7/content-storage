@@ -75,7 +75,7 @@ WHERE id = $id
 SELECT   b.*,
        ( SELECT username FROM users WHERE id = b.userid )
 FROM builds b
-ORDER BY started
+ORDER BY started DESC
 
 -- sub select-build(Int :$id! --> %)
 SELECT b.*, ( SELECT username FROM users WHERE id = b.userid ) FROM builds b

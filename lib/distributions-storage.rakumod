@@ -62,7 +62,9 @@ method add-distribution ( :$user, :$archive! ) {
 
     $!db.update-build-started: :$id; 
 
-    my $started = $!db.get-build-started: :$id; 
+    my $datetime = $!db.get-build-started: :$id; 
+
+    my $started = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
 
     my %data = %( :target<BUILD>, :operation<UPDATE>, ID => $id,  build => { status => RUNNING.value, :$started } );
 
