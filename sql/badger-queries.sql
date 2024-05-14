@@ -2,163 +2,163 @@
 
 -- sub add-user(Str :$username!, Str :$password! --> +)
 INSERT
-INTO   users (  username,  password )
+INTO   "users" (  "username",  "password" )
 values       ( $username, $password )
 
 -- sub get-user(Int :$id! --> DistributionsStorage::Model::User $)
-SELECT id username, password, 'is-admin'
-FROM users
-WHERE id = $id
+SELECT "id" "username", "password", "is-admin"
+FROM  "users"
+WHERE "id" = $id
 
 -- sub get-user(Str :$username! --> DistributionsStorage::Model::User $)
-SELECT id, username, password, 'is-admin'
-FROM users
-WHERE username = $username
+SELECT "id", "username", "password", "is-admin"
+FROM  "users"
+WHERE "username" = $username
 
 -- sub insert-into-distributions(Str :$name!, :$version!, :$auth!, :$api, :$identity!, :$meta!, :$userid! --> +)
 INSERT
-INTO   distributions ( 'name', 'version', 'auth', 'api', 'identity', 'meta', 'userid' )
-VALUES       ( $name, $version, $auth, $api, $identity, $meta, $userid )
+INTO   "distributions" ( "name", "version", "auth", "api", "identity", "meta", "userid" )
+VALUES                 ( $name,  $version,  $auth,  $api,  $identity,  $meta,  $userid  )
 
 -- sub insert-build(Int :$userid!, Str :$filename! --> $)
 INSERT
-INTO   builds (  status,    userid,  filename,  meta,       name,     version,   auth,      api,       identity,  test     )
-VALUES        ( 'UNKNOWN', $userid, $filename, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', 'UNKNOWN' )
-RETURNING id
+INTO   "builds" (  "userid", "filename" )
+VALUES          (  $userid,  $filename  )
+RETURNING "id"
 
 
 -- sub update-build-status(Int :$id!, Str :$status! --> +)
-UPDATE builds
-set "status" = $status
-WHERE id = $id
+UPDATE "builds"
+set    "status" = $status
+WHERE  "id"     = $id
 
 -- sub update-build-started(Int :$id! --> +)
-UPDATE builds
-set "started" = 'now'
-WHERE id = $id
+UPDATE "builds"
+set    "started" = 'now'
+WHERE  "id"      = $id
 
 -- sub update-build-completed(Int :$id! --> +)
-UPDATE builds
-set "completed" = 'now'
-WHERE id = $id
+UPDATE "builds"
+set    "completed" = 'now'
+WHERE  "id"        = $id
 
 -- sub select-build-started(Int :$id! --> $)
-SELECT started
-FROM builds
-WHERE id = $id
+SELECT "started"
+FROM   "builds"
+WHERE  "id"     = $id
 
 -- sub select-build-completed(Int :$id! --> $)
-SELECT completed
-FROM builds
-WHERE id = $id
+SELECT "completed"
+FROM   "builds"
+WHERE  "id"        = $id
 
 -- sub get-user(Str :$username! --> DistributionsStorage::Model::User $)
-SELECT id, username, password, 'is-admin'
-FROM users
-WHERE username = $username
+SELECT "id", "username", "password", "is-admin"
+FROM   "users"
+WHERE  "username" = $username
 
 
 
 -- sub update-build-status-meta(Int :$id!, Str :$meta! --> +)
-UPDATE builds
-set "meta" = $meta
-WHERE id = $id
+UPDATE "builds"
+set    "meta" = $meta
+WHERE  "id"   = $id
 
 
 -- sub update-build-status-test(Int :$id!, Str :$test! --> +)
-UPDATE builds
-set "test" = $test
-WHERE id = $id
+UPDATE "builds"
+set    "test" = $test
+WHERE  "id"   = $id
 
 
 -- sub select-builds(--> @)
-SELECT   b.*,
-       ( SELECT username FROM users WHERE id = b.userid )
-FROM builds b
+SELECT   "b".*,
+       ( SELECT "username" FROM "users" WHERE "id" = "b"."userid" )
+FROM     "builds" "b"
 ORDER BY started DESC
 
 -- sub select-build(Int :$id! --> %)
-SELECT b.*, ( SELECT username FROM users WHERE id = b.userid ) FROM builds b
-WHERE b.id = $id
+SELECT "b".*, ( SELECT "username" FROM "users" WHERE "id" = "b"."userid" ) FROM "builds" "b"
+WHERE  "b"."id" = $id
 
 -- sub insert-into-provides(@provides --> +)
 INSERT
-INTO   provides ( distribution, use, file )
+INTO   "provides" ( "distribution", "use", "file" )
 values       ({@provides.map({ 1, .key, .value}})
 
 
 -- sub get-dists(--> @)
-SELECT * FROM distributions
+SELECT * FROM "distributions"
 
 -- sub get-user-dists(Int :$userid! --> @)
-SELECT * FROM distributions
-WHERE userid = $userid
+SELECT * FROM "distributions"
+WHERE "userid" = $userid
 
 -- sub delete-dist(Str :$identity! --> +)
-DELETE FROM distributions WHERE identity = $identity
+DELETE FROM "distributions" WHERE "identity" = $identity
 
 -- sub insert-into-deps(Str $identity, Str $phase, Str $need, Str $use -->+)
-INSERT INTO 'deps' ('identity', 'phase', 'need', 'use' )
-  VALUES ( $identity, $phase, $need, $use )
-  ON CONFLICT DO NOTHING
+INSERT INTO "deps" ( "identity", "phase", "need", "use" )
+VALUES           ( $identity,  $phase,  $need,  $use  )
+ON CONFLICT DO NOTHING
 
 
 -- sub insert-into-resources(Str $identity, Str $resource -->+)
-INSERT INTO 'resources' ('identity', 'resource' )
-  VALUES ( $identity, $resource )
-  ON CONFLICT DO NOTHING
+INSERT INTO "resources" ( "identity", "resource" )
+VALUES                  ( $identity,  $resource  )
+ON CONFLICT DO NOTHING
 
 -- sub insert-into-emulates(Str $identity, Str $unit, Str $use -->+)
-INSERT INTO 'emulates' ('identity', 'unit', 'use' )
-  VALUES ( $identity, $unit, $use )
-  ON CONFLICT DO NOTHING
+INSERT INTO "emulates" ( "identity", "unit", "use" )
+VALUES                 ( $identity,  $unit,  $use  )
+ON CONFLICT DO NOTHING
 
 -- sub insert-into-supersedes(Str $identity, Str $unit, Str $use -->+)
-INSERT INTO 'supersedes' ('identity', 'unit', 'use' )
-  VALUES ( $identity, $unit, $use )
-  ON CONFLICT DO NOTHING
+INSERT INTO "supersedes" ( "identity", "unit", "use" )
+VALUES                   ( $identity,  $unit,  $use  )
+ON CONFLICT DO NOTHING
 
 -- sub insert-into-superseded(Str $identity, Str $unit, Str $use -->+)
-INSERT INTO 'superseded-by' ('identity', 'unit', 'use' )
-  VALUES ( $identity, $unit, $use )
-  ON CONFLICT DO NOTHING
+INSERT INTO "superseded-by" ( "identity", "unit", "use" )
+VALUES                      ( $identity,  $unit,  $use  )
+ON CONFLICT DO NOTHING
 
 -- sub insert-into-excludes(Str $identity, Str $unit, Str $use -->+)
-INSERT INTO 'excludes' ('identity', 'unit', 'use' )
-  VALUES ( $identity, $unit, $use )
-  ON CONFLICT DO NOTHING
+INSERT INTO "excludes" ( "identity", "unit", "use" )
+VALUES                 ( $identity,  $unit,  $use  )
+ON CONFLICT DO NOTHING
 
 -- sub insert-into-authors(Str $identity, Str $author -->+)
-INSERT INTO 'authors' ('identity', 'author' )
-  VALUES ( $identity, $author )
-  ON CONFLICT DO NOTHING
+INSERT INTO "authors" ( "identity", "author" )
+VALUES                ( $identity,  $author  )
+ON CONFLICT DO NOTHING
 
 -- sub insert-into-tags(Str $identity, Str $tag -->+)
-INSERT INTO 'tags' ('identity', 'tag' )
-  VALUES ( $identity, $tag )
-  ON CONFLICT DO NOTHING
+INSERT INTO "tags" ( "identity", "tag" )
+VALUES             ( $identity,  $tag  )
+ON CONFLICT DO NOTHING
 
 
 -- sub select(Str $name! --> @)
-SELECT distributions.identity, name, ver, auth, api
-  FROM      distributions
-  LEFT JOIN provides
-  ON        provides.identity = distributions.identity
-  WHERE     name = $name or unit = $name
-  GROUP BY  distributions.identity
+SELECT    "distributions"."identity", "name", "ver", "auth", "api"
+FROM      "distributions"
+LEFT JOIN "provides"
+ON        "provides"."identity" = "distributions"."identity"
+WHERE     "name" = $name or "unit" = $name
+GROUP BY  "distributions"."identity"
 
 -- sub search(Str $name! --> @)
-SELECT distributions.identity, name, ver, auth, api
-  FROM      distributions
-  LEFT JOIN provides
-  ON        provides.identity = distributions.identity
-  WHERE     name = $name COLLATE NOCASE or unit = $name COLLATE NOCASE
-  GROUP BY  distributions.identity
+SELECT    "distributions"."identity", "name", "ver", "auth", "api"
+FROM      "distributions"
+LEFT JOIN "provides"
+ON        "provides"."identity" = "distributions"."identity"
+WHERE     "name" = $name COLLATE NOCASE or "unit" = $name COLLATE NOCASE
+GROUP BY  "distributions"."identity"
 
 -- sub select-meta(Str $identity! --> $)
-SELECT meta
-  FROM     distributions
-  WHERE    identity = $identity
+SELECT "meta"
+  FROM     "distributions"
+  WHERE    "identity" = $identity
 
 -- sub everything( --> @)
-SELECT meta FROM distributions
+SELECT "meta" FROM "distributions"

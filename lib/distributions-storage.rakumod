@@ -37,7 +37,7 @@ method add-distribution ( :$user, :$archive! ) {
 
   my $filename = $archive.filename;
 
-  my $id = $!db.new-build( :$filename, userid => $user.id, status => UNKNOWN.key );
+  my $id = $!db.new-build( :$filename, userid => $user.id );
 
   my %build = $!db.get-build( :$id );
 
