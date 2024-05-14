@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function () {
     rowHTML += '<td>' + data["version"]   + '</td>';
     rowHTML += '<td>' + data["auth"]      + '</td>';
     rowHTML += '<td>' + data["api"]       + '</td>';
-    rowHTML += '<td>' + data["identity"]  + '</td>';
     rowHTML += '<td>' + data["test"]      + '</td>';
     rowHTML += '<td></td>';
 

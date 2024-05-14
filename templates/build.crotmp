@@ -21,30 +21,25 @@
             <th scope="col">Version</th>
             <th scope="col">Auth</th>
             <th scope="col">Api</th>
-            <th scope="col">Identity</th>
             <th scope="col">Test</th>
             <th scope="col">Started</th>
             <th scope="col">Completed</th>
           </tr>
         </thead>
         <tbody>
-          <@builds : $build>
-          <tr data-bs-toggle="modal" data-bs-target="#buildLogModal" data-build-id="<$build.id>">
-            <td><&status( $build.status )></td>
-            <td><$build.username></td>
-            <td><$build.filename></td>
-            <td><&status( $build.meta )></td>
-            <td><&status( $build.name )></td>
-            <td><&status( $build.version )></td>
-            <td><&status( $build.auth )></td>
-            <td><&status( $build.api )></td>
-            <td><&status( $build.identity )></td>
-            <td><&status( $build.test )></td>
-            <#>
-            <td><$build.started.yyyy-mm-dd> <$build.started.hh-mm-ss></td>
-            </#>
-            <td><$build.started></td>
-            <td><$build.completed></td>
+          <@builds>
+          <tr data-bs-toggle="modal" data-bs-target="#buildLogModal" data-build-id="<.id>">
+            <td><&status( .status )></td>
+            <td><.username></td>
+            <td><.filename></td>
+            <td><&status( .meta )></td>
+            <td><&status( .name )></td>
+            <td><&status( .version )></td>
+            <td><&status( .auth )></td>
+            <td><&status( .api )></td>
+            <td><&status( .test )></td>
+            <td><?.started><.started.yyyy-mm-dd>     <.started.hh-mm-ss></?></td>
+            <td><?.completed><.completed.yyyy-mm-dd> <.completed.hh-mm-ss></?></td>
           </tr>
           </@>
         </tbody>

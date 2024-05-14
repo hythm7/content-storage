@@ -6,8 +6,9 @@ import * as bootstrap from 'bootstrap'
 
 document.addEventListener('DOMContentLoaded', function () {
 
-  var dropArea = document.getElementById('drop-area');
-  var fileInput = document.getElementById('file-input');
+  const dropzoneModal = new bootstrap.Modal(document.getElementById('dropzone-modal'));
+  const dropArea = document.getElementById('drop-area');
+  const fileInput = document.getElementById('file-input');
 
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (event) {
     dropArea.addEventListener(event, function (e) {
@@ -60,17 +61,19 @@ document.addEventListener('DOMContentLoaded', function () {
       method: 'POST',
       body: formData
     })
-      .then(response => response.json()) // Assuming the server responds with JSON
-      .then(data => {
-        console.log('Processing:', data);
-        //data.forEach(addBuild);
-        //window.location.reload();
-        // Handle the server response as needed
-      })
-      .catch(error => {
-        console.error('Error Processing:', error);
-        // Handle errors
-      });
+    .then(response => response.json()) // Assuming the server responds with JSON
+    .then(data => {
+      console.log(data);
+      dropzoneModal.hide();
+      document.location.href="/build"
+      //data.forEach(addBuild);
+      //window.location.reload();
+      // Handle the server response as needed
+    })
+    .catch(error => {
+      console.error('Error Processing:', error);
+      // Handle errors
+    });
   });
 
   fileInput.addEventListener('change', function (event) {
@@ -91,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
       progress.innerHTML = '';
 
       files.forEach((file) => {
-			  var max = file.size;
+        var max = file.size;
         var fileProgressDiv = '<div class="progress-bar overflow-visible text-dark" style="width: 0%">' + file.name + '</div>';
         var fileProgress = '<div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="' + max + '">'
         fileProgress += fileProgressDiv + '</div>';

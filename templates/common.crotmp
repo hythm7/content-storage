@@ -37,7 +37,7 @@
       </div>
       <?{ $user }>
       <div>
-        <button class="btn text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#dropzoneModal" aria-expanded="false">
+        <button class="btn text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#dropzone-modal" aria-expanded="false">
           Add Distribution
           <#><i class="bi-person"></i></#>
         </button>
@@ -80,7 +80,7 @@
 </:>
 
 <:sub dropzone>
-<div class="modal fade" id="dropzoneModal" tabindex="-1" aria-labelledby="dropzoneModalLabel" aria-hidden="true">
+<div class="modal fade" id="dropzone-modal" tabindex="-1" aria-labelledby="dropzoneModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
