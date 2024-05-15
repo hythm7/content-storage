@@ -10,29 +10,29 @@ document.addEventListener('DOMContentLoaded', function () {
   const buildLogModalBody = buildLogModal.querySelector('.modal-body')
   const evtSource = new EventSource('/server-sent-events');
 
-  var buildAdd = function (id, data) {
+  //var buildAdd = function (id, data) {
 
-    const newRow = tableBody.insertRow(0);
+  //  const newRow = tableBody.insertRow(0);
 
-    var rowHTML  = '<tr data-bs-toggle="modal" data-bs-target="#buildLogModal" data-build-id="' + id + '">';
+  //  var rowHTML  = '<tr data-bs-toggle="modal" data-bs-target="#buildLogModal" data-build-id="' + id + '">';
 
-    rowHTML += '<td>' + data["status"]    + '</td>';
-    rowHTML += '<td>' + data["username"]  + '</td>';
-    rowHTML += '<td>' + data["filename"]  + '</td>';
-    rowHTML += '<td>' + data["meta"]      + '</td>';
-    rowHTML += '<td>' + data["name"]      + '</td>';
-    rowHTML += '<td>' + data["version"]   + '</td>';
-    rowHTML += '<td>' + data["auth"]      + '</td>';
-    rowHTML += '<td>' + data["api"]       + '</td>';
-    rowHTML += '<td>' + data["test"]      + '</td>';
-    rowHTML += '<td></td>';
+  //  rowHTML += '<td>' + data["status"]    + '</td>';
+  //  rowHTML += '<td>' + data["username"]  + '</td>';
+  //  rowHTML += '<td>' + data["filename"]  + '</td>';
+  //  rowHTML += '<td>' + data["meta"]      + '</td>';
+  //  rowHTML += '<td>' + data["name"]      + '</td>';
+  //  rowHTML += '<td>' + data["version"]   + '</td>';
+  //  rowHTML += '<td>' + data["auth"]      + '</td>';
+  //  rowHTML += '<td>' + data["api"]       + '</td>';
+  //  rowHTML += '<td>' + data["test"]      + '</td>';
+  //  rowHTML += '<td></td>';
 
-    rowHTML += '</tr>';
+  //  rowHTML += '</tr>';
 
 
-    newRow.outerHTML = rowHTML;
+  //  newRow.outerHTML = rowHTML;
 
-  }
+  //}
 
 
   var buildUpdate = function (id, data) {
@@ -68,11 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if ( message.operation == 'UPDATE' ) {
 			  console.log(message.build)
         buildUpdate( message.ID, message.build );
-      } else if ( message.operation == 'ADD' ) {
-        buildAdd( message.ID, message.build );
-
       }
-
     }
   });
 

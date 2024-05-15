@@ -38,7 +38,7 @@ my class ServerSentEventsDestination {
 
 has $!db;
 
-has Int:D $!id is required;
+has Int:D $.id is required;
 
 has $!archive is required;
 
@@ -74,26 +74,10 @@ method meta ( IO::Path:D :$distribution! --> Bool:D ) {
 
 method logs ( --> Str ) { slurp $!log-file; }
    
-method get-build ( --> Hash ) {
-
-  $!db.get-build( :$!id );
-
-}
-
 method build ( --> Bool:D ) {
 
   self.log: :debug, 'Build ' ~ $!archive.filename;
   
-  my %build = $!db.get-build( :$!id );
-
-  %build<status meta name version auth api identity test> X= UNKNOWN.value;
-
-  my %data = %( :target<BUILD>, :operation<ADD>, ID => $!id, :%build );
-
-  my $message = EventSource::Server::Event.new( data => to-json %data );
-
-  $!event-supplier.emit( $message );
-
   $!db.update-build-status: :$!id, status => RUNNING.key;
 
   $!db.update-build-started: :$!id;
@@ -102,9 +86,9 @@ method build ( --> Bool:D ) {
 
   my $started = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
 
-  %data = %( :target<BUILD>, :operation<UPDATE>, ID => $!id,  build => { status => RUNNING.value, :$started } );
+  my %data = %( :target<BUILD>, :operation<UPDATE>, ID => $!id,  build => { status => RUNNING.value, :$started } );
 
-  $message = EventSource::Server::Event.new( data => to-json %data );
+  my $message = EventSource::Server::Event.new( data => to-json %data );
 
   $!event-supplier.emit( $message );
 

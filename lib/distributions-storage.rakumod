@@ -31,9 +31,10 @@ method add-distribution ( :$user, :$archive! ) {
 
   my $build = DistributionStorage::Build.new( :$archive, :$!db, userid => $user.id, event-supplier => $!supplier );
 
-  my %data = $build.get-build;
-
   start $build.build;
+
+  my %data = build-id => $build.id;
+
 
     #$build.extract: archive => $archive.body-blob;
 
@@ -64,9 +65,6 @@ method add-distribution ( :$user, :$archive! ) {
     #} );
 
   #}
-
-
-  %data;
 
 }
 
