@@ -31,6 +31,21 @@ method add-distribution ( :$user, :$archive! ) {
 
   my $build = DistributionStorage::Build.new( :$archive, :$!db, userid => $user.id, event-supplier => $!supplier );
 
+#  CATCH {
+#
+#    default {
+#      .say;
+#
+#      my %data = %( :target<BUILD>, :operation<UPDATE>, ID => $build.id,  build => { status => ERROR.value } );
+#
+#      my $message = EventSource::Server::Event.new( data => to-json %data );
+#
+#      $!supplier.emit( $message );
+#
+#    }
+#
+#  }
+
   start $build.build;
 
   my %data = build-id => $build.id;

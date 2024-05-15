@@ -83,7 +83,7 @@
     <i class="bi bi-exclamation-triangle text-warning"></i>
   </?>
   <!?{ $status eq 'ERROR' }>
-    <i class="bi bi-x text-danger"></i>
+    <i class="bi bi-x text-error"></i>
   </?>
   <!?{ $status eq 'SUCCESS' }>
     <i class="bi bi-check text-success"></i>

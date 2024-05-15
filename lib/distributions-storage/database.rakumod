@@ -61,6 +61,14 @@ method update-build-status( Int:D :$id!, Str:D :$status! ) {
   update-build-status $!pg, :$id, :$status;
 }
 
+method update-build-meta ( Int:D :$id!, Str:D :$meta! ) {
+  update-build-meta  $!pg, :$id, :$meta ;
+}
+
+method update-build-test ( Int:D :$id!, Str:D :$test! ) {
+  update-build-test  $!pg, :$id, :$test ;
+}
+
 method update-build-started( Int:D :$id! ) {
   update-build-started $!pg, :$id;
 }
@@ -77,15 +85,6 @@ method get-build-started( Int:D :$id! ) {
 method get-build-completed( Int:D :$id! ) {
   select-build-completed $!pg, :$id;
 }
-
-method update-build-status-meta ( Int:D :$id!, Str:D :$meta! ) {
-  update-build-status-meta  $!pg, :$id, :$meta ;
-}
-
-method update-build-status-test ( Int:D :$id!, Str:D :$test! ) {
-  update-build-status-test  $!pg, :$id, :$test ;
-}
-
 
 my sub add-distribution ( :$db!, :$meta!, :$userid! ) {
 

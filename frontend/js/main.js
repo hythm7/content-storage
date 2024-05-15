@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(data => {
       console.log(data);
       dropzoneModal.hide();
-      document.location.href="/build"
+      //document.location.href="/build"
       //data.forEach(addBuild);
       //window.location.reload();
       // Handle the server response as needed

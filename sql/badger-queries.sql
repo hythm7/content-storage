@@ -32,6 +32,18 @@ UPDATE "builds"
 set    "status" = $status
 WHERE  "id"     = $id
 
+-- sub update-build-meta(Int :$id!, Str :$meta! --> +)
+UPDATE "builds"
+set    "meta" = $meta
+WHERE  "id"   = $id
+
+
+-- sub update-build-test(Int :$id!, Str :$test! --> +)
+UPDATE "builds"
+set    "test" = $test
+WHERE  "id"   = $id
+
+
 -- sub update-build-started(Int :$id! --> +)
 UPDATE "builds"
 set    "started" = 'now'
@@ -57,18 +69,6 @@ SELECT "id", "username", "password", "is-admin"
 FROM   "users"
 WHERE  "username" = $username
 
-
-
--- sub update-build-status-meta(Int :$id!, Str :$meta! --> +)
-UPDATE "builds"
-set    "meta" = $meta
-WHERE  "id"   = $id
-
-
--- sub update-build-status-test(Int :$id!, Str :$test! --> +)
-UPDATE "builds"
-set    "test" = $test
-WHERE  "id"   = $id
 
 
 -- sub select-builds(--> @)
