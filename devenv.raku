@@ -2,7 +2,7 @@
 
 use Dev::ContainerizedService;
 
-project 'distributions-storage';
+project 'distribution-storage';
 store;
 
 service 'postgres', :tag<14.4>, -> (:$conninfo, *%) {

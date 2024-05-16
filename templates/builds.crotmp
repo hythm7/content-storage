@@ -1,6 +1,6 @@
 <:use 'templates/common.crotmp'>
 
-<&head( :title( 'Distributions' ) )>
+<&head( :title( 'Builds' ) )>
 
 <&body-open>
 
@@ -9,14 +9,13 @@
 <|page>
   <div class="page-content">
     <h2>Builds</h2>
-    <div id="distributions-builds">
-      <table id='distributions-builds-table' class="table">
+    <div id="distributions-build">
+      <table id='distributions-build-table' class="table">
         <thead>
           <tr class="table-primary">
             <th scope="col">Status</th>
             <th scope="col">User</th>
             <th scope="col">Filename</th>
-            <th scope="col">Meta</th>
             <th scope="col">Name</th>
             <th scope="col">Version</th>
             <th scope="col">Auth</th>
@@ -27,12 +26,11 @@
           </tr>
         </thead>
         <tbody>
-          <@builds>
+          <@build>
           <tr data-bs-toggle="modal" data-bs-target="#buildLogModal" data-build-id="<.id>">
             <td><&status( .status )></td>
             <td><.username></td>
             <td><.filename></td>
-            <td><&status( .meta )></td>
             <td><&status( .name )></td>
             <td><&status( .version )></td>
             <td><&status( .auth )></td>
@@ -83,7 +81,7 @@
     <i class="bi bi-exclamation-triangle text-warning"></i>
   </?>
   <!?{ $status eq 'ERROR' }>
-    <i class="bi bi-x text-error"></i>
+    <i class="bi bi-x text-danger"></i>
   </?>
   <!?{ $status eq 'SUCCESS' }>
     <i class="bi bi-check text-success"></i>

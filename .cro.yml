@@ -9,7 +9,7 @@
     "protocol": "http"
 "entrypoint": "service.raku"
 "env":  []
-"id": "distributions-storage"
+"id": "distribution-storage"
 "links":  []
-"name": "distributions-storage"
+"name": "distribution-storage"
 ...

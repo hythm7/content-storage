@@ -1,12 +1,12 @@
 use Cro::HTTP::Router;
 use Cro::WebApp::Template;
 
-use distributions-storage;
-use distributions-storage-routes-user;
-use distributions-storage-routes-distribution;
-use distributions-storage-routes-build;
+use distribution-storage;
+use distribution-storage-routes-user;
+use distribution-storage-routes-distribution;
+use distribution-storage-routes-build;
 
-sub routes(DistributionsStorage $ds) is export {
+sub routes(DistributionStorage $ds) is export {
   template-location 'templates/';
 
   route {
@@ -18,7 +18,7 @@ sub routes(DistributionsStorage $ds) is export {
 
     include build-routes( $ds );
 
-    get -> DistributionsStorage::Session $session, 'server-sent-events' {
+    get -> DistributionStorage::Session $session, 'server-sent-events' {
       content 'text/event-stream', $ds.build-supply;
     }
 

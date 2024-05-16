@@ -1,84 +1,79 @@
--- use distributions-storage-model-user
+-- use distribution-storage-model-user
 
 -- sub add-user(Str :$username!, Str :$password! --> +)
 INSERT
-INTO   "users" (  "username",  "password" )
+INTO   "user" (  "username",  "password" )
 values       ( $username, $password )
 
--- sub get-user(Int :$id! --> DistributionsStorage::Model::User $)
+-- sub get-user(Int :$id! --> DistributionStorage::Model::User $)
 SELECT "id" "username", "password", "is-admin"
-FROM  "users"
+FROM  "user"
 WHERE "id" = $id
 
--- sub get-user(Str :$username! --> DistributionsStorage::Model::User $)
+-- sub get-user(Str :$username! --> DistributionStorage::Model::User $)
 SELECT "id", "username", "password", "is-admin"
-FROM  "users"
+FROM  "user"
 WHERE "username" = $username
 
--- sub insert-into-distributions(Str :$name!, :$version!, :$auth!, :$api, :$identity!, :$meta!, :$userid! --> +)
+-- sub insert-into-distribution(Str :$name!, :$version!, :$auth!, :$api, :$identity!, :$meta!, :$userid! --> +)
 INSERT
-INTO   "distributions" ( "name", "version", "auth", "api", "identity", "meta", "userid" )
+INTO   "distribution" ( "name", "version", "auth", "api", "identity", "meta", "userid" )
 VALUES                 ( $name,  $version,  $auth,  $api,  $identity,  $meta,  $userid  )
 
 -- sub insert-build(Int :$userid!, Str :$filename! --> $)
 INSERT
-INTO   "builds" (  "userid", "filename" )
+INTO   "build" (  "userid", "filename" )
 VALUES          (  $userid,  $filename  )
 RETURNING "id"
 
 
 -- sub update-build-status(Int :$id!, Str :$status! --> +)
-UPDATE "builds"
+UPDATE "build"
 set    "status" = $status
 WHERE  "id"     = $id
 
--- sub update-build-meta(Int :$id!, Str :$meta! --> +)
-UPDATE "builds"
-set    "meta" = $meta
-WHERE  "id"   = $id
-
 
 -- sub update-build-test(Int :$id!, Str :$test! --> +)
-UPDATE "builds"
+UPDATE "build"
 set    "test" = $test
 WHERE  "id"   = $id
 
 
 -- sub update-build-started(Int :$id! --> +)
-UPDATE "builds"
+UPDATE "build"
 set    "started" = 'now'
 WHERE  "id"      = $id
 
 -- sub update-build-completed(Int :$id! --> +)
-UPDATE "builds"
+UPDATE "build"
 set    "completed" = 'now'
 WHERE  "id"        = $id
 
 -- sub select-build-started(Int :$id! --> $)
 SELECT "started"
-FROM   "builds"
+FROM   "build"
 WHERE  "id"     = $id
 
 -- sub select-build-completed(Int :$id! --> $)
 SELECT "completed"
-FROM   "builds"
+FROM   "build"
 WHERE  "id"        = $id
 
--- sub get-user(Str :$username! --> DistributionsStorage::Model::User $)
+-- sub get-user(Str :$username! --> DistributionStorage::Model::User $)
 SELECT "id", "username", "password", "is-admin"
-FROM   "users"
+FROM   "user"
 WHERE  "username" = $username
 
 
 
 -- sub select-builds(--> @)
 SELECT   "b".*,
-       ( SELECT "username" FROM "users" WHERE "id" = "b"."userid" )
-FROM     "builds" "b"
+       ( SELECT "username" FROM "user" WHERE "id" = "b"."userid" )
+FROM     "build" "b"
 ORDER BY started DESC
 
 -- sub select-build(Int :$id! --> %)
-SELECT "b".*, ( SELECT "username" FROM "users" WHERE "id" = "b"."userid" ) FROM "builds" "b"
+SELECT "b".*, ( SELECT "username" FROM "user" WHERE "id" = "b"."userid" ) FROM "build" "b"
 WHERE  "b"."id" = $id
 
 -- sub insert-into-provides(@provides --> +)
@@ -88,14 +83,14 @@ values       ({@provides.map({ 1, .key, .value}})
 
 
 -- sub get-dists(--> @)
-SELECT * FROM "distributions"
+SELECT * FROM "distribution"
 
 -- sub get-user-dists(Int :$userid! --> @)
-SELECT * FROM "distributions"
+SELECT * FROM "distribution"
 WHERE "userid" = $userid
 
 -- sub delete-dist(Str :$identity! --> +)
-DELETE FROM "distributions" WHERE "identity" = $identity
+DELETE FROM "distribution" WHERE "identity" = $identity
 
 -- sub insert-into-deps(Str $identity, Str $phase, Str $need, Str $use -->+)
 INSERT INTO "deps" ( "identity", "phase", "need", "use" )
@@ -140,25 +135,25 @@ ON CONFLICT DO NOTHING
 
 
 -- sub select(Str $name! --> @)
-SELECT    "distributions"."identity", "name", "ver", "auth", "api"
-FROM      "distributions"
+SELECT    "distribution"."identity", "name", "ver", "auth", "api"
+FROM      "distribution"
 LEFT JOIN "provides"
-ON        "provides"."identity" = "distributions"."identity"
+ON        "provides"."identity" = "distribution"."identity"
 WHERE     "name" = $name or "unit" = $name
-GROUP BY  "distributions"."identity"
+GROUP BY  "distribution"."identity"
 
 -- sub search(Str $name! --> @)
-SELECT    "distributions"."identity", "name", "ver", "auth", "api"
-FROM      "distributions"
+SELECT    "distribution"."identity", "name", "ver", "auth", "api"
+FROM      "distribution"
 LEFT JOIN "provides"
-ON        "provides"."identity" = "distributions"."identity"
+ON        "provides"."identity" = "distribution"."identity"
 WHERE     "name" = $name COLLATE NOCASE or "unit" = $name COLLATE NOCASE
-GROUP BY  "distributions"."identity"
+GROUP BY  "distribution"."identity"
 
 -- sub select-meta(Str $identity! --> $)
 SELECT "meta"
-  FROM     "distributions"
+  FROM     "distribution"
   WHERE    "identity" = $identity
 
 -- sub everything( --> @)
-SELECT "meta" FROM "distributions"
+SELECT "meta" FROM "distribution"

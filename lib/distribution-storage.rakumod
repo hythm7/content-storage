@@ -4,17 +4,17 @@ use EventSource::Server;
 
 use DB::Pg;
 
-use distributions-storage-database;
-use distributions-storage-build;
+use distribution-storage-database;
+use distribution-storage-build;
 
-unit class DistributionsStorage;
+unit class DistributionStorage;
 
 
 has Supplier            $!supplier     = Supplier.new;
 has Supply              $!supply       = $!supplier.Supply;
 has EventSource::Server $!event-source = EventSource::Server.new: :$!supply; 
 
-has DistributionsStorage::Database $!db handles <
+has DistributionStorage::Database $!db handles <
   add-user
   get-user
   get-dists
@@ -27,7 +27,7 @@ method build-supply ( ) { $!event-source.out-supply }
 my enum Target    <BUILD DISTRIBUTION>;
 my enum Operation <ADD UPDATE DELETE>;
 
-method add-distribution ( :$user, :$archive! ) {
+method distribution-add ( :$user, :$archive! ) {
 
   my $build = DistributionStorage::Build.new( :$archive, :$!db, userid => $user.id, event-supplier => $!supplier );
 
@@ -90,7 +90,7 @@ method get-builds ( ) {
 
 submethod BUILD( DB::Pg :$pg! ) {
 
-  $!db = DistributionsStorage::Database.new: :$pg;
+  $!db = DistributionStorage::Database.new: :$pg;
 }
 
 my sub status( Str:D :$status! --> Str:D ) {

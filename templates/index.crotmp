@@ -20,13 +20,13 @@
         </tr>
       </thead>
       <tbody>
-        <@dists : $dist>
+        <@dist>
           <tr>
-            <td><$dist.name></td>
-            <td><$dist.version></td>
-            <td><$dist.auth></td>
-            <td><$dist.api></td>
-            <td><$dist.created></td>
+            <td><.name></td>
+            <td><.version></td>
+            <td><.auth></td>
+            <td><.api></td>
+            <td><.created></td>
           </tr>
         </@>
       </tbody>

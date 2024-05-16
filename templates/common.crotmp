@@ -17,7 +17,7 @@
   <div class="container-fluid">
     <a class="navbar-brand" href="/">
       <img src="/static/images/logo/camelia-logo.png" alt="Logo" width="42" height="42">
-      Distributions Storage
+      Distribution Storage
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -25,7 +25,7 @@
     <div class="collapse navbar-collapse" id="navbarToggler">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
       <?{ $user }>
-        <&nav-item('my-distributions', 'My Distributions', '/my-distributions')>
+        <&nav-item('distributions', 'Distributions', '/distribution')>
       </?>
         <&nav-item('builds', 'Builds', '/build')>
       </ul>

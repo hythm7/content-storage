@@ -1,5 +1,5 @@
 use Test;
-use distributions-storage;
+use distribution-storage;
 
 pass "replace me";
 

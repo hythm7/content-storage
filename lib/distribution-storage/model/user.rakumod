@@ -1,4 +1,4 @@
-unit class DistributionsStorage::Model::User;
+unit class DistributionStorage::Model::User;
 
 has Int  $.id;
 has Str  $.username;

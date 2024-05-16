@@ -2,7 +2,7 @@ use DB::Migration::Declare;
 
 migration 'Setup', {
 
-  create-table "sessions", {
+  create-table "session", {
 
     add-column "id",         text(),     :primary;
     add-column "state",      text();
@@ -10,7 +10,7 @@ migration 'Setup', {
 
   }
 
-  create-table "users", { 
+  create-table "user", { 
 
     add-column "id", integer(), :increments, :primary;
 
@@ -20,18 +20,19 @@ migration 'Setup', {
 
   }
 
-  create-table "distributions", { 
+  create-table "distribution", { 
 
     add-column "id", integer(), :increments, :primary;
 
-    add-column "identity", text(), :!null, :unique;
 
     add-column "meta",    text(), :!null;
+
     add-column "name",    text(), :!null;
     add-column "version", text(), :!null;
     add-column "auth",    text(), :!null;
     add-column "api",     text();
 
+    add-column "identity", text(), :!null, :unique;
 
     add-column "created", timestamp(), :default(now), :!null;
 
@@ -39,7 +40,7 @@ migration 'Setup', {
 
   }
 
-  create-table "builds", { 
+  create-table "build", { 
 
     add-column "id", integer(), :increments, :primary;
 
@@ -49,7 +50,6 @@ migration 'Setup', {
     add-column "filename", text(),    :!null;
 
 
-    add-column "meta",     text(), :default( sql( "'UNKNOWN'" ) );
     add-column "name",     text(), :default( sql( "'UNKNOWN'" ) );
     add-column "version",  text(), :default( sql( "'UNKNOWN'" ) );
     add-column "auth",     text(), :default( sql( "'UNKNOWN'" ) );
@@ -78,12 +78,12 @@ migration 'Setup', {
     add-column "use",  text(), :!null;
     add-column "file", text(), :!null;
 
-    foreign-key :from<distribution>, :to<id>, :table<distributions>, :cascade;
+    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
 
   }
 
 
-  create-table "resources", { 
+  create-table "resource", { 
 
     add-column "id", integer(), :increments, :primary;
 
@@ -91,7 +91,7 @@ migration 'Setup', {
 
     add-column "resources", arr( text() );
 
-    foreign-key :from<distribution>, :to<id>, :table<distributions>, :cascade;
+    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
 
   }
 
@@ -104,7 +104,7 @@ migration 'Setup', {
     add-column "unit", text();
     add-column "use",  text();
 
-    foreign-key :from<distribution>, :to<id>, :table<distributions>, :cascade;
+    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
 
   }
 
@@ -117,7 +117,7 @@ migration 'Setup', {
     add-column "unit", text();
     add-column "use",  text();
 
-    foreign-key :from<distribution>, :to<id>, :table<distributions>, :cascade;
+    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
 
   }
 
@@ -130,7 +130,7 @@ migration 'Setup', {
     add-column "unit", text();
     add-column "use",  text();
 
-    foreign-key :from<distribution>, :to<id>, :table<distributions>, :cascade;
+    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
 
   }
 
@@ -143,11 +143,11 @@ migration 'Setup', {
     add-column "unit", text();
     add-column "use",  text();
 
-    foreign-key :from<distribution>, :to<id>, :table<distributions>, :cascade;
+    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
 
   }
 
-  create-table "authors", { 
+  create-table "author", { 
 
     add-column "id", integer(), :increments, :primary;
 
@@ -155,11 +155,11 @@ migration 'Setup', {
 
     add-column "authors", arr( text() );
 
-    foreign-key :from<distribution>, :to<id>, :table<distributions>, :cascade;
+    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
 
   }
 
-  create-table "tags", { 
+  create-table "tag", { 
 
     add-column "id", integer(), :increments, :primary;
 
@@ -167,7 +167,7 @@ migration 'Setup', {
 
     add-column "tags", arr( text() );
 
-    foreign-key :from<distribution>, :to<id>, :table<distributions>, :cascade;
+    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
 
   }
 

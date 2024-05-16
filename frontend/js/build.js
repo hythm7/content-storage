@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-  const buildTable = document.getElementById('distributions-builds-table');
+  const buildTable = document.getElementById('distributions-build-table');
   const tableHead  = buildTable.getElementsByTagName('thead')[0];
   const tableBody  = buildTable.getElementsByTagName('tbody')[0];
 
@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
     rowHTML += '<td>' + data["status"]    + '</td>';
     rowHTML += '<td>' + data["username"]  + '</td>';
     rowHTML += '<td>' + data["filename"]  + '</td>';
-    rowHTML += '<td>' + data["meta"]      + '</td>';
     rowHTML += '<td>' + data["name"]      + '</td>';
     rowHTML += '<td>' + data["version"]   + '</td>';
     rowHTML += '<td>' + data["auth"]      + '</td>';

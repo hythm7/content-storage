@@ -4,7 +4,7 @@
 
 <&body-open>
 
-<&header( :active( 'my-distributions' ), :user( .user ) )>
+<&header( :active( 'distributions' ), :user( .user ) )>
 
 <|page>
   <div class="page-content">
@@ -20,13 +20,13 @@
         </tr>
       </thead>
       <tbody>
-        <@dists : $dist>
+        <@dist>
           <tr>
-            <td><$dist.name></td>
-            <td><$dist.version></td>
-            <td><$dist.auth></td>
-            <td><$dist.api></td>
-            <td><$dist.created></td>
+            <td><.name></td>
+            <td><.version></td>
+            <td><.auth></td>
+            <td><.api></td>
+            <td><.created></td>
           </tr>
         </@>
       </tbody>
@@ -34,8 +34,8 @@
   </div>
   <#>
   <?{ .user }>
-    <@dist : $dist>
-    <?{ $dist.userid == .user.id }>
+    <@dist>
+    <?{ .userid == .user.id }>
         <form action="/distribution/delete/<$dist.identity>" method="post">
           <input class="btn btn-danger" type="submit" value="Delete">
         </form>

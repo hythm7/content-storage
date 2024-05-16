@@ -1,4 +1,4 @@
-unit class DistributionsStorage::Database::Distribution;
+unit class DistributionStorage::Database::Distribution;
 
 has Str     $.identity;
 has Str     $.name;
@@ -19,4 +19,3 @@ has Str @.tags;
 has Str %.emulates;
 has Str %.supersedes;
 has Str %.superseded;
-

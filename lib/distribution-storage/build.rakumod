@@ -54,27 +54,27 @@ method meta ( IO::Path:D :$distribution-directory! --> Bool:D ) {
 
   self.log: :debug, 'meta: ' ~ $distribution-directory;
 
-  $!db.update-build-meta: :$!id, meta => RUNNING.key;
+  #$!db.update-build-meta: :$!id, meta => RUNNING.key;
 
-  self!server-message: :$!id, build => %( meta => RUNNING.value );
+  #self!server-message: :$!id, build => %( meta => RUNNING.value );
 
   my $meta-ok = $distribution-directory.add( 'META6.json' ).e;
 
   if $meta-ok {
 
-    $!db.update-build-meta: :$!id, meta => SUCCESS.key;
+  #  $!db.update-build-meta: :$!id, meta => SUCCESS.key;
 
-    self!server-message: :$!id, build => %( meta => SUCCESS.value );
+  #  self!server-message: :$!id, build => %( meta => SUCCESS.value );
 
     True;
 
   } else {
 
-    $!db.update-build-meta:   :$!id, meta   => ERROR.key;
+    #$!db.update-build-meta:   :$!id, meta   => ERROR.key;
 
     self.log: :critical, 'meta: error ', 'why!';
 
-    self!server-message: :$!id, build => %( meta => ERROR.value );
+    #self!server-message: :$!id, build => %( meta => ERROR.value );
 
     False;
   }

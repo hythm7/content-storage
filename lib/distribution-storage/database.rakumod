@@ -1,10 +1,10 @@
-use distributions-storage-model-user;
-use distributions-storage-model-distribution;
+use distribution-storage-model-user;
+use distribution-storage-model-distribution;
 
 use Badger <sql/badger-queries.sql>;
 
 
-unit class DistributionsStorage::Database;
+unit class DistributionStorage::Database;
 
 has $.pg;
 
@@ -18,19 +18,19 @@ method add-user(:$username!, :$password! ) {
 
 multi method get-user(Int :$id!) {
 
-  my DistributionsStorage::Model::User $user = get-user( $!pg, :$id );
+  my DistributionStorage::Model::User $user = get-user( $!pg, :$id );
 
 }
 
 multi method get-user( Str :$username! ) {
-  my DistributionsStorage::Model::User $user = get-user( $!pg, :$username );
+  my DistributionStorage::Model::User $user = get-user( $!pg, :$username );
 }
 
 method add-distribution( Str:D :$content!, :$user! ) {
 
   my $meta = $content;
 
-  add-distribution( db =>$!pg.db, :$meta, userid => $user )
+  distribution-add( db =>$!pg.db, :$meta, userid => $user )
 
 }
 
@@ -61,10 +61,6 @@ method update-build-status( Int:D :$id!, Str:D :$status! ) {
   update-build-status $!pg, :$id, :$status;
 }
 
-method update-build-meta ( Int:D :$id!, Str:D :$meta! ) {
-  update-build-meta  $!pg, :$id, :$meta ;
-}
-
 method update-build-test ( Int:D :$id!, Str:D :$test! ) {
   update-build-test  $!pg, :$id, :$test ;
 }
@@ -86,7 +82,7 @@ method get-build-completed( Int:D :$id! ) {
   select-build-completed $!pg, :$id;
 }
 
-my sub add-distribution ( :$db!, :$meta!, :$userid! ) {
+my sub distribution-add ( :$db!, :$meta!, :$userid! ) {
 
   my %meta = Rakudo::Internals::JSON.from-json($meta);
 
@@ -108,12 +104,12 @@ my sub add-distribution ( :$db!, :$meta!, :$userid! ) {
   $db.begin;
   
   $db.query(q:to/END/, $name, $version, $auth, $api, $identity, $meta, $userid );
-    INSERT INTO distributions
+    INSERT INTO distribution
            ( name, version, auth, api, identity, meta, userid )
     values (   $1,      $2,   $3,  $4,       $5,   $6,     $7 )
     END
 
-  my $id = $db.query('SELECT id from distributions where identity = $1', $identity).value;
+  my $id = $db.query('SELECT id from distribution where identity = $1', $identity).value;
 
   
   if @provides {
@@ -125,7 +121,7 @@ my sub add-distribution ( :$db!, :$meta!, :$userid! ) {
   $db.commit;
 
   $db.finish;
-  #insert-into-distributions($!pg, userid => $user, :$meta,
+  #insert-into-distribution($!pg, userid => $user, :$meta,
   #  :$name, :$version, :$auth, :$api, :$identity
   #);
 
