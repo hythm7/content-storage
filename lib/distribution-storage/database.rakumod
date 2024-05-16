@@ -61,6 +61,19 @@ method update-build-status( Int:D :$id!, Str:D :$status! ) {
   update-build-status $!pg, :$id, :$status;
 }
 
+multi method update-build-meta ( Int:D :$id!, Str:D :$meta!, Str:D :$name!, Str:D :$version!, Str:D :$auth!, Any :$api! ) {
+  update-build-meta    $!pg, :$id, :$meta;
+  update-build-name    $!pg, :$id, :$name;
+  update-build-version $!pg, :$id, :$version;
+  update-build-auth    $!pg, :$id, :$auth;
+
+  update-build-api     $!pg, :$id, :$api if $api;
+}
+
+multi method update-build-meta ( Int:D :$id!, Str:D :$meta! ) {
+  update-build-meta  $!pg, :$id, :$meta;
+}
+
 method update-build-test ( Int:D :$id!, Str:D :$test! ) {
   update-build-test  $!pg, :$id, :$test ;
 }

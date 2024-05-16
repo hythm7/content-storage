@@ -22,8 +22,8 @@ VALUES                 ( $name,  $version,  $auth,  $api,  $identity,  $meta,  $
 
 -- sub insert-build(Int :$userid!, Str :$filename! --> $)
 INSERT
-INTO   "build" (  "userid", "filename" )
-VALUES          (  $userid,  $filename  )
+INTO   "build" (  "userid", "filename", "meta", "test" )
+VALUES          (  $userid,  $filename, 'UNKNOWN', 'UNKNOWN'   )
 RETURNING "id"
 
 
@@ -31,6 +31,32 @@ RETURNING "id"
 UPDATE "build"
 set    "status" = $status
 WHERE  "id"     = $id
+
+-- sub update-build-meta(Int :$id!, Str :$meta! --> +)
+UPDATE "build"
+set    "meta" = $meta
+WHERE  "id"   = $id
+
+-- sub update-build-name(Int :$id!, Str :$name! --> +)
+UPDATE "build"
+set    "name" = $name
+WHERE  "id"   = $id
+
+
+-- sub update-build-version(Int :$id!, Str :$version! --> +)
+UPDATE "build"
+set    "version" = $version
+WHERE  "id"   = $id
+
+-- sub update-build-auth(Int :$id!, Str :$auth! --> +)
+UPDATE "build"
+set    "auth" = $auth
+WHERE  "id"   = $id
+
+-- sub update-build-api(Int :$id!, Str :$api! --> +)
+UPDATE "build"
+set    "api" = $api
+WHERE  "id"  = $id
 
 
 -- sub update-build-test(Int :$id!, Str :$test! --> +)

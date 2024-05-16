@@ -9,6 +9,7 @@
     "DB::Pg",
     "Badger",
     "File::Temp",
+    "JSON::Fast",
     "Libarchive",
     "Log::Dispatch",
     "Dev::ContainerizedService",

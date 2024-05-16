@@ -50,10 +50,12 @@ migration 'Setup', {
     add-column "filename", text(),    :!null;
 
 
-    add-column "name",     text(), :default( sql( "'UNKNOWN'" ) );
-    add-column "version",  text(), :default( sql( "'UNKNOWN'" ) );
-    add-column "auth",     text(), :default( sql( "'UNKNOWN'" ) );
-    add-column "api",      text(), :default( sql( "'UNKNOWN'" ) );
+    add-column "meta",     text(), :default( sql( "'UNKNOWN'" ) );
+
+    add-column "name",     text();
+    add-column "version",  text();
+    add-column "auth",     text();
+    add-column "api",      text();
 
     add-column "identity", text(), :default( sql( "'UNKNOWN'" ) );
 

@@ -1,4 +1,5 @@
 use File::Temp;
+use JSON::Fast;
 use Libarchive::Simple;
 use EventSource::Server;
 
@@ -50,34 +51,39 @@ has Supplier $!event-supplier;
 has Log::Dispatch:D $!logger is required;
 
 
-method meta ( IO::Path:D :$distribution-directory! --> Bool:D ) {
+method meta ( IO::Path:D :$meta! --> Bool:D ) {
 
-  self.log: :debug, 'meta: ' ~ $distribution-directory;
+  self.log: :debug, 'meta: ' ~ $meta;
 
-  #$!db.update-build-meta: :$!id, meta => RUNNING.key;
+  with $meta.e {
 
-  #self!server-message: :$!id, build => %( meta => RUNNING.value );
+    my %meta = from-json $meta.slurp;
 
-  my $meta-ok = $distribution-directory.add( 'META6.json' ).e;
+    my Str:D $name    = %meta<name>;
+    my Str:D $version = %meta<version>;
+    my Str:D $auth    = %meta<auth>;
+    my Any   $api     = %meta<api>;
 
-  if $meta-ok {
 
-  #  $!db.update-build-meta: :$!id, meta => SUCCESS.key;
+    $!db.update-build-meta: :$!id, :$name, :$version, :$auth, :$api, meta => SUCCESS.key;
 
-  #  self!server-message: :$!id, build => %( meta => SUCCESS.value );
+    self.log: :debug, 'meta: success';
 
-    True;
+    self!server-message: :$!id, build => %( :$name, :$version, :$auth, :$api, meta => SUCCESS.value );
 
-  } else {
-
-    #$!db.update-build-meta:   :$!id, meta   => ERROR.key;
-
-    self.log: :critical, 'meta: error ', 'why!';
-
-    #self!server-message: :$!id, build => %( meta => ERROR.value );
-
-    False;
+    return True;
   }
+
+    my Str:D $name    = ERROR.value;
+    my Str:D $version = ERROR.value;
+    my Str:D $auth    = ERROR.value;
+    my Any   $api     = ERROR.value;
+
+    $!db.update-build-meta: :$!id, :$name, :$version, :$auth, :$api;
+
+    self!server-message: :$!id, build => %( :$name, :$version, :$auth, :$api );
+
+    return False;
 
 }
 
@@ -111,7 +117,7 @@ method build ( --> Bool:D ) {
   %build<started> = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
   %build<status>  = RUNNING.value;
   
-  %build<meta name version auth api test> X= UNKNOWN.value;
+  %build<meta test> X= UNKNOWN.value;
   
   self!server-message: :$!id, :%build, operation => 'ADD';
 
@@ -121,7 +127,8 @@ method build ( --> Bool:D ) {
 
   .extract for archive-read( $!archive.body-blob, destpath => ~$distribution-directory );
 
-  my $meta = self.meta: :$distribution-directory;
+
+  my $meta = self.meta: meta => $distribution-directory.add: 'META6.json';
 
   unless $meta {
 
