@@ -15,7 +15,7 @@ sub build-routes( DistributionStorage $ds ) is export {
 
         my $user =  $session.user;
 
-        my @build = $ds.get-builds( );
+        my @build = $ds.select-build( );
 
         template 'builds.crotmp', { :$user, :@build };
       }

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var rowHTML  = '<tr data-bs-toggle="modal" data-bs-target="#buildLogModal" data-build-id="' + id + '">';
 
     rowHTML += '<td>' + data["status"]    + '</td>';
-    rowHTML += '<td>' + data["username"]  + '</td>';
+    rowHTML += '<td>' + data["user"]      + '</td>';
     rowHTML += '<td>' + data["filename"]  + '</td>';
     rowHTML += '<td>' + data["meta"]      + '</td>';
     rowHTML += '<td></td>';

@@ -14,10 +14,10 @@ sub user-routes(DistributionStorage $ds) is export {
     post -> DistributionStorage::Session $session, 'register' {
       request-body -> (:$username!, :$password!, *%) {
         
-        if $ds.get-user( :$username ) {
+        if $ds.select-user( :$username ) {
           template 'register.crotmp', { error => "User $username is already registered" };
         } else {
-          $ds.add-user(:$username, :password(argon2-hash($password)));
+          $ds.insert-user(:$username, :password(argon2-hash($password)));
           redirect :see-other, '/user/login';
         }
       }
@@ -29,7 +29,7 @@ sub user-routes(DistributionStorage $ds) is export {
 
     post -> DistributionStorage::Session $session, 'login' {
       request-body -> (:$username!, :$password!, *%) {
-        my $user = $ds.get-user( :$username );
+        my $user = $ds.select-user( :$username );
         with $user {
           if (argon2-verify(.password, $password)) {
             $session.set-logged-in-user( $user );

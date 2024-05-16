@@ -30,13 +30,13 @@
           <@build>
           <tr data-bs-toggle="modal" data-bs-target="#buildLogModal" data-build-id="<.id>">
             <td><&status( .status )></td>
-            <td><.username></td>
+            <td><.user></td>
             <td><.filename></td>
             <td><&status( .meta )></td>
-            <td><.name></td>
-            <td><.version></td>
-            <td><.auth></td>
-            <td><.api></td>
+            <td><?.name><.name></?></td>
+            <td><?.version><.version></?></td>
+            <td><?.auth><.auth></?></td>
+            <td><?.api><.api></?></td>
             <td><&status( .test )></td>
             <td><?.started><.started.yyyy-mm-dd>     <.started.hh-mm-ss></?></td>
             <td><?.completed><.completed.yyyy-mm-dd> <.completed.hh-mm-ss></?></td>

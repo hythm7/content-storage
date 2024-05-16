@@ -1,16 +1,16 @@
 -- use distribution-storage-model-user
 
--- sub add-user(Str :$username!, Str :$password! --> +)
+-- sub insert-user(Str :$username!, Str :$password! --> +)
 INSERT
 INTO   "user" (  "username",  "password" )
 values       ( $username, $password )
 
--- sub get-user(Int :$id! --> DistributionStorage::Model::User $)
-SELECT "id" "username", "password", "is-admin"
-FROM  "user"
-WHERE "id" = $id
+-- sub select-user-username(Int :$id! --> $)
+SELECT "username"
+FROM   "user"
+WHERE  "id" = $id
 
--- sub get-user(Str :$username! --> DistributionStorage::Model::User $)
+-- sub select-user(Str :$username! --> DistributionStorage::Model::User $)
 SELECT "id", "username", "password", "is-admin"
 FROM  "user"
 WHERE "username" = $username
@@ -20,10 +20,10 @@ INSERT
 INTO   "distribution" ( "name", "version", "auth", "api", "identity", "meta", "userid" )
 VALUES                 ( $name,  $version,  $auth,  $api,  $identity,  $meta,  $userid  )
 
--- sub insert-build(Int :$userid!, Str :$filename! --> $)
+-- sub insert-build(Int :$user!, Str :$filename! --> $)
 INSERT
-INTO   "build" (  "userid", "filename", "meta", "test" )
-VALUES          (  $userid,  $filename, 'UNKNOWN', 'UNKNOWN'   )
+INTO   "build" (  "user", "filename", "meta",    "test" )
+VALUES         (  $user,  $filename,  'UNKNOWN', 'UNKNOWN'   )
 RETURNING "id"
 
 
@@ -85,21 +85,33 @@ SELECT "completed"
 FROM   "build"
 WHERE  "id"        = $id
 
--- sub get-user(Str :$username! --> DistributionStorage::Model::User $)
+-- sub select-user(Str :$username! --> DistributionStorage::Model::User $)
 SELECT "id", "username", "password", "is-admin"
 FROM   "user"
 WHERE  "username" = $username
 
 
 
--- sub select-builds(--> @)
-SELECT   "b".*,
-       ( SELECT "username" FROM "user" WHERE "id" = "b"."userid" )
-FROM     "build" "b"
+-- sub select-build(--> @)
+SELECT "b"."id",   "b"."status",  "b"."filename", "b"."meta",
+       "b"."name", "b"."version", "b"."auth",     "b"."api",
+       "b"."test", "b"."started", "b"."completed",
+       ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
+
+FROM "build" "b"
+
 ORDER BY started DESC
 
--- sub select-build(Int :$id! --> %)
-SELECT "b".*, ( SELECT "username" FROM "user" WHERE "id" = "b"."userid" ) FROM "build" "b"
+
+-- sub select-build-by-id(Int :$id! --> %)
+SELECT "b"."id",   "b"."status",  "b"."filename", "b"."meta",
+       "b"."name", "b"."version", "b"."auth",     "b"."api",
+       "b"."test", "b"."started", "b"."completed",
+       ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
+
+
+FROM "build" "b"
+
 WHERE  "b"."id" = $id
 
 -- sub insert-into-provides(@provides --> +)
@@ -108,10 +120,14 @@ INTO   "provides" ( "distribution", "use", "file" )
 values       ({@provides.map({ 1, .key, .value}})
 
 
--- sub get-dists(--> @)
+-- sub select-distribution(--> @)
 SELECT * FROM "distribution"
 
--- sub get-user-dists(Int :$userid! --> @)
+-- sub select-distribution-by-id(Int :$id! --> $)
+SELECT * FROM "distribution"
+WHERE "id" = $id
+
+-- sub select-distribution-by-userid(Int :$userid! --> @)
 SELECT * FROM "distribution"
 WHERE "userid" = $userid
 

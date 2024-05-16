@@ -39,6 +39,8 @@ my class ServerSentEventsDestination {
 
 has $!db;
 
+has $!user;
+
 has Int:D $.id is required;
 
 has $!archive is required;
@@ -55,7 +57,7 @@ method meta ( IO::Path:D :$meta! --> Bool:D ) {
 
   self.log: :debug, 'meta: ' ~ $meta;
 
-  with $meta.e {
+  if $meta.e {
 
     my %meta = from-json $meta.slurp;
 
@@ -71,19 +73,16 @@ method meta ( IO::Path:D :$meta! --> Bool:D ) {
 
     self!server-message: :$!id, build => %( :$name, :$version, :$auth, :$api, meta => SUCCESS.value );
 
-    return True;
+    True;
+
+  } else {
+
+    $!db.update-build-meta: :$!id, meta => ERROR.key;
+
+    self!server-message: :$!id, build => %(  meta => ERROR.value );
+
+    False;
   }
-
-    my Str:D $name    = ERROR.value;
-    my Str:D $version = ERROR.value;
-    my Str:D $auth    = ERROR.value;
-    my Any   $api     = ERROR.value;
-
-    $!db.update-build-meta: :$!id, :$name, :$version, :$auth, :$api;
-
-    self!server-message: :$!id, build => %( :$name, :$version, :$auth, :$api );
-
-    return False;
 
 }
 
@@ -110,42 +109,56 @@ method build ( --> Bool:D ) {
   $!db.update-build-started: :$!id;
   $!db.update-build-status:  :$!id, status => RUNNING.key;
 
-  my %build = $!db.get-build( :$!id );
+  my $user     = $!user.username;
+  my $filename = $!archive.filename;
 
-  my $datetime = %build<started>;
+  my $datetime = $!db.select-build-started: :$!id;
 
-  %build<started> = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
-  %build<status>  = RUNNING.value;
+  my $started = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
+
+  my $status = RUNNING.value;
+  my $meta   = UNKNOWN.value;
+  my $test   = UNKNOWN.value;
   
-  %build<meta test> X= UNKNOWN.value;
-  
-  self!server-message: :$!id, :%build, operation => 'ADD';
+  self!server-message: :$!id, operation => 'ADD', build => %( :$status, :$user, :$filename, :$meta, :$test, :$started );
 
-  self.log: :debug, 'extract: ' ~ $!archive.filename;
+  self.log: :debug, 'extract: ' ~ $filename;
 
   my $distribution-directory = $!work-directory.add( 'distribution' );
 
   .extract for archive-read( $!archive.body-blob, destpath => ~$distribution-directory );
 
 
-  my $meta = self.meta: meta => $distribution-directory.add: 'META6.json';
+  my $status-meta = self.meta: meta => $distribution-directory.add: 'META6.json';
 
-  unless $meta {
+  if $status-meta {
+
+    $!db.update-build-status: :$!id, status => SUCCESS.key;
+
+    $!db.update-build-completed: :$!id;
+
+    my $datetime = $!db.select-build-completed: :$!id;
+
+    my $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
+
+    self!server-message: :$!id, build => %( status => SUCCESS.value, :$completed );
+
+    True;
+
+  } else {
 
     $!db.update-build-status: :$!id, status => ERROR.key;
 
-    self!server-message: :$!id, build => %( status => ERROR.value );
+    $!db.update-build-completed: :$!id;
 
-    return False;
+    my $datetime = $!db.select-build-completed: :$!id;
+
+    my $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
+
+    self!server-message: :$!id, build => %( status => ERROR.value, :$completed );
+
+    False;
   }
-
-  $!db.update-build-status: :$!id, status => SUCCESS.key;
-
-  self!server-message: :$!id, build => %( status => SUCCESS.value );
-
-  say 'Built!';
-
-  True;
 
 }
 
@@ -157,11 +170,9 @@ method !server-message ( Str:D :$target = 'BUILD', Str:D :$operation = 'UPDATE',
 }
 
 
-submethod BUILD( :$!db!, Int:D :$userid, :$!archive!, :$!event-supplier! ) {
+submethod BUILD( :$!db!, :$!user, :$!archive!, :$!event-supplier! ) {
 
-  my $filename = $!archive.filename;
-
-  $!id = $!db.new-build: :$filename, :$userid;
+  $!id = $!db.insert-build: user => $!user.id, filename => $!archive.filename;
 
   my $type = $!id.Str;
 

@@ -15,10 +15,10 @@ has Supply              $!supply       = $!supplier.Supply;
 has EventSource::Server $!event-source = EventSource::Server.new: :$!supply; 
 
 has DistributionStorage::Database $!db handles <
-  add-user
-  get-user
-  get-dists
-  get-user-dists
+  insert-user
+  select-user
+  select-distribution
+  select-distribution-by-userid
   delete-dist
   >;
 
@@ -29,7 +29,7 @@ my enum Operation <ADD UPDATE DELETE>;
 
 method distribution-add ( :$user, :$archive! ) {
 
-  my $build = DistributionStorage::Build.new( :$archive, :$!db, userid => $user.id, event-supplier => $!supplier );
+  my $build = DistributionStorage::Build.new( :$archive, :$!db, :$user, event-supplier => $!supplier );
 
 #  CATCH {
 #
@@ -83,9 +83,9 @@ method distribution-add ( :$user, :$archive! ) {
 
 }
 
-method get-builds ( ) {
+method select-build ( ) {
 
-  $!db.get-builds;
+  $!db.select-build;
 }
 
 submethod BUILD( DB::Pg :$pg! ) {

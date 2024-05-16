@@ -8,22 +8,14 @@ unit class DistributionStorage::Database;
 
 has $.pg;
 
-has %.dist;
+method insert-user( Str:D :$username!,  Str:D :$password! ) {
 
-method add-user(:$username!, :$password! ) {
-
-  add-user($!pg, :$username, :$password );
+  insert-user $!pg, :$username, :$password;
 
 }
 
-multi method get-user(Int :$id!) {
-
-  my DistributionStorage::Model::User $user = get-user( $!pg, :$id );
-
-}
-
-multi method get-user( Str :$username! ) {
-  my DistributionStorage::Model::User $user = get-user( $!pg, :$username );
+method select-user( Str :$username! ) {
+  my DistributionStorage::Model::User $user = select-user( $!pg, :$username );
 }
 
 method add-distribution( Str:D :$content!, :$user! ) {
@@ -34,28 +26,23 @@ method add-distribution( Str:D :$content!, :$user! ) {
 
 }
 
-method get-dist(UInt $id) {
-  #%!dist{$id}
-}
 
+method select-distribution ( ) { select-distribution( $!pg ) }
 
-method get-dists ( ) { get-dists( $!pg ) }
+method select-distribution-by-id     ( Int:D :$id!     ) { select-distribution-by-id     $!pg, :$id }
+method select-distribution-by-userid ( Int:D :$userid! ) { select-distribution-by-userid $!pg, :$userid }
 
-method get-user-dists ( :$userid! ) { get-user-dists( $!pg, :$userid ) }
+method delete-dist(:$identity!) { delete-dist $!pg, :$identity }
 
-method delete-dist(:$identity!) {
-  delete-dist( $!pg, :$identity )
-}
+method insert-build( Int:D :$user, Str:D :$filename! ) {
 
-method new-build( Int:D :$userid, Str:D :$filename! ) {
-
-  my $build-id = insert-build( $!pg, :$userid, :$filename )
+  my $build-id = insert-build $!pg, :$user, :$filename;
 
 }
 
-method get-builds(  ) { select-builds( $!pg ) }
 
-method get-build( Int:D :$id! ) { select-build( $!pg, :$id ) }
+method select-build( )                   { select-build $!pg             }
+method select-build-by-id( Int:D :$id! ) { select-build-by-id $!pg, :$id }
 
 method update-build-status( Int:D :$id!, Str:D :$status! ) {
   update-build-status $!pg, :$id, :$status;
@@ -87,15 +74,15 @@ method update-build-completed( Int:D :$id! ) {
 }
 
 
-method get-build-started( Int:D :$id! ) {
+method select-build-started( Int:D :$id! ) {
   select-build-started $!pg, :$id;
 }
 
-method get-build-completed( Int:D :$id! ) {
+method select-build-completed( Int:D :$id! ) {
   select-build-completed $!pg, :$id;
 }
 
-my sub distribution-add ( :$db!, :$meta!, :$userid! ) {
+my sub distribution-add ( :$db!, :$meta!, :$user! ) {
 
   my %meta = Rakudo::Internals::JSON.from-json($meta);
 
@@ -116,9 +103,9 @@ my sub distribution-add ( :$db!, :$meta!, :$userid! ) {
   
   $db.begin;
   
-  $db.query(q:to/END/, $name, $version, $auth, $api, $identity, $meta, $userid );
+  $db.query(q:to/END/, $name, $version, $auth, $api, $identity, $meta, $user );
     INSERT INTO distribution
-           ( name, version, auth, api, identity, meta, userid )
+           ( name, version, auth, api, identity, meta, user )
     values (   $1,      $2,   $3,  $4,       $5,   $6,     $7 )
     END
 
@@ -134,7 +121,7 @@ my sub distribution-add ( :$db!, :$meta!, :$userid! ) {
   $db.commit;
 
   $db.finish;
-  #insert-into-distribution($!pg, userid => $user, :$meta,
+  #insert-into-distribution($!pg, :$user, :$meta,
   #  :$name, :$version, :$auth, :$api, :$identity
   #);
 

@@ -15,7 +15,7 @@ sub distribution-routes( DistributionStorage $ds ) is export {
     get -> DistributionStorage::Session $session {
 
       my $user =  $session.user;
-      my @dist = $ds.get-dists.map( -> $dist {
+      my @dist = $ds.select-distribution.map( -> $dist {
         $dist<created> = Date.new($dist<created>).Str;
         $dist;
       });
@@ -26,7 +26,7 @@ sub distribution-routes( DistributionStorage $ds ) is export {
 
       
       my $user =  $session.user;
-      my @dist = $ds.get-user-dists( userid => $user.id ).map( -> $dist {
+      my @dist = $ds.select-distribution-by-userid( userid => $user.id ).map( -> $dist {
         $dist<created> = Date.new($dist<created>).Str;
         $dist;
       });

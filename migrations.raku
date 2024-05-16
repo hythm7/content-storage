@@ -46,7 +46,7 @@ migration 'Setup', {
 
     add-column "status", text(), :default( sql( "'UNKNOWN'" ) );
 
-    add-column "userid",   integer(), :!null;
+    add-column "user",     integer(), :!null;
     add-column "filename", text(),    :!null;
 
 
