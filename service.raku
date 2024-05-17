@@ -11,7 +11,6 @@ use distribution-storage-session;
 use distribution-storage-database;
 use distribution-storage-routes;
 
- 
 my $pg = DB::Pg.new(:conninfo(%*ENV<DB_CONN_INFO>));
 
 my $applicator = DB::Migration::Declare::Applicator.new:
@@ -51,7 +50,7 @@ my Cro::Service $http = Cro::HTTP::Server.new(
       cookie-name => '_distribution-storage-session')
     ], 
     after => [
-      Cro::HTTP::Log::File.new(logs => $*OUT, errors => $*ERR)
+      Cro::HTTP::Log::File.new( logs => $*OUT, errors => $*ERR )
     ]
   );
 

@@ -1,4 +1,8 @@
+import { AnsiUp } from 'ansi_up';
+
 document.addEventListener('DOMContentLoaded', function () {
+
+  const ansi = new AnsiUp;
 
   const buildTable = document.getElementById('distributions-build-table');
   const tableHead  = buildTable.getElementsByTagName('thead')[0];
@@ -75,10 +79,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var buildEvent = function (event) {
 
-      const newElement = document.createElement('li');
+      const newElement = document.createElement('div');
 
-      newElement.textContent = event.data;
-      buildLogModalBody.appendChild(newElement);
+      //newElement.HTMLContent = event.data;
+      newElement.innerHTML = ansi.ansi_to_html( event.data );
+      //newElement.textContent = ansi.ansi-to-html( event.data;
+      buildLogModalBody.prepend(newElement);
 
   }
 

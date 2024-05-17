@@ -89,12 +89,29 @@ method meta ( IO::Path:D :$meta! --> Bool:D ) {
 
 method test ( IO::Path:D :$distribution-directory! --> Bool:D ) {
 
-  my $install-directory = $distribution-directory.add( 'install' );
+ my $install-directory = $distribution-directory.add( 'install' );
 
- my $proc = run <<pakku nobar nospinner verbose all add contained to $install-directory $distribution-directory>>, :out, :err;
+ #my $proc = run <<pakku nobar nospinner verbose all force add contained to $install-directory $distribution-directory>>, :out, :err;
+ #$proc.out.lines.map( -> $line { self.log: $line } ); # OUTPUT: «Raku is Great!␤» 
+ #$proc.err.lines.map( -> $line { self.log: $line } ); # OUTPUT: «Raku is Great!␤» 
 
- $proc.out.lines.map( -> $line { self.log: $line } ); # OUTPUT: «Raku is Great!␤» 
- $proc.err.lines.map( -> $line { self.log: $line } ); # OUTPUT: «Raku is Great!␤» 
+ my @cmd = <<pakku nobar nospinner verbose all force add contained to $install-directory $distribution-directory>>;
+
+ my $proc = Proc::Async.new: @cmd;
+
+ my $exitcode;
+
+ react {
+
+   whenever $proc.stdout { self.log: $^out }
+   whenever $proc.stderr { self.log: $^err }
+
+   whenever $proc.start( :%*ENV ) {
+     $exitcode = .exitcode;
+     done;
+   }
+ }
+
 
  True;
 
@@ -121,6 +138,7 @@ method build ( --> Bool:D ) {
   
   self!server-message: :$!id, operation => 'ADD', build => %( :$status, :$user, :$filename, :$meta, :$test, :$started );
 
+  sleep 2;
 
   self.log: 'extract: ' ~ $filename;
 
