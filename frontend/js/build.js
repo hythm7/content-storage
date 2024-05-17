@@ -10,8 +10,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const tableHeadThs = Array.from(tableHead.getElementsByTagName('th')).map( (elem) => { return elem.innerText.toLowerCase() } );
 
-  const buildLogModal = document.getElementById('buildLogModal')
+  const buildLogModal     = document.getElementById('buildLogModal')
+  const buildLogs         = document.getElementById('build-logs')
+
   const buildLogModalBody = buildLogModal.querySelector('.modal-body')
+
   const evtSource = new EventSource('/server-sent-events');
 
   var buildAdd = function (id, data) {
@@ -79,23 +82,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var buildEvent = function (event) {
 
-      const newElement = document.createElement('div');
+    const element = document.createElement('div');
 
-      //newElement.HTMLContent = event.data;
-      newElement.innerHTML = ansi.ansi_to_html( event.data );
-      //newElement.textContent = ansi.ansi-to-html( event.data;
-      buildLogModalBody.prepend(newElement);
+    //newElement.HTMLContent = event.data;
+    element.innerHTML = ansi.ansi_to_html( event.data );
+    //newElement.textContent = ansi.ansi-to-html( event.data;
+    buildLogs.append(element);
 
   }
 
   buildLogModal.addEventListener('show.bs.modal', event => {
 
+
     var build = event.relatedTarget;
 
     var buildId = build.getAttribute('data-build-id')
 
-    //buildLogModal.setAttribute('data-build-id', buildId)
-
+    // if build is running
+    buildLogModalBody.classList.add('autoscrollable-wrapper');
     evtSource.addEventListener(buildId, buildEvent, false)
 
   })
@@ -107,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
     evtSource.removeEventListener(buildId, buildEvent, false)
 
     var buildLogModalBody = buildLogModal.querySelector('.modal-body')
-    buildLogModalBody.innerHTML = '';
+    buildLogs.innerHTML = '';
 
   })
 
