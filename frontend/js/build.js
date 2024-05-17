@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var buildEvent = function (event) {
 
-      const newElement = document.createElement('span');
+      const newElement = document.createElement('li');
 
       newElement.textContent = event.data;
       buildLogModalBody.appendChild(newElement);

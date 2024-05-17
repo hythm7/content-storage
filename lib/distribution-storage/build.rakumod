@@ -5,6 +5,7 @@ use EventSource::Server;
 
 use Log::Dispatch;
 use Log::Dispatch::TTY;
+use Log::Dispatch::File;
 use Log::Dispatch::Destination;
 use Log::Dispatch::Source;
 
@@ -23,10 +24,10 @@ my enum Status  is export  (
 my class ServerSentEventsDestination {
   also does Log::Dispatch::Destination;
 
-  has Str      $!type           is built;
-  has Supplier $!event-supplier is built;
+  has Str      $!type           is built is required;
+  has Supplier $!event-supplier is built is required;
 
-  method report(Log::Dispatch::Msg:D $message) {
+  method report( Log::Dispatch::Msg:D $message ) {
 
    my $event = EventSource::Server::Event.new( :$!type, data => $message.msg );
 
@@ -86,22 +87,20 @@ method meta ( IO::Path:D :$meta! --> Bool:D ) {
 
 }
 
+method test ( IO::Path:D :$distribution-directory! --> Bool:D ) {
 
-method extract ( Blob:D :$archive! --> Bool:D ) {
+  my $install-directory = $distribution-directory.add( 'install' );
 
-  self.log: :debug, 'extract: ' ~ $!archive.filename;
+ my $proc = run <<pakku nobar nospinner verbose all add contained to $install-directory $distribution-directory>>, :out, :err;
 
-  my $distribution-directory = $!work-directory.add( 'distribution' ).Str;
+ $proc.out.lines.map( -> $line { self.log: $line } ); # OUTPUT: «Raku is Great!␤» 
+ $proc.err.lines.map( -> $line { self.log: $line } ); # OUTPUT: «Raku is Great!␤» 
 
-  .extract for archive-read( $archive, destpath => $distribution-directory );
-
-  True;
+ True;
 
 }
 
 
-method logs ( --> Str ) { slurp $!log-file; }
-   
 method build ( --> Bool:D ) {
 
   self.log: :debug, 'build: ' ~ $!archive.filename;
@@ -122,7 +121,8 @@ method build ( --> Bool:D ) {
   
   self!server-message: :$!id, operation => 'ADD', build => %( :$status, :$user, :$filename, :$meta, :$test, :$started );
 
-  self.log: :debug, 'extract: ' ~ $filename;
+
+  self.log: 'extract: ' ~ $filename;
 
   my $distribution-directory = $!work-directory.add( 'distribution' );
 
@@ -155,11 +155,16 @@ method build ( --> Bool:D ) {
 
     my $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
 
+    self.log: :error, 'meta: error';
+
     self!server-message: :$!id, build => %( status => ERROR.value, :$completed );
 
-    False;
+    return False;
   }
 
+  my $status-test = self.test: :$distribution-directory;
+
+  True;
 }
 
 
@@ -182,8 +187,9 @@ submethod BUILD( :$!db!, :$!user, :$!archive!, :$!event-supplier! ) {
 
   $!logger = Log::Dispatch.new;
 
-  $!logger.add: Log::Dispatch::TTY, max-level => LOG-LEVEL::DEBUG;
-  $!logger.add: ServerSentEventsDestination.new( :$type, :$!event-supplier ), max-level => LOG-LEVEL::DEBUG;
+  $!logger.add: Log::Dispatch::TTY,          max-level => LOG-LEVEL::DEBUG;
+  $!logger.add: Log::Dispatch::File,         max-level => LOG-LEVEL::DEBUG,   file => $!log-file;
+  $!logger.add: ServerSentEventsDestination, max-level => LOG-LEVEL::DEBUG, :$type, :$!event-supplier;
   $!logger.add: self;
 
   #self.log: :critical, "Something is wrong! Cause: ", 'kokokoko';
