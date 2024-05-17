@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   evtSource.onerror = (err) => {
     console.error("EventSource failed:", err);
-  };
+  }
 
 
   evtSource.addEventListener('message',  (event) => {
@@ -84,10 +84,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const element = document.createElement('div');
 
-    //newElement.HTMLContent = event.data;
     element.innerHTML = ansi.ansi_to_html( event.data );
-    //newElement.textContent = ansi.ansi-to-html( event.data;
-    buildLogs.append(element);
+    buildLogs.appendChild(element);
 
   }
 
@@ -102,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
     buildLogModalBody.classList.add('autoscrollable-wrapper');
     evtSource.addEventListener(buildId, buildEvent, false)
 
-  })
+  });
 
   buildLogModal.addEventListener('hidden.bs.modal', event => {
 
@@ -113,6 +111,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var buildLogModalBody = buildLogModal.querySelector('.modal-body')
     buildLogs.innerHTML = '';
 
-  })
+  });
 
 });
