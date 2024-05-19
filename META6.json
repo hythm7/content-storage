@@ -13,9 +13,10 @@
     "Libarchive",
     "Log::Dispatch",
     "Dev::ContainerizedService",
-    "Cro::HTTP::Session::Pg",
     "Cro::HTTP",
+    "Cro::HTTP::Session::Pg",
     "Cro::WebApp",
+    "Cro::OpenAPI::RoutesFromDefinition",
     "Crypt::Argon2",
     "EventSource::Server",
     "JSON::Class:auth<zef:vrurg>"
@@ -24,6 +25,7 @@
   "license": "Artistic-2.0",
   "name": "distribution-storage",
   "perl": "6.d",
+  "api": "1",
   "provides": {
     "distribution-storage": "lib/distribution-storage.rakumod",
     "distribution-storage-build": "lib/distribution-storage/build.rakumod",
@@ -32,6 +34,7 @@
     "distribution-storage-model-distribution": "lib/distribution-storage/model/distribution.rakumod",
     "distribution-storage-session": "lib/distribution-storage/session.rakumod",
     "distribution-storage-routes": "lib/distribution-storage/routes.rakumod",
+    "distribution-storage-routes-api": "lib/distribution-storage/routes/api.rakumod",
     "distribution-storage-routes-user": "lib/distribution-storage/routes/user.rakumod",
     "distribution-storage-routes-build": "lib/distribution-storage/routes/build.rakumod",
     "distribution-storage-routes-distribution": "lib/distribution-storage/routes/distribution.rakumod"

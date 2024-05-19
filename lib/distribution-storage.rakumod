@@ -17,8 +17,8 @@ has EventSource::Server $!event-source = EventSource::Server.new: :$!supply;
 has DistributionStorage::Database $!db handles <
   insert-user
   select-user
+  select-user-password
   select-distribution
-  select-distribution-by-userid
   delete-dist
   >;
 

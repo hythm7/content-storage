@@ -1,6 +1,8 @@
+use JSON::Class:auth<zef:vrurg>;
+
 unit class DistributionStorage::Model::User;
+  also is json;
 
 has Int  $.id;
 has Str  $.username;
-has Str  $.password;
-#has Bool $.is-admin = False;
+has Bool $.is-admin = False;

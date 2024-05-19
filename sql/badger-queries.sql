@@ -1,19 +1,37 @@
 -- use distribution-storage-model-user
 
+-- sub select-user-username-by-id(Int :$id! --> %)
+SELECT "id", "username"
+FROM   "user"
+WHERE  "id" = $id
+
+-- sub select-user-password-by-username(Str :$username! --> %)
+SELECT "id", "password"
+FROM   "user"
+WHERE  "username" = $username
+
+
+-- sub select-user-by-id(Int :$id! --> DistributionStorage::Model::User $)
+SELECT "id", "username", "is-admin"
+FROM  "user"
+WHERE "id" = $id
+
+
+-- sub select-user-by-username(Str :$username! --> DistributionStorage::Model::User $)
+SELECT "id", "username", "is-admin"
+FROM  "user"
+WHERE "username" = $username
+
+-- sub select-user( --> @)
+SELECT "id", "username", "is-admin"
+FROM  "user"
+
+
 -- sub insert-user(Str :$username!, Str :$password! --> +)
 INSERT
 INTO   "user" (  "username",  "password" )
 values       ( $username, $password )
 
--- sub select-user-username(Int :$id! --> $)
-SELECT "username"
-FROM   "user"
-WHERE  "id" = $id
-
--- sub select-user(Str :$username! --> DistributionStorage::Model::User $)
-SELECT "id", "username", "password", "is-admin"
-FROM  "user"
-WHERE "username" = $username
 
 -- sub insert-into-distribution(Str :$name!, :$version!, :$auth!, :$api, :$identity!, :$meta!, :$userid! --> +)
 INSERT
@@ -84,13 +102,6 @@ WHERE  "id"     = $id
 SELECT "completed"
 FROM   "build"
 WHERE  "id"        = $id
-
--- sub select-user(Str :$username! --> DistributionStorage::Model::User $)
-SELECT "id", "username", "password", "is-admin"
-FROM   "user"
-WHERE  "username" = $username
-
-
 
 -- sub select-build(--> @)
 SELECT "b"."id",   "b"."status",  "b"."filename", "b"."meta",

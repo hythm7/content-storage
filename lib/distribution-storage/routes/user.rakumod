@@ -29,10 +29,12 @@ sub user-routes(DistributionStorage $ds) is export {
 
     post -> DistributionStorage::Session $session, 'login' {
       request-body -> (:$username!, :$password!, *%) {
-        my $user = $ds.select-user( :$username );
+        
+        my $user = $ds.select-user-password( :$username );
+
         with $user {
-          if (argon2-verify(.password, $password)) {
-            $session.set-logged-in-user( $user );
+          if (argon2-verify(.<password>, $password)) {
+            $session.set-logged-in-user( $ds.select-user( :$username ) );
             redirect :see-other, '/';
           } else {
             template 'login.crotmp', { :!logged-in, error => 'Incorrect password.' };
