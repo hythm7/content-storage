@@ -1,8 +1,5 @@
-use File::Temp;
-use Libarchive::Simple;
 use EventSource::Server;
 
-use DB::Pg;
 
 use distribution-storage-database;
 use distribution-storage-build;
@@ -42,12 +39,8 @@ method select-build ( ) {
   $!db.select-build;
 }
 
-submethod BUILD( DB::Pg :$pg! ) {
+submethod BUILD( :$pg! ) {
 
   $!db = DistributionStorage::Database.new: :$pg;
-}
 
-my sub status( Str:D :$status! --> Str:D ) {
-
-  my %status
 }

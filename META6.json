@@ -8,6 +8,7 @@
   "depends": [
     "DB::Pg",
     "Badger",
+    "DB::Migration::Declare::Applicator",
     "File::Temp",
     "JSON::Fast",
     "Libarchive",

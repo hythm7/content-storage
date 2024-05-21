@@ -10,19 +10,32 @@ sub api-routes(DistributionStorage $ds) is export {
 
   openapi 'openapi.json'.IO, :ignore-unimplemented, :!validate-responses, {
 
-    #operation 'userRead', -> Admin $session {
-    operation 'userRead', -> LoggedIn $session {
+    operation 'buildRead', -> DistributionStorage::Session $session {
 
-      my @user = $ds.select-user;
+      my @build = $ds.select-build;
 
-      content 'application/json', @user ;
+      content 'application/json', @build ;
     }
 
-    operation 'logout', -> DistributionStorage::Session $session {
+    operation 'buildUploadDistribution', -> LoggedIn $session {
+
+      my $user =  $session.user;
+
+      request-body -> (:$file) {
+
+        my @data = $file.map( -> $archive { $ds.distribution-add( :$user, :$archive ) } );
+
+        content 'application/json', @data;
+
+      }
+    }
+
+
+    operation 'userLogout', -> DistributionStorage::Session $session {
       $session.set-logged-in-user( Nil );
     }
 
-    operation 'login', -> DistributionStorage::Session $session {
+    operation 'userLogin', -> DistributionStorage::Session $session {
 
       request-body -> (:$username!, :$password!, *%) {
         
@@ -32,18 +45,17 @@ sub api-routes(DistributionStorage $ds) is export {
           if (argon2-verify(.<password>, $password)) {
             $user = $ds.select-user( :$username );
             $session.set-logged-in-user( $user );
-            say $user;
             content 'application/json', $user.to-json;
           } else {
-            content 'application/json', { error => 'Incorrect password.' };
+            bad-request 'application/json', { error => 'Incorrect password.' };
           }
         } else {
-            content 'application/json', { error => 'Incorrect username.' };
+            bad-request 'application/json', { error => 'Incorrect username.' };
         }
       }
     }
 
-    operation 'register', -> DistributionStorage::Session $session {
+    operation 'userCreate', -> DistributionStorage::Session $session {
 
       request-body -> (:$username!, :$password!, *%) {
         
@@ -54,6 +66,21 @@ sub api-routes(DistributionStorage $ds) is export {
           content 'application/json', { };
         }
       }
+    }
+
+    operation 'userLogout', -> DistributionStorage::Session $session {
+
+      $session.set-logged-in-user( Nil );
+      content 'application/json', { description => "successful operation" };
+
+    }
+
+    #operation 'userRead', -> Admin $session {
+    operation 'userRead', -> LoggedIn $session {
+
+      my @user = $ds.select-user;
+
+      content 'application/json', @user ;
     }
 
 

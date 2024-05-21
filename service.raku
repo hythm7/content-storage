@@ -5,6 +5,7 @@ use DB::Pg;
 use Cro::HTTP::Log::File;
 use Cro::HTTP::Server;
 use Cro::HTTP::Session::Pg;
+use Cro::HTTP::Client;
 
 use distribution-storage;
 use distribution-storage-session;
@@ -38,10 +39,10 @@ class SessionStore does Cro::HTTP::Session::Pg[DistributionStorage::Session] {
 
 my Cro::Service $http = Cro::HTTP::Server.new(
   http => <1.1>,
-  host => %*ENV<DISTRIBUTIONS_STORAGE_HOST> ||
-  die("Missing DISTRIBUTIONS_STORAGE_HOST in environment"),
-  port => %*ENV<DISTRIBUTIONS_STORAGE_PORT> ||
-  die("Missing DISTRIBUTIONS_STORAGE_PORT in environment"),
+  host => %*ENV<DISTRIBUTION_STORAGE_HOST> ||
+  die("Missing DISTRIBUTION_STORAGE_HOST in environment"),
+  port => %*ENV<DISTRIBUTION_STORAGE_PORT> ||
+  die("Missing DISTRIBUTION_STORAGE_PORT in environment"),
   application => routes( $ds ),
   before => [
     SessionStore.new(
@@ -56,7 +57,7 @@ my Cro::Service $http = Cro::HTTP::Server.new(
 
   $http.start;
 
-  say "Listening at http://%*ENV<DISTRIBUTIONS_STORAGE_HOST>:%*ENV<DISTRIBUTIONS_STORAGE_PORT>";
+  say "Listening at http://%*ENV<DISTRIBUTION_STORAGE_HOST>:%*ENV<DISTRIBUTION_STORAGE_PORT>";
 
   react {
     whenever signal(SIGINT) {

@@ -1,132 +1,420 @@
 {
-  "openapi": "3.0.0",
+  "openapi": "3.0.3",
   "info": {
-    "version": "1",
     "title": "Distribution Storage",
+    "description": "Raku Distribution Storage",
+    "contact": {
+      "email": "api@distribution-storage.pakku.org"
+    },
     "license": {
-      "name": "MIT"
-    }
+      "name": "Artistic License 2.0",
+      "url": "https://spdx.org/licenses/Artistic-2.0.html"
+    },
+    "version": "1"
   },
   "servers": [
     {
-      "url": "http://localhost:20000/api/v1"
+      "url": "https://distribution-storage.pakku.org/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "distribution",
+      "description": "Everything about distribution",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "build",
+      "description": "Build",
+      "externalDocs": {
+        "description": "Find out more about our build",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "user",
+      "description": "Operations about user"
     }
   ],
   "paths": {
-    "/user/login": {
+    "/distribution": {
       "post": {
-        "summary": "Login",
-        "operationId": "login",
         "tags": [
-          "user"
+          "distribution"
         ],
-        "responses": {
-          "201": {
-            "description": "Null response"
+        "summary": "Add a new distribution to the storage",
+        "description": "Add a new distribution to the storage",
+        "operationId": "addPet",
+        "requestBody": {
+          "description": "Create a new distribution in the storage",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Pet"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Pet"
+              }
+            }
           },
-          "default": {
-            "description": "unexpected error",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/Pet"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "422": {
+            "description": "Validation exception"
           }
         }
       }
     },
-    "/user/register": {
-      "post": {
-        "summary": "Register",
-        "operationId": "register",
-        "tags": [
-          "user"
-        ],
-        "responses": {
-          "201": {
-            "description": "Null response"
-          },
-          "default": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user/logout": {
+    "/distribution/findByStatus": {
       "get": {
-        "summary": "Logout user",
-        "operationId": "logout",
         "tags": [
-          "user"
+          "distribution"
+        ],
+        "summary": "Finds Pets by status",
+        "description": "Multiple status values can be provided with comma separated strings",
+        "operationId": "findPetsByStatus",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Status values that need to be considered for filter",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "default": "available",
+              "enum": [
+                "available",
+                "pending",
+                "sold"
+              ]
+            }
+          }
         ],
         "responses": {
           "200": {
-            "description": "Expected response to a valid request",
+            "description": "successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Users"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pet"
+                  }
                 }
               }
             }
           },
-          "default": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+          "400": {
+            "description": "Invalid status value"
           }
         }
       }
     },
-    "/user/{userid}": {
+    "/distribution/findByTags": {
       "get": {
-        "summary": "Info for a specific user",
-        "operationId": "getUserById",
         "tags": [
-          "user"
+          "distribution"
         ],
+        "summary": "Finds Pets by tags",
+        "description": "Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
+        "operationId": "findPetsByTags",
         "parameters": [
           {
-            "name": "userid",
+            "name": "tags",
+            "in": "query",
+            "description": "Tags to filter by",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pet"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        }
+      }
+    },
+    "/distribution/{distributionId}": {
+      "get": {
+        "tags": [
+          "distribution"
+        ],
+        "summary": "Find distribution by ID",
+        "description": "Returns a single distribution",
+        "operationId": "getPetById",
+        "parameters": [
+          {
+            "name": "distributionId",
             "in": "path",
+            "description": "ID of distribution to return",
             "required": true,
-            "description": "The id of the user to retrieve",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pet"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Pet not found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "distribution"
+        ],
+        "summary": "Updates a distribution in the storage with form data",
+        "description": "",
+        "operationId": "updatePetWithForm",
+        "parameters": [
+          {
+            "name": "distributionId",
+            "in": "path",
+            "description": "ID of distribution that needs to be updated",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name of distribution that needs to be updated",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Status of distribution that needs to be updated",
             "schema": {
               "type": "string"
             }
           }
         ],
         "responses": {
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "distribution"
+        ],
+        "summary": "Deletes a distribution",
+        "description": "delete a distribution",
+        "operationId": "deletePet",
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "distributionId",
+            "in": "path",
+            "description": "Pet id to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid distribution value"
+          }
+        }
+      }
+    },
+    "/distribution/{distributionId}/uploadImage": {
+      "post": {
+        "tags": [
+          "distribution"
+        ],
+        "summary": "uploads an image",
+        "description": "",
+        "operationId": "uploadFile",
+        "parameters": [
+          {
+            "name": "distributionId",
+            "in": "path",
+            "description": "ID of distribution to update",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "additionalMetadata",
+            "in": "query",
+            "description": "Additional Metadata",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
           "200": {
-            "description": "Expected response to a valid request",
+            "description": "successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Users"
+                  "$ref": "#/components/schemas/ApiResponse"
                 }
               }
             }
-          },
+          }
+        }
+      }
+    },
+    "/build": {
+      "get": {    
+        "summary": "List all builds",
+        "operationId": "buildRead",
+        "tags": [
+          "build"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "How many items to return at one time (max 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],  
+        "responses": {
+          "200": {
+            "description": "An paged array of builds",
+            "headers": {
+              "x-next": {
+                "description": "A link to the next page of responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Builds"
+                }
+              }   
+            }   
+          },  
           "default": {
             "description": "unexpected error",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }   
+      },
+      "post": {
+        "tags": [
+          "build"
+        ],
+        "summary": "Upload Distribution",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "buildUploadDistribution",
+        "requestBody": {
+          "description": "Created build object",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Build"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
                 }
               }
             }
@@ -135,7 +423,7 @@
       }
     },
     "/user": {
-      "get": {
+      "get": {    
         "summary": "List all users",
         "operationId": "userRead",
         "tags": [
@@ -152,7 +440,7 @@
               "format": "int32"
             }
           }
-        ],
+        ],  
         "responses": {
           "200": {
             "description": "An paged array of users",
@@ -169,9 +457,9 @@
                 "schema": {
                   "$ref": "#/components/schemas/Users"
                 }
-              }
-            }
-          },
+              }   
+            }   
+          },  
           "default": {
             "description": "unexpected error",
             "content": {
@@ -182,27 +470,239 @@
               }
             }
           }
-        }
+        }   
       },
       "post": {
-        "summary": "Create a user",
-        "operationId": "createUser",
         "tags": [
           "user"
         ],
+        "summary": "Create user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "userCreate",
+        "requestBody": {
+          "description": "Created user object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
         "responses": {
-          "201": {
-            "description": "Null response"
-          },
           "default": {
-            "description": "unexpected error",
+            "description": "successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/User"
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/user/createWithList": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Creates list of users with given input array",
+        "description": "Creates list of users with given input array",
+        "operationId": "createUsersWithListInput",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Logs user into the system",
+        "description": "",
+        "operationId": "userLogin",
+        "requestBody": {
+          "description": "Create a new usere",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username/password supplied"
+          }
+        }
+      }
+    },
+    "/user/logout": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Logs out current logged in user session",
+        "description": "",
+        "operationId": "userLogout",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/user/{username}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get user by user name",
+        "description": "",
+        "operationId": "getUserByName",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "The name that needs to be fetched. Use user1 for testing. ",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "name that need to be deleted",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update an existent user in the store",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Delete user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "The name that needs to be deleted",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid username supplied"
+          },
+          "404": {
+            "description": "User not found"
           }
         }
       }
@@ -210,32 +710,267 @@
   },
   "components": {
     "schemas": {
+      "Order": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "distributionId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 198772
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32",
+            "example": 7
+          },
+          "shipDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "description": "Order Status",
+            "example": "approved",
+            "enum": [
+              "placed",
+              "approved",
+              "delivered"
+            ]
+          },
+          "complete": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 100000
+          },
+          "username": {
+            "type": "string",
+            "example": "fehguy"
+          },
+          "address": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Address"
+            }
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "street": {
+            "type": "string",
+            "example": "437 Lytton"
+          },
+          "city": {
+            "type": "string",
+            "example": "Palo Alto"
+          },
+          "state": {
+            "type": "string",
+            "example": "CA"
+          },
+          "zip": {
+            "type": "string",
+            "example": "94301"
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Dogs"
+          }
+        }
+      },
+      "Build": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 42
+          },
+          "status": {
+            "type": "string",
+            "example": "RUNNING"
+          },
+          "user": {
+            "type": "string",
+            "example": "john"
+          },
+          "filename": {
+            "type": "string",
+            "example": "filename"
+          },
+          "meta": {
+            "type": "string",
+            "example": "SUCCESS"
+          },
+          "name": {
+            "type": "string",
+            "example": "Name"
+          },
+          "version": {
+            "type": "string",
+            "example": "0.0.1"
+          },
+          "auth": {
+            "type": "string",
+            "example": "raku:username"
+          },
+          "api": {
+            "type": "string",
+            "example": "1"
+          },
+          "test": {
+            "type": "string",
+            "example": "SUCCESS"
+          },
+          "started": {
+            "type": "string",
+            "example": "2024-05-19 10:46:51"
+          },
+          "completed": {
+            "type": "string",
+            "example": "2024-05-19 10:46:51"
+          }
+        }
+      },
       "User": {
-        "required": [
-          "id",
-          "username",
-          "password"
-        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "username": {
+            "type": "string",
+            "example": "theUser"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "James"
+          },
+          "email": {
+            "type": "string",
+            "example": "john@email.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "12345"
+          },
+          "userStatus": {
+            "type": "integer",
+            "description": "User Status",
+            "format": "int32",
+            "example": 1
+          }
+        }
+      },
+      "Tag": {
+        "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "format": "int64"
           },
-          "username": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "tag": {
+          "name": {
             "type": "string"
           }
+        }
+      },
+      "Pet": {
+        "required": [
+          "name",
+          "photoUrls"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "name": {
+            "type": "string",
+            "example": "doggie"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "photoUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "distribution status in the store",
+            "enum": [
+              "available",
+              "pending",
+              "sold"
+            ]
+          }
+        }
+      },
+      "Builds": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Build"
         }
       },
       "Users": {
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/User"
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
         }
       },
       "Error": {
@@ -250,6 +985,31 @@
           },
           "message": {
             "type": "string"
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "Pet": {
+        "description": "Pet object that needs to be added to the store",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Pet"
+            }
+          }
+        }
+      },
+      "UserArray": {
+        "description": "List of user object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
           }
         }
       }

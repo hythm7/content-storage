@@ -17,23 +17,23 @@ sub user-routes(DistributionStorage $ds) is export {
         if $ds.select-user( :$username ) {
           template 'register.crotmp', { error => "User $username is already registered" };
         } else {
-          $ds.insert-user(:$username, :password(argon2-hash($password)));
+          $ds.insert-user(:$username, :password( argon2-hash( $password ) ) );
           redirect :see-other, '/user/login';
         }
       }
     }
 
     get -> DistributionStorage::Session $session, 'login' {
-      template 'login.crotmp', { :logged-in($session.user.defined), :!error };
+      template 'login.crotmp', { :logged-in( $session.user.defined ), :!error };
     }
 
     post -> DistributionStorage::Session $session, 'login' {
-      request-body -> (:$username!, :$password!, *%) {
+      request-body -> ( :$username!, :$password!, *% ) {
         
         my $user = $ds.select-user-password( :$username );
 
         with $user {
-          if (argon2-verify(.<password>, $password)) {
+          if (argon2-verify( .<password>, $password ) ) {
             $session.set-logged-in-user( $ds.select-user( :$username ) );
             redirect :see-other, '/';
           } else {
