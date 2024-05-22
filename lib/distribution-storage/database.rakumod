@@ -43,10 +43,10 @@ method add-distribution( Str:D :$content!, :$user! ) {
 }
 
 
-method select-distribution ( ) { select-distribution( $!pg ) }
+multi method select-distribution ( ) { select-distribution( $!pg ) }
 
-method select-distribution-by-id     ( Int:D :$id!     ) { select-distribution-by-id     $!pg, :$id }
-method select-distribution-by-userid ( Int:D :$userid! ) { select-distribution-by-userid $!pg, :$userid }
+multi method select-distribution ( Int:D :$id!     ) { select-distribution-by-id     $!pg, :$id     }
+multi method select-distribution ( Int:D :$userid! ) { select-distribution-by-userid $!pg, :$userid }
 
 method delete-dist(:$identity!) { delete-dist $!pg, :$identity }
 
