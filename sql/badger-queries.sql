@@ -40,8 +40,8 @@ VALUES                 ( $name,  $version,  $auth,  $api,  $identity,  $meta,  $
 
 -- sub insert-build(Int :$user!, Str :$filename! --> $)
 INSERT
-INTO   "build" (  "user", "filename", "meta",    "test" )
-VALUES         (  $user,  $filename,  'UNKNOWN', 'UNKNOWN'   )
+INTO   "build" (  "user", "filename", "meta",    "test"    )
+VALUES         (  $user,  $filename,  'UNKNOWN', 'UNKNOWN' )
 RETURNING "id"
 
 
@@ -53,6 +53,11 @@ WHERE  "id"     = $id
 -- sub update-build-meta(Int :$id!, Str :$meta! --> +)
 UPDATE "build"
 set    "meta" = $meta
+WHERE  "id"   = $id
+
+-- sub update-build-identity(Int :$id!, Str :$identity! --> +)
+UPDATE "build"
+set    "identity" = $identity
 WHERE  "id"   = $id
 
 -- sub update-build-name(Int :$id!, Str :$name! --> +)
@@ -104,9 +109,9 @@ FROM   "build"
 WHERE  "id"        = $id
 
 -- sub select-build(--> @)
-SELECT "b"."id",   "b"."status",  "b"."filename", "b"."meta",
-       "b"."name", "b"."version", "b"."auth",     "b"."api",
-       "b"."test", "b"."started", "b"."completed",
+SELECT "b"."id",       "b"."status",  "b"."filename", "b"."meta",
+       "b"."name",     "b"."version", "b"."auth",     "b"."api",
+       "b"."identity", "b"."test",    "b"."started",  "b"."completed",
        ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
 
 FROM "build" "b"
@@ -115,9 +120,9 @@ ORDER BY started DESC
 
 
 -- sub select-build-by-id(Int :$id! --> %)
-SELECT "b"."id",   "b"."status",  "b"."filename", "b"."meta",
-       "b"."name", "b"."version", "b"."auth",     "b"."api",
-       "b"."test", "b"."started", "b"."completed",
+SELECT "b"."id",       "b"."status",  "b"."filename", "b"."meta",
+       "b"."name",     "b"."version", "b"."auth",     "b"."api",
+       "b"."identity", "b"."test",    "b"."started",  "b"."completed",
        ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
 
 

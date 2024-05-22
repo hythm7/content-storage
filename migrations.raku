@@ -57,7 +57,7 @@ migration 'Setup', {
     add-column "auth",     text();
     add-column "api",      text();
 
-    add-column "identity", text(), :default( sql( "'UNKNOWN'" ) );
+    add-column "identity", text();
 
 
     add-column "test",  text(), :default( sql( "'UNKNOWN'" ) );

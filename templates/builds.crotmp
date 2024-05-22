@@ -17,10 +17,7 @@
             <th scope="col">User</th>
             <th scope="col">Filename</th>
             <th scope="col">Meta</th>
-            <th scope="col">Name</th>
-            <th scope="col">Version</th>
-            <th scope="col">Auth</th>
-            <th scope="col">Api</th>
+            <th scope="col">Identity</th>
             <th scope="col">Test</th>
             <th scope="col">Started</th>
             <th scope="col">Completed</th>
@@ -33,10 +30,7 @@
             <td><.user></td>
             <td><.filename></td>
             <td><&status( .meta )></td>
-            <td><?.name><.name></?></td>
-            <td><?.version><.version></?></td>
-            <td><?.auth><.auth></?></td>
-            <td><?.api><.api></?></td>
+            <td><?.identity><.identity></?></td>
             <td><&status( .test )></td>
             <td><?.started><.started.yyyy-mm-dd>     <.started.hh-mm-ss></?></td>
             <td><?.completed><.completed.yyyy-mm-dd> <.completed.hh-mm-ss></?></td>

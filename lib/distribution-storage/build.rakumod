@@ -54,133 +54,127 @@ has Supplier $!event-supplier;
 has Log::Dispatch:D $!logger is required;
 
 
-method meta ( IO::Path:D :$meta! --> Bool:D ) {
-
-  self.log: :debug, 'meta: ' ~ $meta;
-
-  if $meta.e {
-
-    my %meta = from-json $meta.slurp;
-
-    my Str:D $name    = %meta<name>;
-    my Str:D $version = %meta<version>;
-    my Str:D $auth    = %meta<auth>;
-    my Any   $api     = %meta<api>;
-
-
-    $!db.update-build-meta: :$!id, :$name, :$version, :$auth, :$api, meta => SUCCESS.key;
-
-    self.log: :debug, 'meta: success';
-
-    self!server-message: :$!id, build => %( :$name, :$version, :$auth, :$api, meta => SUCCESS.value );
-
-    True;
-
-  } else {
-
-    $!db.update-build-meta: :$!id, meta => ERROR.key;
-
-    self!server-message: :$!id, build => %(  meta => ERROR.value );
-
-    False;
-  }
-
-}
-
-method test ( IO::Path:D :$distribution-directory! --> Bool:D ) {
-
- my $install-directory = $distribution-directory.add( 'install' );
-
- #my $proc = run <<pakku nobar nospinner verbose all force add contained to $install-directory $distribution-directory>>, :out, :err;
- #$proc.out.lines.map( -> $line { self.log: $line } ); # OUTPUT: «Raku is Great!␤» 
- #$proc.err.lines.map( -> $line { self.log: $line } ); # OUTPUT: «Raku is Great!␤» 
-
- my @cmd = <<pakku nobar nospinner verbose all force add contained to $install-directory $distribution-directory>>;
-
- my $proc = Proc::Async.new: @cmd;
-
- my $exitcode;
-
- react {
-
-   whenever $proc.stdout { self.log: $^out }
-   whenever $proc.stderr { self.log: $^err }
-
-   whenever $proc.start( :%*ENV ) {
-     $exitcode = .exitcode;
-     done;
-   }
- }
-
-
- True;
-
-}
-
-
 method build ( --> Bool:D ) {
 
-  self.log: :debug, 'build: ' ~ $!archive.filename;
-  
-  $!db.update-build-started: :$!id;
-  $!db.update-build-status:  :$!id, status => RUNNING.key;
+  my $datetime;
+  my $started;
+  my $completed;
+
+  my $status;
+  my $meta;
+  my $test;
 
   my $user     = $!user.username;
   my $filename = $!archive.filename;
 
-  my $datetime = $!db.select-build-started: :$!id;
+  $!db.update-build-started: :$!id;
+  $!db.update-build-status:  :$!id, status => RUNNING.key;
 
-  my $started = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
+  $datetime = $!db.select-build-started: :$!id;
 
-  my $status = RUNNING.value;
-  my $meta   = UNKNOWN.value;
-  my $test   = UNKNOWN.value;
+  $started = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
+
+  $status   = RUNNING.value;
+  $meta     = UNKNOWN.value;
+  $test     = UNKNOWN.value;
   
   self!server-message: :$!id, operation => 'ADD', build => %( :$status, :$user, :$filename, :$meta, :$test, :$started );
 
-  sleep 2;
-
-  self.log: 'extract: ' ~ $filename;
 
   my $distribution-directory = $!work-directory.add( 'distribution' );
 
   .extract for archive-read( $!archive.body-blob, destpath => ~$distribution-directory );
 
 
-  my $status-meta = self.meta: meta => $distribution-directory.add: 'META6.json';
+  my $meta-file = $distribution-directory.add: 'META6.json';
 
-  if $status-meta {
+  unless $meta-file.e {
 
-    $!db.update-build-status: :$!id, status => SUCCESS.key;
-
-    $!db.update-build-completed: :$!id;
-
-    my $datetime = $!db.select-build-completed: :$!id;
-
-    my $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
-
-    self!server-message: :$!id, build => %( status => SUCCESS.value, :$completed );
-
-    True;
-
-  } else {
+    $!db.update-build-meta: :$!id, meta => ERROR.key;
 
     $!db.update-build-status: :$!id, status => ERROR.key;
 
     $!db.update-build-completed: :$!id;
 
-    my $datetime = $!db.select-build-completed: :$!id;
+    $datetime = $!db.select-build-completed: :$!id;
 
-    my $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
+    $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
 
-    self.log: :error, 'meta: error';
-
-    self!server-message: :$!id, build => %( status => ERROR.value, :$completed );
+    self!server-message: :$!id, build => %( test => $test.value, status => $test.value, :$completed );
 
     return False;
+
   }
 
-  my $status-test = self.test: :$distribution-directory;
+
+  my %meta = from-json $meta-file.slurp;
+
+  my Str:D $name    = %meta<name>;
+  my Str:D $version = %meta<version>;
+  my Str:D $auth    = %meta<auth>;
+  my Any   $api     = %meta<api>;
+
+  my $identity = identity :$name, :$version, :$auth, :$api;
+
+  $!db.update-build-meta: :$!id,   meta => SUCCESS.key;
+
+  $!db.update-build-name:    :$!id, :$name;
+  $!db.update-build-version: :$!id, :$version;
+  $!db.update-build-auth:    :$!id, :$auth;
+  $!db.update-build-api:     :$!id, :$api if $api;
+
+  $!db.update-build-identity: :$!id, :$identity;
+
+  self.log: :debug, 'meta: success';
+  self.log: :debug, "identity: $identity";
+
+
+  self!server-message: :$!id, build => %( :$identity, meta => SUCCESS.value );
+
+
+  $test = RUNNING;
+
+  $!db.update-build-test:   :$!id, test   => $test.key;
+
+  self!server-message: :$!id, build => %( test => $test.value );
+
+  my $install-directory = $distribution-directory.add( 'install' );
+
+  my @cmd = <<pakku nobar nospinner verbose all force add contained to $install-directory $distribution-directory>>;
+
+  my $proc = Proc::Async.new: @cmd;
+
+  my $exitcode;
+
+  react {
+
+    whenever $proc.stdout { self.log: $^out }
+    whenever $proc.stderr { self.log: $^err }
+
+    whenever $proc.start( :%*ENV ) {
+      $exitcode = .exitcode;
+      done;
+    }
+  }
+
+
+
+  $test = $exitcode ?? ERROR !! SUCCESS;
+
+  $!db.update-build-test:   :$!id, test   => $test.key;
+  $!db.update-build-status: :$!id, status => $test.key;
+
+  $!db.update-build-completed: :$!id;
+
+  $datetime = $!db.select-build-completed: :$!id;
+
+  $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
+
+  self!server-message: :$!id, build => %( test => $test.value, status => $test.value, :$completed );
+
+  # TODO Add logs to db
+
+  return False if $exitcode;
 
   True;
 }
@@ -213,3 +207,9 @@ submethod BUILD( :$!db!, :$!user, :$!archive!, :$!event-supplier! ) {
   #self.log: :critical, "Something is wrong! Cause: ", 'kokokoko';
 
 }  
+
+my sub identity ( Str:D :$name!, Str:D :$version!, Str:D :$auth!, Any :$api! --> Str:D ) {
+
+  "$auth:{ $name.subst( '::', '-', :g ) }:$version:$api";
+
+}

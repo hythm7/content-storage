@@ -64,39 +64,24 @@ method update-build-status( Int:D :$id!, Str:D :$status! ) {
   update-build-status $!pg, :$id, :$status;
 }
 
-multi method update-build-meta ( Int:D :$id!, Str:D :$meta!, Str:D :$name!, Str:D :$version!, Str:D :$auth!, Any :$api! ) {
-  update-build-meta    $!pg, :$id, :$meta;
-  update-build-name    $!pg, :$id, :$name;
-  update-build-version $!pg, :$id, :$version;
-  update-build-auth    $!pg, :$id, :$auth;
+method update-build-meta ( Int:D :$id!, Str:D :$meta! ) { update-build-meta    $!pg, :$id, :$meta }
 
-  update-build-api     $!pg, :$id, :$api if $api;
-}
+method update-build-name    ( Int:D :$id!, Str:D :$name!    ) { update-build-name    $!pg, :$id, :$name    }
+method update-build-version ( Int:D :$id!, Str:D :$version! ) { update-build-version $!pg, :$id, :$version }
+method update-build-auth    ( Int:D :$id!, Str:D :$auth!    ) { update-build-auth    $!pg, :$id, :$auth    }
+method update-build-api     ( Int:D :$id!, Str:D :$api!     ) { update-build-api     $!pg, :$id, :$api     }
 
-multi method update-build-meta ( Int:D :$id!, Str:D :$meta! ) {
-  update-build-meta  $!pg, :$id, :$meta;
-}
-
-method update-build-test ( Int:D :$id!, Str:D :$test! ) {
-  update-build-test  $!pg, :$id, :$test ;
-}
-
-method update-build-started( Int:D :$id! ) {
-  update-build-started $!pg, :$id;
-}
-
-method update-build-completed( Int:D :$id! ) {
-  update-build-completed $!pg, :$id;
-}
+method update-build-identity ( Int:D :$id!, Str:D :$identity! ) { update-build-identity $!pg, :$id, :$identity }
 
 
-method select-build-started( Int:D :$id! ) {
-  select-build-started $!pg, :$id;
-}
+method update-build-test ( Int:D :$id!, Str:D :$test! ) { update-build-test  $!pg, :$id, :$test  }
 
-method select-build-completed( Int:D :$id! ) {
-  select-build-completed $!pg, :$id;
-}
+method update-build-started(   Int:D :$id! ) { update-build-started $!pg,   :$id }
+method update-build-completed( Int:D :$id! ) { update-build-completed $!pg, :$id }
+
+
+method select-build-started(   Int:D :$id! ) { select-build-started $!pg,   :$id }
+method select-build-completed( Int:D :$id! ) { select-build-completed $!pg, :$id }
 
 my sub distribution-add ( :$db!, :$meta!, :$user! ) {
 
