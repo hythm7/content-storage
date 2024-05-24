@@ -29,7 +29,7 @@
   "api": "1",
   "provides": {
     "distribution-storage": "lib/distribution-storage.rakumod",
-    "distribution-storage-build": "lib/distribution-storage/build.rakumod",
+    "distribution-storage-utils": "lib/distribution-storage/utils.rakumod",
     "distribution-storage-database": "lib/distribution-storage/database.rakumod",
     "distribution-storage-model-user": "lib/distribution-storage/model/user.rakumod",
     "distribution-storage-model-distribution": "lib/distribution-storage/model/distribution.rakumod",

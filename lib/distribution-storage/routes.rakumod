@@ -19,7 +19,7 @@ sub routes(DistributionStorage $ds) is export {
                         build-routes( $ds );
 
     get -> DistributionStorage::Session $session, 'server-sent-events' {
-      content 'text/event-stream', $ds.build-supply;
+      content 'text/event-stream', $ds.event-source-server.out-supply;
     }
 
     get -> 'static', *@path {

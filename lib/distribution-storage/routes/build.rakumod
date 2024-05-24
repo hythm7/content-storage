@@ -22,13 +22,15 @@ sub build-routes( DistributionStorage $ds ) is export {
 
       post -> LoggedIn $session {
 
-        my $user =  $session.user;
+        my $user =  $session.user.id;
 
         request-body -> (:$file-input) {
 
-          my @data = $file-input.map( -> $archive { $ds.distribution-add( :$user, :$archive ) } );
+          my $file = $file-input[0];
 
-          content 'application/json', @data;
+          my %data = $ds.distribution-add( :$user, :$file );
+
+          content 'application/json', %data;
 
         }
       }
