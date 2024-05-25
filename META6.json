@@ -10,8 +10,10 @@
     "Badger",
     "DB::Migration::Declare::Applicator",
     "File::Temp",
+    "Concurrent::File::Find",
     "JSON::Fast",
     "Libarchive",
+    "JSON::Class:auth<zef:vrurg>",
     "Log::Dispatch",
     "Dev::ContainerizedService",
     "Cro::HTTP",
@@ -20,7 +22,7 @@
     "Cro::OpenAPI::RoutesFromDefinition",
     "Crypt::Argon2",
     "EventSource::Server",
-    "JSON::Class:auth<zef:vrurg>"
+    "Pakku"
   ],
   "description": "Recommendation Manager for Raku distributions",
   "license": "Artistic-2.0",
