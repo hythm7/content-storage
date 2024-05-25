@@ -22,7 +22,7 @@ sub build-routes( DistributionStorage $ds ) is export {
 
       post -> LoggedIn $session {
 
-        my $user =  $session.user.id;
+        my $user =  $session.user;
 
         request-body -> (:$file-input) {
 

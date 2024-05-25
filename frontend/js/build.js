@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
     rowHTML += '<td>' + data["meta"]      + '</td>';
     rowHTML += '<td></td>';
     rowHTML += '<td>' + data["test"]      + '</td>';
-    rowHTML += '<td>' + data["started"]   + '</td>';
+    rowHTML += '<td></td>';
     rowHTML += '<td></td>';
 
     rowHTML += '</tr>';

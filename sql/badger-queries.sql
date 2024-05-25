@@ -40,8 +40,8 @@ VALUES                 ( $name,  $version,  $auth,  $api,  $identity,  $meta,  $
 
 -- sub insert-build(Int :$user!, Str :$filename! --> $)
 INSERT
-INTO   "build" (  "user", "filename", "meta",    "test"    )
-VALUES         (  $user,  $filename,  'UNKNOWN', 'UNKNOWN' )
+INTO   "build" (  "status",  "user", "filename", "meta",    "test"    )
+VALUES         (  'UNKNOWN', $user,  $filename,  'UNKNOWN', 'UNKNOWN' )
 RETURNING "id"
 
 
