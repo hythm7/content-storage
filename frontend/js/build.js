@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const tableHeadThs = Array.from(tableHead.getElementsByTagName('th')).map( (elem) => { return elem.innerText.toLowerCase() } );
 
-  const buildLogModal     = document.getElementById('buildLogModal')
-  const buildLogs         = document.getElementById('build-logs')
+  const buildLogModal = document.getElementById('buildLogModal')
+  const buildLog      = document.getElementById('build-log')
 
   const buildLogModalBody = buildLogModal.querySelector('.modal-body')
 
@@ -82,31 +82,41 @@ document.addEventListener('DOMContentLoaded', function () {
     const element = document.createElement('div');
 
     element.innerHTML = ansi.ansi_to_html( event.data );
-    buildLogs.appendChild(element);
+    buildLog.appendChild(element);
 
   }
 
   buildLogModal.addEventListener('show.bs.modal', event => {
 
 
-    var build = event.relatedTarget;
+    // TODO: Set modal title
+    var buildRow = event.relatedTarget;
 
-    var buildId = build.getAttribute('data-build-id')
+    var buildId = buildRow.getAttribute('data-build-id')
 
-    // if build is running
-    buildLogModalBody.classList.add('autoscrollable-wrapper');
-    evtSource.addEventListener(buildId, buildEvent, false)
+    buildLogModal.setAttribute('data-build-id', buildId)
+
+    var buildRunning = buildRow.querySelector('.spinner-grow');
+
+    if ( buildRunning ) {
+      console.log(buildId)
+      buildLogModalBody.classList.add('autoscrollable-wrapper');
+      evtSource.addEventListener(buildId, buildEvent)
+    } else {
+      console.log('build not running')
+    }
 
   });
 
   buildLogModal.addEventListener('hidden.bs.modal', event => {
 
     var buildId = buildLogModal.getAttribute('data-build-id')
+      console.log(buildId)
 
-    evtSource.removeEventListener(buildId, buildEvent, false)
+    evtSource.removeEventListener(buildId, buildEvent)
 
     var buildLogModalBody = buildLogModal.querySelector('.modal-body')
-    buildLogs.innerHTML = '';
+    buildLog.innerHTML = '';
 
   });
 

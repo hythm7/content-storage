@@ -10,12 +10,30 @@ sub api-routes(DistributionStorage $ds) is export {
 
   openapi 'openapi.json'.IO, :ignore-unimplemented, :!validate-responses, {
 
-    operation 'buildRead', -> DistributionStorage::Session $session {
+    operation 'readBuild', -> DistributionStorage::Session $session {
 
       my @build = $ds.select-build;
 
       content 'application/json', @build ;
     }
+
+    operation 'readBuildById', -> DistributionStorage::Session $session, Int $id  {
+
+      my %build = $ds.select-build: :$id;
+
+      content 'application/json', %build;
+
+    }
+
+    operation 'readBuildLogById', -> DistributionStorage::Session $session, Int $id  {
+
+      my %build = $ds.select-build-log: :$id;
+
+      content 'application/json', %build;
+
+    }
+
+
 
     operation 'buildUploadDistribution', -> LoggedIn $session {
 

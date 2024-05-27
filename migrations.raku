@@ -65,7 +65,7 @@ migration 'Setup', {
     add-column "started",   timestamp(), :default(Any);
     add-column "completed", timestamp(), :default(Any);
 
-    add-column "log",  text(), :default( sql( "'UNKNOWN'" ) );
+    add-column "log",  text();
 
 
   }

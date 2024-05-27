@@ -344,7 +344,7 @@
     "/build": {
       "get": {    
         "summary": "List all builds",
-        "operationId": "buildRead",
+        "operationId": "readBuild",
         "tags": [
           "build"
         ],
@@ -408,6 +408,103 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/build/{buildId}": {
+      "get": {
+        "tags": [
+          "build"
+        ],
+        "summary": "Read build by ID",
+        "description": "Returns a single build",
+        "operationId": "readBuildById",
+        "parameters": [
+          {
+            "name": "buildId",
+            "in": "path",
+            "description": "ID of build to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Build"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Build not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "build"
+        ],
+        "summary": "Deletes a build",
+        "description": "delete a build",
+        "operationId": "deleteBuildById",
+        "parameters": [
+          {
+            "name": "buildId",
+            "in": "path",
+            "description": "Build id to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid build value"
+          }
+        }
+      }
+    },
+    "/build/{buildId}/log": {
+      "get": {
+        "tags": [
+          "build"
+        ],
+        "summary": "build log",
+        "description": "",
+        "operationId": "readBuildLogById",
+        "parameters": [
+          {
+            "name": "buildId",
+            "in": "path",
+            "description": "ID of build to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "successful operation",

@@ -5,6 +5,7 @@ use Libarchive::Simple;
 use EventSource::Server;
 
 use Log::Dispatch;
+use Log::Dispatch::File;
 
 
 use distribution-storage-utils;
@@ -22,16 +23,13 @@ has DistributionStorage::Database:D $!db  is required handles <
   select-user-password
   select-distribution
   delete-dist
+  select-build
+  select-build-log
   >;
 
 
 my enum Target    <BUILD DISTRIBUTION>;
 my enum Operation <ADD UPDATE DELETE>;
-method select-build ( ) {
-
-  $!db.select-build;
-}
-
 
 submethod BUILD( :$pg! ) {
 
@@ -79,11 +77,14 @@ method distribution-add ( :$user, :$file! ) {
 
 method !build ( Int:D :$id!, :$archive, IO::Path:D :$distribution-directory! ) {
 
+  my $log-file = $distribution-directory.dirname.IO.add( $id ~ '.log' );
+
   my $build-log-source = BuildLogSource.new: log-source-name => $id.Str;
 
   my $logger = Log::Dispatch.new;
 
   $logger.add: $build-log-source;
+  $logger.add: Log::Dispatch::File,         max-level => LOG-LEVEL::DEBUG,   file => $log-file;;
   $logger.add: ServerSentEventsDestination, max-level => LOG-LEVEL::DEBUG, :$!event-supplier, type => $id.Str;
 
 
@@ -249,6 +250,19 @@ method !build ( Int:D :$id!, :$archive, IO::Path:D :$distribution-directory! ) {
 
   }
 
+  $status = SUCCESS;
+
+  $!db.update-build-status: :$id, status => $status.key;
+
+  $!db.update-build-log: :$id, log => $log-file.slurp;
+
+  $!db.update-build-completed: :$id;
+
+  $datetime = $!db.select-build-completed: :$id;
+
+  $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
+
+  self!server-message: :$id, build => %( status => $status.value, :$completed );
 
   True;
 

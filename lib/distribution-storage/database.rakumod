@@ -57,8 +57,8 @@ method insert-build( Int:D :$user, Str:D :$filename! ) {
 }
 
 
-method select-build( )                   { select-build $!pg             }
-method select-build-by-id( Int:D :$id! ) { select-build-by-id $!pg, :$id }
+multi method select-build( )             { select-build $!pg             }
+multi method select-build( Int:D :$id! ) { select-build-by-id $!pg, :$id }
 
 method update-build-status( Int:D :$id!, Str:D :$status! ) {
   update-build-status $!pg, :$id, :$status;
@@ -79,9 +79,12 @@ method update-build-test ( Int:D :$id!, Str:D :$test! ) { update-build-test  $!p
 method update-build-started(   Int:D :$id! ) { update-build-started $!pg,   :$id }
 method update-build-completed( Int:D :$id! ) { update-build-completed $!pg, :$id }
 
+method update-build-log ( Int:D :$id!, Str:D :$log! ) { update-build-log $!pg, :$id, :$log }
 
 method select-build-started(   Int:D :$id! ) { select-build-started $!pg,   :$id }
 method select-build-completed( Int:D :$id! ) { select-build-completed $!pg, :$id }
+
+method select-build-log( Int:D :$id! ) { select-build-log-by-id $!pg, :$id }
 
 my sub distribution-add ( :$db!, :$meta!, :$user! ) {
 

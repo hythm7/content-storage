@@ -98,6 +98,11 @@ UPDATE "build"
 set    "completed" = 'now'
 WHERE  "id"        = $id
 
+-- sub update-build-log(Int :$id!, Str :$log!--> +)
+UPDATE "build"
+set    "log" = $log
+WHERE  "id"  = $id
+
 -- sub select-build-started(Int :$id! --> $)
 SELECT "started"
 FROM   "build"
@@ -113,9 +118,7 @@ SELECT "b"."id",       "b"."status",  "b"."filename", "b"."meta",
        "b"."name",     "b"."version", "b"."auth",     "b"."api",
        "b"."identity", "b"."test",    "b"."started",  "b"."completed",
        ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
-
 FROM "build" "b"
-
 ORDER BY started DESC
 
 
@@ -124,11 +127,14 @@ SELECT "b"."id",       "b"."status",  "b"."filename", "b"."meta",
        "b"."name",     "b"."version", "b"."auth",     "b"."api",
        "b"."identity", "b"."test",    "b"."started",  "b"."completed",
        ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
-
-
 FROM "build" "b"
-
 WHERE  "b"."id" = $id
+
+-- sub select-build-log-by-id(Int :$id! --> %)
+SELECT "id", "log"
+FROM   "build"
+WHERE  "id" = $id
+
 
 -- sub insert-into-provides(@provides --> +)
 INSERT
