@@ -5,21 +5,22 @@ use Cro::OpenAPI::RoutesFromDefinition;
 
 use distribution-storage;
 use distribution-storage-session;
+use distribution-storage-database;
 
-sub api-routes(DistributionStorage $ds) is export {
+sub api-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
 
   openapi 'openapi.json'.IO, :ignore-unimplemented, :!validate-responses, {
 
     operation 'readBuild', -> DistributionStorage::Session $session {
 
-      my @build = $ds.select-build;
+      my @build = $db.select-build;
 
       content 'application/json', @build ;
     }
 
     operation 'readBuildById', -> DistributionStorage::Session $session, Int $id  {
 
-      my %build = $ds.select-build: :$id;
+      my %build = $db.select-build: :$id;
 
       content 'application/json', %build;
 
@@ -27,7 +28,7 @@ sub api-routes(DistributionStorage $ds) is export {
 
     operation 'readBuildLogById', -> DistributionStorage::Session $session, Int $id  {
 
-      my %build = $ds.select-build-log: :$id;
+      my %build = $db.select-build-log: :$id;
 
       content 'application/json', %build;
 
@@ -41,9 +42,9 @@ sub api-routes(DistributionStorage $ds) is export {
 
       request-body -> (:$file) {
 
-        my @data = $file.map( -> $archive { $ds.distribution-add( :$user, :$archive ) } );
+        #my @data = $file.map( -> $archive { $db.distribution-add( :$user, :$archive ) } );
 
-        content 'application/json', @data;
+        #content 'application/json', @data;
 
       }
     }
@@ -57,11 +58,11 @@ sub api-routes(DistributionStorage $ds) is export {
 
       request-body -> (:$username!, :$password!, *%) {
         
-        my $user = $ds.select-user-password( :$username );
+        my $user = $db.select-user-password( :$username );
 
         with $user {
           if (argon2-verify(.<password>, $password)) {
-            $user = $ds.select-user( :$username );
+            $user = $db.select-user( :$username );
             $session.set-logged-in-user( $user );
             content 'application/json', $user.to-json;
           } else {
@@ -77,10 +78,10 @@ sub api-routes(DistributionStorage $ds) is export {
 
       request-body -> (:$username!, :$password!, *%) {
         
-        if $ds.select-user( :$username ) {
+        if $db.select-user( :$username ) {
           content 'application/json', { error => "User $username is already registered" };
         } else {
-          $ds.insert-user(:$username, :password(argon2-hash($password)));
+          $db.insert-user(:$username, :password(argon2-hash($password)));
           content 'application/json', { };
         }
       }
@@ -96,7 +97,7 @@ sub api-routes(DistributionStorage $ds) is export {
     #operation 'userRead', -> Admin $session {
     operation 'userRead', -> LoggedIn $session {
 
-      my @user = $ds.select-user;
+      my @user = $db.select-user;
 
       content 'application/json', @user ;
     }

@@ -1,21 +1,18 @@
 use Cro::HTTP::Router;
 use Cro::WebApp::Template;
 
-use distribution-storage;
 use distribution-storage-session;
+use distribution-storage-database;
 
+sub build-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
 
-sub build-routes( DistributionStorage $ds ) is export {
-
-  route {
-
-    include <build> => route {
+    route {
 
       get -> DistributionStorage::Session $session {
 
         my $user =  $session.user;
 
-        my @build = $ds.select-build( );
+        my @build = $db.select-build( );
 
         template 'builds.crotmp', { :$user, :@build };
       }
@@ -26,14 +23,13 @@ sub build-routes( DistributionStorage $ds ) is export {
 
         request-body -> (:$file-input) {
 
-          my $file = $file-input[0];
+          #my $file = $file-input[0];
 
-          my %data = $ds.distribution-add( :$user, :$file );
+          #my %data = $db.distribution-add( :$user, :$file );
 
-          content 'application/json', %data;
+          #content 'application/json', %data;
 
         }
       }
     }
-  }
 }

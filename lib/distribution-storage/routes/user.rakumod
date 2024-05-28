@@ -4,20 +4,25 @@ use Cro::HTTP::Router;
 
 use distribution-storage;
 use distribution-storage-session;
+use distribution-storage-database;
 
-sub user-routes(DistributionStorage $ds) is export {
+
+sub user-routes( DistributionStorage::Database:D :$db! ) is export {
+
   route {
+
     get -> DistributionStorage::Session $session, 'register' {
       template 'register.crotmp', { :logged-in($session.user.defined), :!error };
     }
 
     post -> DistributionStorage::Session $session, 'register' {
+
       request-body -> (:$username!, :$password!, *%) {
         
-        if $ds.select-user( :$username ) {
+        if $db.select-user( :$username ) {
           template 'register.crotmp', { error => "User $username is already registered" };
         } else {
-          $ds.insert-user(:$username, :password( argon2-hash( $password ) ) );
+          $db.insert-user(:$username, :password( argon2-hash( $password ) ) );
           redirect :see-other, '/user/login';
         }
       }
@@ -30,11 +35,11 @@ sub user-routes(DistributionStorage $ds) is export {
     post -> DistributionStorage::Session $session, 'login' {
       request-body -> ( :$username!, :$password!, *% ) {
         
-        my $user = $ds.select-user-password( :$username );
+        my $user = $db.select-user-password( :$username );
 
         with $user {
           if (argon2-verify( .<password>, $password ) ) {
-            $session.set-logged-in-user( $ds.select-user( :$username ) );
+            $session.set-logged-in-user( $db.select-user( :$username ) );
             redirect :see-other, '/';
           } else {
             template 'login.crotmp', { :!logged-in, error => 'Incorrect password.' };

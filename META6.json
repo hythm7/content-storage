@@ -32,11 +32,11 @@
   "provides": {
     "distribution-storage": "lib/distribution-storage.rakumod",
     "distribution-storage-utils": "lib/distribution-storage/utils.rakumod",
+    "distribution-storage-build": "lib/distribution-storage/build.rakumod",
     "distribution-storage-database": "lib/distribution-storage/database.rakumod",
     "distribution-storage-model-user": "lib/distribution-storage/model/user.rakumod",
     "distribution-storage-model-distribution": "lib/distribution-storage/model/distribution.rakumod",
     "distribution-storage-session": "lib/distribution-storage/session.rakumod",
-    "distribution-storage-routes": "lib/distribution-storage/routes.rakumod",
     "distribution-storage-routes-api": "lib/distribution-storage/routes/api.rakumod",
     "distribution-storage-routes-user": "lib/distribution-storage/routes/user.rakumod",
     "distribution-storage-routes-build": "lib/distribution-storage/routes/build.rakumod",

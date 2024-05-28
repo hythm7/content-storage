@@ -4,15 +4,68 @@ use DB::Pg;
 
 use Cro::HTTP::Log::File;
 use Cro::HTTP::Server;
+use Cro::HTTP::Router;
 use Cro::HTTP::Session::Pg;
-use Cro::HTTP::Client;
+use Cro::WebApp::Template;
+
+use EventSource::Server;
 
 use distribution-storage;
 use distribution-storage-session;
 use distribution-storage-database;
-use distribution-storage-routes;
+use distribution-storage-routes-api;
+use distribution-storage-routes-user;
+use distribution-storage-routes-distribution;
+use distribution-storage-routes-build;
 
-my $pg = DB::Pg.new(:conninfo(%*ENV<DB_CONN_INFO>));
+
+
+my $pg = DB::Pg.new: conninfo =>  %*ENV<DB_CONN_INFO>;
+
+my $db = DistributionStorage::Database.new: :$pg;
+
+my $event-supplier = Supplier.new;
+
+my $event-source-server = EventSource::Server.new: supply => $event-supplier.Supply; 
+
+
+
+
+my sub routes( ) {
+
+  template-location 'templates/';
+
+  route {
+
+    after { redirect '/user/login', :see-other if .status == 401 };
+
+    get -> DistributionStorage::Session $session {
+
+      my $user =  $session.user;
+      my @dist = $db.select-distribution.map( -> $dist {
+        $dist<created> = Date.new($dist<created>).Str;
+        $dist;
+      });
+
+      template 'index.crotmp', { :$user, :@dist };
+    }
+
+    include <api v1>      => api-routes(  :$db, :$event-supplier ),
+             distribution => distribution-routes( :$db ),
+             build        => build-routes( :$db, :$event-supplier ),
+             user         => user-routes( :$db );
+
+    get -> DistributionStorage::Session $session, 'server-sent-events' {
+      content 'text/event-stream', $event-source-server.out-supply;
+    }
+
+    get -> 'static', *@path {
+      static 'static', @path
+    } 
+  }
+}
+~        
+
 
 my $applicator = DB::Migration::Declare::Applicator.new:
   schema-id => 'distribution-storage',
@@ -43,7 +96,7 @@ my Cro::Service $http = Cro::HTTP::Server.new(
   die("Missing DISTRIBUTION_STORAGE_HOST in environment"),
   port => %*ENV<DISTRIBUTION_STORAGE_PORT> ||
   die("Missing DISTRIBUTION_STORAGE_PORT in environment"),
-  application => routes( $ds ),
+  application => routes( ),
   before => [
     SessionStore.new(
       db => $pg,
