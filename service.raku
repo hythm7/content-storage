@@ -14,10 +14,9 @@ use distribution-storage;
 use distribution-storage-session;
 use distribution-storage-database;
 use distribution-storage-routes-api;
-use distribution-storage-routes-user;
 use distribution-storage-routes-distribution;
 use distribution-storage-routes-build;
-
+use distribution-storage-routes-user;
 
 
 my $pg = DB::Pg.new: conninfo =>  %*ENV<DB_CONN_INFO>;
