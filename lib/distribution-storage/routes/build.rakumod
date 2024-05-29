@@ -3,6 +3,7 @@ use Cro::WebApp::Template;
 
 use distribution-storage-session;
 use distribution-storage-database;
+use distribution-storage-build;
 
 sub build-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
 
@@ -21,13 +22,15 @@ sub build-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-supp
 
         my $user =  $session.user;
 
-        request-body -> (:$file-input) {
+        request-body -> (:$file) {
 
-          #my $file = $file-input[0];
+          my $build = DistributionStorage::Build.new: :$db, :$event-supplier, user => $user.id, :$file;
 
-          #my %data = $db.distribution-add( :$user, :$file );
+          start $build.build;
 
-          #content 'application/json', %data;
+          my %data = %( id => $build.id );
+
+          content 'application/json', %data;
 
         }
       }

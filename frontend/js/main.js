@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const dropzoneModal = new bootstrap.Modal(document.getElementById('dropzone-modal'));
   const dropArea = document.getElementById('drop-area');
-  const fileInput = document.getElementById('file-input');
+  const fileInput = document.getElementById('file');
 
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (event) {
     dropArea.addEventListener(event, function (e) {
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Create FormData object and append files to it
     var formData = new FormData();
     for (var i = 0; i < files.length; i++) {
-      formData.append('file-input', files[i]);
+      formData.append('file', files[i]);
     }
 
     // Use Fetch API to send files to the server

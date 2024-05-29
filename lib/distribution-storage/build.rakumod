@@ -1,98 +1,253 @@
 use File::Temp;
+use Concurrent::File::Find;
 use JSON::Fast;
 use Libarchive::Simple;
 use EventSource::Server;
 
 use Log::Dispatch;
-use Log::Dispatch::TTY;
-use Log::Dispatch::File;
-use Log::Dispatch::Destination;
 use Log::Dispatch::Source;
+use Log::Dispatch::Destination;
+use Log::Dispatch::File;
 
+use distribution-storage-database;
 
-unit class DistributionStorage::Build;
-  also does Log::Dispatch::Source;
-
-my enum Status  is export  (
+enum Status  is export  (
   UNKNOWN   => '<i class="bi bi-exclamation-triangle text-warning"></i>',
   ERROR     => '<i class="bi bi-x text-danger"></i>',
   SUCCESS   => '<i class="bi bi-check text-success"></i>',
   RUNNING   => '<div class="spinner-grow spinner-grow-sm text-primary" role="status"><span class="visually-hidden">Loading...</span></div>',
 );
 
+class BuildLogSource does Log::Dispatch::Source is export {
+  has Str:D $.log-source-name is required;
 
-my class ServerSentEventsDestination {
-  also does Log::Dispatch::Destination;
+  method log-source-name { $!log-source-name }
+}
 
-  has Str      $!type           is built is required;
+class ServerSentEventsDestination does Log::Dispatch::Destination is export {
+
+  has Str      $!type           is built;
   has Supplier $!event-supplier is built is required;
 
   method report( Log::Dispatch::Msg:D $message ) {
 
-   my $event = EventSource::Server::Event.new( :$!type, data => $message.msg );
+    my $event = EventSource::Server::Event.new( :$!type, data => $message.msg );
 
-   $!event-supplier.emit( $event );
+    $!event-supplier.emit( $event );
 
   }
 
 }
 
+class DistributionStorage::Build {
 
-has $!db;
+  has            $!archive        is required;
+  has            $!db             is required;
+  has Int:D      $.id             is required;
+  has Supplier:D $!event-supplier is required;
 
-has $!user;
+  my enum Target    <BUILD DISTRIBUTION>;
+  my enum Operation <ADD UPDATE DELETE>;
 
-has Int:D $.id is required;
-
-has $!archive is required;
-
-has IO::Path:D $!work-directory is required;
-has IO::Path:D $!log-file is required;
-
-has Supplier $!event-supplier;
-
-has Log::Dispatch:D $!logger is required;
+  submethod BUILD( DistributionStorage::Database:D :$!db!, Supplier:D :$!event-supplier!, Int:D :$user!, :$file! ) {
 
 
-method build ( --> Bool:D ) {
-
-  my $datetime;
-  my $started;
-  my $completed;
-
-  my $status;
-  my $meta;
-  my $test;
-
-  my $user     = $!user.username;
-  my $filename = $!archive.filename;
-
-  $!db.update-build-started: :$!id;
-  $!db.update-build-status:  :$!id, status => RUNNING.key;
-
-  $datetime = $!db.select-build-started: :$!id;
-
-  $started = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
-
-  $status   = RUNNING.value;
-  $meta     = UNKNOWN.value;
-  $test     = UNKNOWN.value;
-  
-  self!server-message: :$!id, operation => 'ADD', build => %( :$status, :$user, :$filename, :$meta, :$test, :$started );
+    $!id = $!db.insert-build: :$user, filename => $file.filename;
+    $!archive = $file.body-blob;
 
 
-  my $distribution-directory = $!work-directory.add( 'distribution' );
-
-  .extract for archive-read( $!archive.body-blob, destpath => ~$distribution-directory );
+  }
 
 
-  my $meta-file = $distribution-directory.add: 'META6.json';
+  method build ( ) {
 
-  unless $meta-file.e {
 
-    $!db.update-build-meta: :$!id, meta => ERROR.key;
+    my $work-directory = tempdir.IO;
 
-    $!db.update-build-status: :$!id, status => ERROR.key;
+    my $source-archive = $work-directory.add: 'source-archive.tar.gz';
+
+    my $distribution-directory = $work-directory.add( 'distribution' );
+
+
+    my $log-file = $distribution-directory.dirname.IO.add( $!id ~ '.log' );
+
+    my $build-log-source = BuildLogSource.new: log-source-name => $!id.Str;
+
+    my $logger = Log::Dispatch.new;
+
+    $logger.add: $build-log-source;
+    $logger.add: Log::Dispatch::File,         max-level => LOG-LEVEL::DEBUG,   file => $log-file;;
+    $logger.add: ServerSentEventsDestination, max-level => LOG-LEVEL::DEBUG, :$!event-supplier, type => $!id.Str;
+
+    $source-archive.spurt( $!archive, :close );
+
+    my $status;
+    my $test;
+    my $datetime;
+    my $started;
+    my $completed;
+
+    $!db.update-build-started: :$!id;
+    $!db.update-build-status:  :$!id, status => RUNNING.key;
+
+    $datetime = $!db.select-build-started: :$!id;
+
+    $started = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
+
+    $status = RUNNING.value;
+
+    self!server-message: :$!id, build => %( :$status, :$started );
+
+    sleep 2;
+
+    for archive-read( $source-archive, destpath => ~$distribution-directory ) -> $entry {
+
+      $build-log-source.log: :debug, 'extract: ' ~ $entry.pathname;
+
+      $entry.extract;
+
+    }
+
+    my $meta-file = $distribution-directory.add: 'META6.json';
+
+    unless $meta-file.e {
+
+      $!db.update-build-meta:   :$!id, test   => ERROR.key;
+
+      self!server-message: :$!id, build => %( test => ERROR.value );
+
+      self!fail-build: :$!id;
+
+      return False;
+
+    }
+
+
+    my %meta = from-json $meta-file.slurp;
+
+    my Str:D $name    = %meta<name>;
+    my Str:D $version = %meta<version>;
+    my Str:D $auth    = %meta<auth>;
+    my Any   $api     = %meta<api>;
+
+    my $identity = identity :$name, :$version, :$auth, :$api;
+
+    $!db.update-build-meta: :$!id,   meta => SUCCESS.key;
+
+    $!db.update-build-name:    :$!id, :$name;
+    $!db.update-build-version: :$!id, :$version;
+    $!db.update-build-auth:    :$!id, :$auth;
+    $!db.update-build-api:     :$!id, :$api if $api;
+
+    $!db.update-build-identity: :$!id, :$identity;
+
+    $build-log-source.log: :debug, 'meta: success';
+    $build-log-source.log: :debug, "identity: $identity";
+
+
+    self!server-message: :$!id, build => %( :$identity, meta => SUCCESS.value );
+
+
+    $test = RUNNING;
+
+    $!db.update-build-test: :$!id, test   => $test.key;
+
+    self!server-message: :$!id, build => %( test => $test.value );
+
+    my $test-directory = $distribution-directory.add( 'test' );
+
+    my @test-command = <<pakku nobar nospinner verbose all force add noprecompile notest contained to $test-directory $distribution-directory>>;
+
+    my $proc = Proc::Async.new: @test-command;
+
+    my $exitcode;
+
+    react {
+
+      whenever $proc.stdout { $build-log-source.log: $^out }
+      whenever $proc.stderr { $build-log-source.log: $^err }
+
+      whenever $proc.start( :%*ENV ) {
+        $exitcode = .exitcode;
+        done;
+      }
+    }
+
+
+
+    $test = $exitcode ?? ERROR !! SUCCESS;
+
+    $!db.update-build-test:   :$!id, test   => $test.key;
+
+    self!server-message: :$!id, build => %( test => $test.value );
+
+    # TODO Add logs to db
+
+    if $exitcode {
+
+      self!fail-build: :$!id;
+
+      return False;
+
+    }
+
+    my $install-directory = $distribution-directory.dirname.IO.add( 'install' );
+    my @install-command = <<pakku nobar nospinner verbose all force add noprecompile nodeps notest to $install-directory $distribution-directory>>;
+
+
+    $proc = Proc::Async.new: @install-command;
+
+    react {
+
+      whenever $proc.stdout { $build-log-source.log: $^out }
+      whenever $proc.stderr { $build-log-source.log: $^err }
+
+      whenever $proc.start( :%*ENV ) {
+        $exitcode = .exitcode;
+
+        done;
+      }
+    }
+
+    if $exitcode {
+
+      self!fail-build: :$!id;
+
+      return False;
+
+    }
+
+    my $install-archive = $distribution-directory.dirname.IO.add( 'changeme.tar.gz' );
+
+    my @install-file = find $install-directory;
+
+    with archive-write( $install-archive.Str ) -> $archive-write {
+
+      $build-log-source.log: :debug, 'install-archive: ' ~ $install-archive;
+
+      @install-file.map( -> $file {
+
+        $archive-write.write: $file.IO.relative( $install-directory ), $file;
+
+      } );
+
+      $archive-write.close;
+
+    }
+
+
+    for archive-read( $install-archive ) -> $entry {
+
+      $build-log-source.log: :debug, 'extract: ' ~ $entry.pathname;
+
+
+    }
+
+    $status = SUCCESS;
+
+    $!db.update-build-status: :$!id, status => $status.key;
+
+    $!db.update-build-log: :$!id, log => $log-file.slurp;
 
     $!db.update-build-completed: :$!id;
 
@@ -100,113 +255,35 @@ method build ( --> Bool:D ) {
 
     $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
 
-    self!server-message: :$!id, build => %( test => $test.value, status => $test.value, :$completed );
+    self!server-message: :$!id, build => %( status => $status.value, :$completed );
 
-    return False;
+    True;
 
   }
 
+  method !fail-build ( Int:D :$!id! ) {
 
-  my %meta = from-json $meta-file.slurp;
+    my $status = ERROR;
 
-  my Str:D $name    = %meta<name>;
-  my Str:D $version = %meta<version>;
-  my Str:D $auth    = %meta<auth>;
-  my Any   $api     = %meta<api>;
+    $!db.update-build-status: :$!id, status => $status.key;
 
-  my $identity = identity :$name, :$version, :$auth, :$api;
+    $!db.update-build-completed: :$!id;
 
-  $!db.update-build-meta: :$!id,   meta => SUCCESS.key;
+    my $datetime = $!db.select-build-completed: :$!id;
 
-  $!db.update-build-name:    :$!id, :$name;
-  $!db.update-build-version: :$!id, :$version;
-  $!db.update-build-auth:    :$!id, :$auth;
-  $!db.update-build-api:     :$!id, :$api if $api;
+    my $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
 
-  $!db.update-build-identity: :$!id, :$identity;
+    self!server-message: :$!id, build => %( status => $status.value, :$completed );
 
-  self.log: :debug, 'meta: success';
-  self.log: :debug, "identity: $identity";
-
-
-  self!server-message: :$!id, build => %( :$identity, meta => SUCCESS.value );
-
-
-  $test = RUNNING;
-
-  $!db.update-build-test:   :$!id, test   => $test.key;
-
-  self!server-message: :$!id, build => %( test => $test.value );
-
-  my $install-directory = $distribution-directory.add( 'install' );
-
-  my @cmd = <<pakku nobar nospinner verbose all force add contained to $install-directory $distribution-directory>>;
-
-  my $proc = Proc::Async.new: @cmd;
-
-  my $exitcode;
-
-  react {
-
-    whenever $proc.stdout { self.log: $^out }
-    whenever $proc.stderr { self.log: $^err }
-
-    whenever $proc.start( :%*ENV ) {
-      $exitcode = .exitcode;
-      done;
-    }
   }
 
+  method !server-message ( Str:D :$target = 'BUILD', Str:D :$operation = 'UPDATE', Int:D :$!id!, :%build! ) {
 
+    $!event-supplier.emit( EventSource::Server::Event.new( data => to-json %( :$target, :$operation, :%build, ID => $!id ) ) );
 
-  $test = $exitcode ?? ERROR !! SUCCESS;
-
-  $!db.update-build-test:   :$!id, test   => $test.key;
-  $!db.update-build-status: :$!id, status => $test.key;
-
-  $!db.update-build-completed: :$!id;
-
-  $datetime = $!db.select-build-completed: :$!id;
-
-  $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
-
-  self!server-message: :$!id, build => %( test => $test.value, status => $test.value, :$completed );
-
-  # TODO Add logs to db
-
-  return False if $exitcode;
-
-  True;
-}
-
-
-method !server-message ( Str:D :$target = 'BUILD', Str:D :$operation = 'UPDATE', Int:D :$id!, :%build! ) {
-
-  $!event-supplier.emit( EventSource::Server::Event.new( data => to-json %( :$target, :$operation, :%build, ID => $id ) ) );
+  }
 
 }
-
-
-submethod BUILD( :$!db!, :$!user, :$!archive!, :$!event-supplier! ) {
-
-  $!id = $!db.insert-build: user => $!user.id, filename => $!archive.filename;
-
-  my $type = $!id.Str;
-
-  $!work-directory = tempdir.IO;
-  $!log-file       = $!work-directory.add: 'build.log';
-
-
-  $!logger = Log::Dispatch.new;
-
-  $!logger.add: Log::Dispatch::TTY,          max-level => LOG-LEVEL::DEBUG;
-  $!logger.add: Log::Dispatch::File,         max-level => LOG-LEVEL::DEBUG,   file => $!log-file;
-  $!logger.add: ServerSentEventsDestination, max-level => LOG-LEVEL::DEBUG, :$type, :$!event-supplier;
-  $!logger.add: self;
-
-  #self.log: :critical, "Something is wrong! Cause: ", 'kokokoko';
-
-}  
 
 my sub identity ( Str:D :$name!, Str:D :$version!, Str:D :$auth!, Any :$api! --> Str:D ) {
 

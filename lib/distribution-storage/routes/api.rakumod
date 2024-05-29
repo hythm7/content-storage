@@ -6,6 +6,7 @@ use Cro::OpenAPI::RoutesFromDefinition;
 use distribution-storage;
 use distribution-storage-session;
 use distribution-storage-database;
+use distribution-storage-build;
 
 sub api-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
 
@@ -36,15 +37,19 @@ sub api-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-suppli
 
 
 
-    operation 'buildUploadDistribution', -> LoggedIn $session {
+    operation 'buildDistribution', -> LoggedIn $session {
 
       my $user =  $session.user;
 
       request-body -> (:$file) {
 
-        #my @data = $file.map( -> $archive { $db.distribution-add( :$user, :$archive ) } );
+        my $build = DistributionStorage::Build.new: :$db, :$event-supplier, user => $user.id, :$file;
 
-        #content 'application/json', @data;
+        start $build.build;
+
+        my %data = %( id => $build.id );
+
+        content 'application/json', %data;
 
       }
     }

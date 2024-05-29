@@ -77,8 +77,6 @@ my $status = $applicator.to-latest;
 note "Applied $status.migrations.elems() migration(s)";
 
 
-my $ds = DistributionStorage.new: :$pg;
-
 class SessionStore does Cro::HTTP::Session::Pg[DistributionStorage::Session] {
   method serialize( DistributionStorage::Session $s ) {
     $s.to-json

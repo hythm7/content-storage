@@ -17,42 +17,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const evtSource = new EventSource('/server-sent-events');
 
-  var buildAdd = function (id, data) {
-
-    const newRow = tableBody.insertRow(0);
-
-    var rowHTML  = '<tr data-bs-toggle="modal" data-bs-target="#buildLogModal" data-build-id="' + id + '">';
-
-    rowHTML += '<td>' + data["status"]    + '</td>';
-    rowHTML += '<td>' + data["user"]      + '</td>';
-    rowHTML += '<td>' + data["filename"]  + '</td>';
-    rowHTML += '<td>' + data["meta"]      + '</td>';
-    rowHTML += '<td></td>';
-    rowHTML += '<td>' + data["test"]      + '</td>';
-    rowHTML += '<td></td>';
-    rowHTML += '<td></td>';
-
-    rowHTML += '</tr>';
-
-
-    newRow.outerHTML = rowHTML;
-
-  }
-
-
   var buildUpdate = function (id, data) {
 
     var row = tableBody.querySelector('[data-build-id="' + id + '"]');
 
-    var tds  = row.getElementsByTagName('td');
+    if ( row ) {
+      var tds  = row.getElementsByTagName('td');
 
-    Object.keys(data).forEach( (key) => {
+      Object.keys(data).forEach( (key) => {
 
-      var td = tds[tableHeadThs.indexOf(key)];
+        var td = tds[tableHeadThs.indexOf(key)];
 
-      td.innerHTML = data[key];
+        td.innerHTML = data[key];
 
-    } );
+      } );
+    }
 
   }
 
@@ -69,10 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if ( message.target == 'BUILD' ) {
 
       if ( message.operation == 'UPDATE' ) {
-        console.log(message.build)
         buildUpdate( message.ID, message.build );
-      } else if ( message.operation == 'ADD' ) {
-        buildAdd( message.ID, message.build );
       }
     }
   });

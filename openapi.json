@@ -395,9 +395,9 @@
         "tags": [
           "build"
         ],
-        "summary": "Upload Distribution",
+        "summary": "Add Distribution",
         "description": "This can only be done by the logged in user.",
-        "operationId": "buildUploadDistribution",
+        "operationId": "buildDistribution",
         "requestBody": {
           "description": "Created build object",
           "content": {
