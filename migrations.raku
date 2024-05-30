@@ -12,7 +12,7 @@ migration 'Setup', {
 
   create-table "user", { 
 
-    add-column "id", integer(), :increments, :primary;
+    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
 
     add-column "username", text(),    :!null, :unique;
     add-column "password", text(),    :!null, :unique;
@@ -20,33 +20,14 @@ migration 'Setup', {
 
   }
 
-  create-table "distribution", { 
-
-    add-column "id", integer(), :increments, :primary;
-
-
-    add-column "meta",    text(), :!null;
-
-    add-column "name",    text(), :!null;
-    add-column "version", text(), :!null;
-    add-column "auth",    text(), :!null;
-    add-column "api",     text();
-
-    add-column "identity", text(), :!null, :unique;
-
-    add-column "created", timestamp(), :default(now), :!null;
-
-    add-column "userid", integer(), :!null;
-
-  }
-
   create-table "build", { 
 
-    add-column "id", integer(), :increments, :primary;
+    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
 
     add-column "status", text(), :default( sql( "'UNKNOWN'" ) );
 
-    add-column "user",     integer(), :!null;
+    add-column "user", type( 'UUID' ), :!null;
+
     add-column "filename", text(),    :!null;
 
 
@@ -67,15 +48,33 @@ migration 'Setup', {
 
     add-column "log",  text();
 
-
   }
 
 
+  create-table "distribution", { 
+
+    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
+
+    add-column "meta",    text(), :!null;
+
+    add-column "name",    text(), :!null;
+    add-column "version", text(), :!null;
+    add-column "auth",    text(), :!null;
+    add-column "api",     text();
+
+    add-column "identity", text(), :!null, :unique;
+
+    add-column "created", timestamp(), :default(now), :!null;
+
+    add-column "user", type( 'UUID' ), :!null;
+
+  }
+
   create-table "provides", { 
 
-    add-column "id", integer(), :increments, :primary;
+    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
 
-    add-column "distribution", integer(), :!null;
+    add-column "distribution", type( 'UUID' ), :!null;
 
     add-column "use",  text(), :!null;
     add-column "file", text(), :!null;
@@ -87,9 +86,9 @@ migration 'Setup', {
 
   create-table "resource", { 
 
-    add-column "id", integer(), :increments, :primary;
+    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
 
-    add-column "distribution", integer(), :!null;
+    add-column "distribution", type( 'UUID' ), :!null;
 
     add-column "resources", arr( text() );
 
@@ -99,9 +98,9 @@ migration 'Setup', {
 
   create-table "emulates", { 
 
-    add-column "id", integer(), :increments, :primary;
+    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
 
-    add-column "distribution", integer(), :!null;
+    add-column "distribution", type( 'UUID' ), :!null;
 
     add-column "unit", text();
     add-column "use",  text();
@@ -112,9 +111,9 @@ migration 'Setup', {
 
   create-table "supersedes", { 
 
-    add-column "id", integer(), :increments, :primary;
+    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
 
-    add-column "distribution", integer(), :!null;
+    add-column "distribution", type( 'UUID' ), :!null;
 
     add-column "unit", text();
     add-column "use",  text();
@@ -125,9 +124,9 @@ migration 'Setup', {
 
   create-table "superseded", { 
 
-    add-column "id", integer(), :increments, :primary;
+    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
 
-    add-column "distribution", integer(), :!null;
+    add-column "distribution", type( 'UUID' ), :!null;
 
     add-column "unit", text();
     add-column "use",  text();
@@ -138,9 +137,9 @@ migration 'Setup', {
 
   create-table "excludes", { 
 
-    add-column "id", integer(), :increments, :primary;
+    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
 
-    add-column "distribution", integer(), :!null;
+    add-column "distribution", type( 'UUID' ), :!null;
 
     add-column "unit", text();
     add-column "use",  text();
@@ -151,9 +150,9 @@ migration 'Setup', {
 
   create-table "author", { 
 
-    add-column "id", integer(), :increments, :primary;
+    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
 
-    add-column "distribution", integer(), :!null;
+    add-column "distribution", type( 'UUID' ), :!null;
 
     add-column "authors", arr( text() );
 
@@ -163,9 +162,9 @@ migration 'Setup', {
 
   create-table "tag", { 
 
-    add-column "id", integer(), :increments, :primary;
+    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
 
-    add-column "distribution", integer(), :!null;
+    add-column "distribution", type( 'UUID' ), :!null;
 
     add-column "tags", arr( text() );
 

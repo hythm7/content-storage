@@ -1,6 +1,6 @@
 -- use distribution-storage-model-user
 
--- sub select-user-username-by-id(Int :$id! --> %)
+-- sub select-user-username-by-id(:$id! --> %)
 SELECT "id", "username"
 FROM   "user"
 WHERE  "id" = $id
@@ -11,7 +11,7 @@ FROM   "user"
 WHERE  "username" = $username
 
 
--- sub select-user-by-id(Int :$id! --> DistributionStorage::Model::User $)
+-- sub select-user-by-id(:$id! --> DistributionStorage::Model::User $)
 SELECT "id", "username", "is-admin"
 FROM  "user"
 WHERE "id" = $id
@@ -38,77 +38,77 @@ INSERT
 INTO   "distribution" ( "name", "version", "auth", "api", "identity", "meta", "userid" )
 VALUES                 ( $name,  $version,  $auth,  $api,  $identity,  $meta,  $userid  )
 
--- sub insert-build(Int :$user!, Str :$filename! --> $)
+-- sub insert-build(:$user!, Str :$filename! --> $)
 INSERT
 INTO   "build" (  "status",  "user", "filename", "meta",    "test"    )
 VALUES         (  'UNKNOWN', $user,  $filename,  'UNKNOWN', 'UNKNOWN' )
 RETURNING "id"
 
 
--- sub update-build-status(Int :$id!, Str :$status! --> +)
+-- sub update-build-status(:$id!, Str :$status! --> +)
 UPDATE "build"
 set    "status" = $status
 WHERE  "id"     = $id
 
--- sub update-build-meta(Int :$id!, Str :$meta! --> +)
+-- sub update-build-meta(:$id!, Str :$meta! --> +)
 UPDATE "build"
 set    "meta" = $meta
 WHERE  "id"   = $id
 
--- sub update-build-identity(Int :$id!, Str :$identity! --> +)
+-- sub update-build-identity(:$id!, Str :$identity! --> +)
 UPDATE "build"
 set    "identity" = $identity
 WHERE  "id"   = $id
 
--- sub update-build-name(Int :$id!, Str :$name! --> +)
+-- sub update-build-name(:$id!, Str :$name! --> +)
 UPDATE "build"
 set    "name" = $name
 WHERE  "id"   = $id
 
 
--- sub update-build-version(Int :$id!, Str :$version! --> +)
+-- sub update-build-version(:$id!, Str :$version! --> +)
 UPDATE "build"
 set    "version" = $version
 WHERE  "id"   = $id
 
--- sub update-build-auth(Int :$id!, Str :$auth! --> +)
+-- sub update-build-auth(:$id!, Str :$auth! --> +)
 UPDATE "build"
 set    "auth" = $auth
 WHERE  "id"   = $id
 
--- sub update-build-api(Int :$id!, Str :$api! --> +)
+-- sub update-build-api(:$id!, Str :$api! --> +)
 UPDATE "build"
 set    "api" = $api
 WHERE  "id"  = $id
 
 
--- sub update-build-test(Int :$id!, Str :$test! --> +)
+-- sub update-build-test(:$id!, Str :$test! --> +)
 UPDATE "build"
 set    "test" = $test
 WHERE  "id"   = $id
 
 
--- sub update-build-started(Int :$id! --> +)
+-- sub update-build-started(:$id! --> +)
 UPDATE "build"
 set    "started" = 'now'
 WHERE  "id"      = $id
 
--- sub update-build-completed(Int :$id! --> +)
+-- sub update-build-completed(:$id! --> +)
 UPDATE "build"
 set    "completed" = 'now'
 WHERE  "id"        = $id
 
--- sub update-build-log(Int :$id!, Str :$log!--> +)
+-- sub update-build-log(:$id!, Str :$log!--> +)
 UPDATE "build"
 set    "log" = $log
 WHERE  "id"  = $id
 
--- sub select-build-started(Int :$id! --> $)
+-- sub select-build-started(:$id! --> $)
 SELECT "started"
 FROM   "build"
 WHERE  "id"     = $id
 
--- sub select-build-completed(Int :$id! --> $)
+-- sub select-build-completed(:$id! --> $)
 SELECT "completed"
 FROM   "build"
 WHERE  "id"        = $id
@@ -122,7 +122,7 @@ FROM "build" "b"
 ORDER BY started DESC
 
 
--- sub select-build-by-id(Int :$id! --> %)
+-- sub select-build-by-id(:$id! --> %)
 SELECT "b"."id",       "b"."status",  "b"."filename", "b"."meta",
        "b"."name",     "b"."version", "b"."auth",     "b"."api",
        "b"."identity", "b"."test",    "b"."started",  "b"."completed",
@@ -130,7 +130,7 @@ SELECT "b"."id",       "b"."status",  "b"."filename", "b"."meta",
 FROM "build" "b"
 WHERE  "b"."id" = $id
 
--- sub select-build-log-by-id(Int :$id! --> %)
+-- sub select-build-log-by-id(:$id! --> %)
 SELECT "id", "log"
 FROM   "build"
 WHERE  "id" = $id
@@ -145,13 +145,13 @@ values       ({@provides.map({ 1, .key, .value}})
 -- sub select-distribution(--> @)
 SELECT * FROM "distribution"
 
--- sub select-distribution-by-id(Int :$id! --> $)
+-- sub select-distribution-by-id(:$id! --> $)
 SELECT * FROM "distribution"
 WHERE "id" = $id
 
--- sub select-distribution-by-userid(Int :$userid! --> @)
+-- sub select-distribution-by-user(:$user! --> @)
 SELECT * FROM "distribution"
-WHERE "userid" = $userid
+WHERE "user" = $user
 
 -- sub delete-dist(Str :$identity! --> +)
 DELETE FROM "distribution" WHERE "identity" = $identity

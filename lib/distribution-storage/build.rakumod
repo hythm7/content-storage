@@ -1,3 +1,4 @@
+use LibUUID;
 use File::Temp;
 use Concurrent::File::Find;
 use JSON::Fast;
@@ -43,13 +44,13 @@ class DistributionStorage::Build {
 
   has            $!archive        is required;
   has            $!db             is required;
-  has Int:D      $.id             is required;
+  has UUID:D     $.id             is required;
   has Supplier:D $!event-supplier is required;
 
   my enum Target    <BUILD DISTRIBUTION>;
   my enum Operation <ADD UPDATE DELETE>;
 
-  submethod BUILD( DistributionStorage::Database:D :$!db!, Supplier:D :$!event-supplier!, Int:D :$user!, :$file! ) {
+  submethod BUILD( DistributionStorage::Database:D :$!db!, Supplier:D :$!event-supplier!, UUID:D :$user!, :$file! ) {
 
 
     $!id = $!db.insert-build: :$user, filename => $file.filename;
@@ -261,7 +262,7 @@ class DistributionStorage::Build {
 
   }
 
-  method !fail-build ( Int:D :$!id! ) {
+  method !fail-build ( UUID:D :$!id! ) {
 
     my $status = ERROR;
 
@@ -277,9 +278,9 @@ class DistributionStorage::Build {
 
   }
 
-  method !server-message ( Str:D :$target = 'BUILD', Str:D :$operation = 'UPDATE', Int:D :$!id!, :%build! ) {
+  method !server-message ( Str:D :$target = 'BUILD', Str:D :$operation = 'UPDATE', UUID:D :$!id!, :%build! ) {
 
-    $!event-supplier.emit( EventSource::Server::Event.new( data => to-json %( :$target, :$operation, :%build, ID => $!id ) ) );
+    $!event-supplier.emit( EventSource::Server::Event.new( data => to-json %( :$target, :$operation, :%build, ID => ~$!id ) ) );
 
   }
 

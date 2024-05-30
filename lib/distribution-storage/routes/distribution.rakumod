@@ -11,8 +11,8 @@ sub distribution-routes( DistributionStorage::Database:D :$db! ) is export {
     get -> LoggedIn $session {
 
       my $user =  $session.user;
-      my @dist = $db.select-distribution( userid => $user.id ).map( -> $dist {
-        $dist<created> = Date.new($dist<created>).Str;
+      my @dist = $db.select-distribution( user => $user.id ).map( -> $dist {
+        #$dist<created> = Date.new($dist<created>).Str;
         $dist;
       });
 

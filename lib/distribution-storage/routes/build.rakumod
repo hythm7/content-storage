@@ -28,7 +28,7 @@ sub build-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-supp
 
           start $build.build;
 
-          my %data = %( id => $build.id );
+          my %data = %( id => $build.id.Str );
 
           content 'application/json', %data;
 

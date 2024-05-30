@@ -42,7 +42,7 @@ my sub routes( ) {
 
       my $user =  $session.user;
       my @dist = $db.select-distribution.map( -> $dist {
-        $dist<created> = Date.new($dist<created>).Str;
+        #$dist<created> = Date.new($dist<created>).Str;
         $dist;
       });
 
@@ -63,7 +63,6 @@ my sub routes( ) {
     } 
   }
 }
-~        
 
 
 my $applicator = DB::Migration::Declare::Applicator.new:
