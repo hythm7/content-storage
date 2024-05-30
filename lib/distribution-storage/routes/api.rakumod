@@ -1,3 +1,4 @@
+use LibUUID;
 use Crypt::Argon2;
 use Cro::WebApp::Template;
 use Cro::HTTP::Router;
@@ -19,7 +20,7 @@ sub api-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-suppli
       content 'application/json', @build ;
     }
 
-    operation 'readBuildById', -> DistributionStorage::Session $session, Int $id  {
+    operation 'readBuildById', -> DistributionStorage::Session $session, $id  {
 
       my %build = $db.select-build: :$id;
 
@@ -27,9 +28,11 @@ sub api-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-suppli
 
     }
 
-    operation 'readBuildLogById', -> DistributionStorage::Session $session, Int $id  {
+    operation 'readBuildLogById', -> DistributionStorage::Session $session, $id  {
 
-      my %build = $db.select-build-log: :$id;
+      my %build = $db.select-build-log: id => UUID.new: $id;
+
+      # TODO: serialize UUID
 
       content 'application/json', %build;
 
@@ -47,7 +50,7 @@ sub api-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-suppli
 
         start $build.build;
 
-        my %data = %( id => $build.id );
+        my %data = %( id => $build.id.Str );
 
         content 'application/json', %data;
 
