@@ -288,6 +288,6 @@ class DistributionStorage::Build {
 
 my sub identity ( Str:D :$name!, Str:D :$version!, Str:D :$auth!, Any :$api! --> Str:D ) {
 
-  "$auth:{ $name.subst( '::', '-', :g ) }:$version:$api";
+  "$auth:{ $name.subst( '::', '-', :g ) }:$version:{ $api if $api }";
 
 }

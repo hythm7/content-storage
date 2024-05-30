@@ -22,6 +22,11 @@ sub build-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-supp
 
         my $user =  $session.user;
 
+        dd '-----------------------';
+        dd $user;
+        dd $user.id.Str;
+        dd '-----------------------';
+
         request-body -> (:$file) {
 
           my $build = DistributionStorage::Build.new: :$db, :$event-supplier, user => $user.id, :$file;

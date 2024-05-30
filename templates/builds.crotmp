@@ -4,7 +4,7 @@
 
 <&body-open>
 
-<&header( :active( 'distributionAdd' ), :user( .user ) )>
+<&header( :active( 'build' ), :user( .user ) )>
 
 <|page>
   <div class="page-content">
