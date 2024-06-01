@@ -23,6 +23,8 @@ my $pg = DB::Pg.new: conninfo =>  %*ENV<DB_CONN_INFO>;
 
 my $db = DistributionStorage::Database.new: :$pg;
 
+my $openapi-schema = 'openapi.json'.IO;
+
 my $event-supplier = Supplier.new;
 
 my $event-source-server = EventSource::Server.new: supply => $event-supplier.Supply; 
@@ -49,7 +51,7 @@ my sub routes( ) {
       template 'index.crotmp', { :$user, :@dist };
     }
 
-    include <api v1>      => api-routes(  :$db, :$event-supplier ),
+    include <api v1>      => api-routes( :$openapi-schema, :$db, :$event-supplier ),
              distribution => distribution-routes( :$db ),
              build        => build-routes( :$db, :$event-supplier ),
              user         => user-routes( :$db );

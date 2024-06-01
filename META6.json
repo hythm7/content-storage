@@ -34,6 +34,7 @@
     "distribution-storage-build": "lib/distribution-storage/build.rakumod",
     "distribution-storage-database": "lib/distribution-storage/database.rakumod",
     "distribution-storage-model-user": "lib/distribution-storage/model/user.rakumod",
+    "distribution-storage-model-build": "lib/distribution-storage/model/build.rakumod",
     "distribution-storage-model-distribution": "lib/distribution-storage/model/distribution.rakumod",
     "distribution-storage-session": "lib/distribution-storage/session.rakumod",
     "distribution-storage-routes-api": "lib/distribution-storage/routes/api.rakumod",

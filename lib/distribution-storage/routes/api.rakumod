@@ -1,4 +1,3 @@
-use LibUUID;
 use Crypt::Argon2;
 use Cro::WebApp::Template;
 use Cro::HTTP::Router;
@@ -8,10 +7,11 @@ use distribution-storage;
 use distribution-storage-session;
 use distribution-storage-database;
 use distribution-storage-build;
+use distribution-storage-model-build;
 
-sub api-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
+sub api-routes( IO::Path:D :$openapi-schema!, DistributionStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
 
-  openapi 'openapi.json'.IO, :ignore-unimplemented, :!validate-responses, {
+  openapi $openapi-schema, :ignore-unimplemented, :!validate-responses, {
 
     operation 'readBuild', -> DistributionStorage::Session $session {
 
@@ -20,21 +20,23 @@ sub api-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-suppli
       content 'application/json', @build ;
     }
 
-    operation 'readBuildById', -> DistributionStorage::Session $session, $id  {
+    operation 'readBuildById', -> DistributionStorage::Session $session, UUID $id  {
 
       my %build = $db.select-build: :$id;
 
-      content 'application/json', %build;
+      content 'application/json', DistributionStorage::Model::Build.new( |%build ).to-json;
 
     }
 
     operation 'readBuildLogById', -> DistributionStorage::Session $session, $id  {
 
-      my %build = $db.select-build-log: id => UUID.new: $id;
+      my %build =  $db.select-build-log :$id;
 
-      # TODO: serialize UUID
-
-      content 'application/json', %build;
+      if %build<id> {
+        content 'application/json', %( id => %build<id>.Str, log => %build<log> );
+      } else {
+        not-found 'application/json', %( );
+      }
 
     }
 
