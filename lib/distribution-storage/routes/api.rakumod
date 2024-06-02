@@ -17,25 +17,25 @@ sub api-routes( IO::Path:D :$openapi-schema!, DistributionStorage::Database:D :$
 
       my @build = $db.select-build;
 
-      content 'application/json', @build ;
+      content 'application/json', @build;
     }
 
-    operation 'readBuildById', -> DistributionStorage::Session $session, UUID $id  {
+    operation 'readBuildById', -> DistributionStorage::Session $session, UUID:D $id  {
 
       my %build = $db.select-build: :$id;
 
-      content 'application/json', DistributionStorage::Model::Build.new( |%build ).to-json;
+      content 'application/json', %build;
 
     }
 
-    operation 'readBuildLogById', -> DistributionStorage::Session $session, $id  {
+    operation 'readBuildLogById', -> DistributionStorage::Session $session, UUID:D $id  {
 
-      my %build =  $db.select-build-log :$id;
+      my %build =  $db.select-build-log: :$id;
 
-      if %build<id> {
-        content 'application/json', %( id => %build<id>.Str, log => %build<log> );
+      if %build {
+        content 'application/json', %build;
       } else {
-        not-found 'application/json', %( );
+        not-found 'application/json', %build;
       }
 
     }
@@ -52,7 +52,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, DistributionStorage::Database:D :$
 
         start $build.build;
 
-        my %data = %( id => $build.id.Str );
+        my %data = %( id => $build.id );
 
         content 'application/json', %data;
 

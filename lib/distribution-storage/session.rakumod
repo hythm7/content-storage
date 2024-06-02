@@ -1,5 +1,4 @@
 use JSON::Class:auth<zef:vrurg>;
-
 use Cro::HTTP::Auth;
 
 use distribution-storage-model-user;

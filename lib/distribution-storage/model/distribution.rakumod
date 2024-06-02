@@ -1,11 +1,11 @@
-use LibUUID;
 use JSON::Class:auth<zef:vrurg>;
 
+use distribution-storage;
+
 unit class DistributionStorage::Model::Distribution;
-  also is json( :implicit );
+  also is json;
 
-has UUID  $.id is json( :serializer( *.Str ), :deserializer( { UUID.new: .Str } ) );
-
+has UUID  $.id;
 has Str     $.identity;
 has Str     $.name;
 has Version() $.version;

@@ -1,4 +1,4 @@
-use LibUUID;
+use distribution-storage;
 use distribution-storage-model-user;
 use distribution-storage-model-distribution;
 
@@ -58,8 +58,8 @@ method insert-build( UUID:D :$user, Str:D :$filename! ) {
 }
 
 
-multi method select-build( )             { say 'select-build'; select-build $!pg             }
-multi method select-build( UUID:D(Str) :$id! ) { say 'select-build-by-id'; select-build-by-id $!pg, :$id }
+multi method select-build( )              { select-build $!pg             }
+multi method select-build( UUID:D :$id! ) { select-build-by-id $!pg, :$id }
 
 method update-build-status( UUID:D :$id!, Str:D :$status! ) {
   update-build-status $!pg, :$id, :$status;

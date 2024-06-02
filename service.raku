@@ -19,7 +19,7 @@ use distribution-storage-routes-build;
 use distribution-storage-routes-user;
 
 
-my $pg = DB::Pg.new: conninfo =>  %*ENV<DB_CONN_INFO>;
+my $pg = DB::Pg.new: conninfo =>  %*ENV<DB_CONN_INFO>, converters => <DateTime>;
 
 my $db = DistributionStorage::Database.new: :$pg;
 

@@ -1,4 +1,3 @@
-use LibUUID;
 use File::Temp;
 use Concurrent::File::Find;
 use JSON::Fast;
@@ -10,6 +9,7 @@ use Log::Dispatch::Source;
 use Log::Dispatch::Destination;
 use Log::Dispatch::File;
 
+use distribution-storage;
 use distribution-storage-database;
 
 enum Status  is export  (
