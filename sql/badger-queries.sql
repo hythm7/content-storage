@@ -1,6 +1,3 @@
--- use distribution-storage-model-user
--- use distribution-storage-model-build
-
 -- sub select-user-username-by-id(:$id! --> %)
 SELECT "id", "username"
 FROM   "user"
@@ -12,13 +9,13 @@ FROM   "user"
 WHERE  "username" = $username
 
 
--- sub select-user-by-id(:$id! --> DistributionStorage::Model::User $)
+-- sub select-user-by-id(:$id! --> %)
 SELECT "id", "username", "is-admin"
 FROM  "user"
 WHERE "id" = $id
 
 
--- sub select-user-by-username(Str :$username! --> DistributionStorage::Model::User $)
+-- sub select-user-by-username(Str :$username! --> %)
 SELECT "id", "username", "is-admin"
 FROM  "user"
 WHERE "username" = $username

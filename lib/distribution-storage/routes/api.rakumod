@@ -66,33 +66,45 @@ sub api-routes( IO::Path:D :$openapi-schema!, DistributionStorage::Database:D :$
 
     operation 'userLogin', -> DistributionStorage::Session $session {
 
-      request-body -> (:$username!, :$password!, *%) {
+      request-body -> ( :$username!, :$password! ) {
         
-        my $user = $db.select-user-password( :$username );
+        my %password = $db.select-user-password( :$username );
 
-        with $user {
-          if (argon2-verify(.<password>, $password)) {
-            $user = $db.select-user( :$username );
+        if  %password {
+
+          if ( argon2-verify( %password<password>, $password ) ) {
+
+            my %user = $db.select-user( :$username );
+
+            my $user = DistributionStorage::Model::User.new: |%user;
+
             $session.set-logged-in-user( $user );
-            content 'application/json', $user.to-json;
+
+            content 'application/json', %user;
+
           } else {
             bad-request 'application/json', { error => 'Incorrect password.' };
           }
         } else {
-            bad-request 'application/json', { error => 'Incorrect username.' };
+            bad-request 'application/json', { error => 'Incorrect username or password.' };
         }
       }
     }
 
     operation 'userCreate', -> DistributionStorage::Session $session {
 
-      request-body -> (:$username!, :$password!, *%) {
+      request-body -> ( :$username!, :$password! ) {
         
         if $db.select-user( :$username ) {
+
           content 'application/json', { error => "User $username is already registered" };
+
         } else {
-          $db.insert-user(:$username, :password(argon2-hash($password)));
-          content 'application/json', { };
+
+          $db.insert-user( :$username, password => argon2-hash( $password ) );
+
+          content 'application/json', {};
+
         }
       }
     }

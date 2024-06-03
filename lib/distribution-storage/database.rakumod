@@ -15,25 +15,15 @@ method insert-user( Str:D :$username!,  Str:D :$password! ) {
 
 }
 
-multi method select-user( UUID:D :$id! ) {
-  my DistributionStorage::Model::User $user = select-user-by-id $!pg, :$id;
-}
+multi method select-user( UUID:D :$id! ) { select-user-by-id $!pg, :$id }
 
-multi method select-user( Str:D :$username! ) {
-  my DistributionStorage::Model::User $user = select-user-by-username $!pg, :$username;
-}
+multi method select-user( Str:D :$username! ) { select-user-by-username $!pg, :$username }
 
-multi method select-user( --> Seq:D ) {
-  select-user $!pg;
-}
+multi method select-user( --> Seq:D ) { select-user $!pg }
 
-multi method select-user-username( UUID:D :$id! ) {
-  select-user-username-by-id $!pg, :$id;
-}
+multi method select-user-username( UUID:D :$id! ) { select-user-username-by-id $!pg, :$id }
 
-multi method select-user-password( Str:D :$username! ) {
-  select-user-password-by-username $!pg, :$username;
-}
+multi method select-user-password( Str:D :$username! ) { select-user-password-by-username $!pg, :$username }
 
 method add-distribution( Str:D :$content!, :$user! ) {
 

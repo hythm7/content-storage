@@ -17,12 +17,16 @@ sub user-routes( DistributionStorage::Database:D :$db! ) is export {
 
     post -> DistributionStorage::Session $session, 'register' {
 
-      request-body -> (:$username!, :$password!, *%) {
+      request-body -> ( :$username!, :$password! ) {
         
         if $db.select-user( :$username ) {
+
           template 'register.crotmp', { error => "User $username is already registered" };
+
         } else {
+
           $db.insert-user(:$username, :password( argon2-hash( $password ) ) );
+
           redirect :see-other, '/user/login';
         }
       }
@@ -33,19 +37,27 @@ sub user-routes( DistributionStorage::Database:D :$db! ) is export {
     }
 
     post -> DistributionStorage::Session $session, 'login' {
-      request-body -> ( :$username!, :$password!, *% ) {
+      request-body -> ( :$username!, :$password! ) {
         
-        my $user = $db.select-user-password( :$username );
+        my %password = $db.select-user-password( :$username );
 
-        with $user {
-          if (argon2-verify( .<password>, $password ) ) {
-            $session.set-logged-in-user( $db.select-user( :$username ) );
+        if %password {
+          
+          if ( argon2-verify( %password<password>, $password ) ) {
+
+            my %user = $db.select-user( :$username );
+
+            my $user = DistributionStorage::Model::User.new: |%user;
+
+            $session.set-logged-in-user( $user );
+
             redirect :see-other, '/';
+
           } else {
             template 'login.crotmp', { :!logged-in, error => 'Incorrect password.' };
           }
         } else {
-          template 'login.crotmp', { :!logged-in, error => 'Incorrect username.' };
+          template 'login.crotmp', { :!logged-in, error => 'Incorrect username or password.' };
         }
       }
     }
