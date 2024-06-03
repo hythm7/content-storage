@@ -19,11 +19,7 @@ enum Status  is export  (
   RUNNING   => '<div class="spinner-grow spinner-grow-sm text-primary" role="status"><span class="visually-hidden">Loading...</span></div>',
 );
 
-class BuildLogSource does Log::Dispatch::Source is export {
-  has Str:D $.log-source-name is required;
-
-  method log-source-name { $!log-source-name }
-}
+class BuildLogSource does Log::Dispatch::Source is export { }
 
 class ServerSentEventsDestination does Log::Dispatch::Destination is export {
 
@@ -72,7 +68,7 @@ class DistributionStorage::Build {
 
     my $log-file = $distribution-directory.dirname.IO.add( $!id ~ '.log' );
 
-    my $build-log-source = BuildLogSource.new: log-source-name => $!id.Str;
+    my $build-log-source = BuildLogSource.new;
 
     my $logger = Log::Dispatch.new;
 
