@@ -75,11 +75,30 @@ document.addEventListener('DOMContentLoaded', function () {
     var buildRunning = buildRow.querySelector('.spinner-grow');
 
     if ( buildRunning ) {
-      console.log(buildId)
+
       buildLogModalBody.classList.add('autoscrollable-wrapper');
       evtSource.addEventListener(buildId, buildEvent)
+
     } else {
-      console.log('build not running')
+
+      fetch('/build/' + buildId + '/log', {
+        method: 'GET',
+      })
+        .then(response => response.json()) // Assuming the server responds with JSON
+        .then(data => {
+
+          const element = document.createElement('div');
+
+          const log = ansi.ansi_to_html( data.log ).replace(/(?:\n)/g, '<br>')
+
+          element.innerHTML = log;
+
+          buildLog.appendChild(element);
+
+        })
+        .catch(error => {
+          console.error('Error Processing:', error);
+        });
     }
 
   });
@@ -87,7 +106,6 @@ document.addEventListener('DOMContentLoaded', function () {
   buildLogModal.addEventListener('hidden.bs.modal', event => {
 
     var buildId = buildLogModal.getAttribute('data-build-id')
-      console.log(buildId)
 
     evtSource.removeEventListener(buildId, buildEvent)
 
