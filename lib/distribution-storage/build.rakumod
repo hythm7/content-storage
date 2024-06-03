@@ -28,9 +28,13 @@ class ServerSentEventsDestination does Log::Dispatch::Destination is export {
 
   method report( Log::Dispatch::Msg:D $message ) {
 
-    my $event = EventSource::Server::Event.new( :$!type, data => $message.msg );
+    $message.fmt-lines.map( -> $line {
 
-    $!event-supplier.emit( $event );
+      my $event = EventSource::Server::Event.new( :$!type, data => $line );
+
+      $!event-supplier.emit( $event );
+
+    });
 
   }
 
@@ -48,16 +52,13 @@ class DistributionStorage::Build {
 
   submethod BUILD( DistributionStorage::Database:D :$!db!, Supplier:D :$!event-supplier!, UUID:D :$user!, :$file! ) {
 
-
     $!id = $!db.insert-build: :$user, filename => $file.filename;
     $!archive = $file.body-blob;
-
 
   }
 
 
   method build ( ) {
-
 
     my $work-directory = tempdir.IO;
 
@@ -73,7 +74,7 @@ class DistributionStorage::Build {
     my $logger = Log::Dispatch.new;
 
     $logger.add: $build-log-source;
-    $logger.add: Log::Dispatch::File,         max-level => LOG-LEVEL::DEBUG,   file => $log-file;;
+    $logger.add: Log::Dispatch::File,         max-level => LOG-LEVEL::DEBUG,   file => $log-file;
     $logger.add: ServerSentEventsDestination, max-level => LOG-LEVEL::DEBUG, :$!event-supplier, type => $!id.Str;
 
     $source-archive.spurt( $!archive, :close );
@@ -161,8 +162,8 @@ class DistributionStorage::Build {
 
     react {
 
-      whenever $proc.stdout { $build-log-source.log: $^out }
-      whenever $proc.stderr { $build-log-source.log: $^err }
+      whenever $proc.stdout { $build-log-source.log: $^out.chop }
+      whenever $proc.stderr { $build-log-source.log: $^err.chop }
 
       whenever $proc.start( :%*ENV ) {
         $exitcode = .exitcode;
@@ -196,8 +197,8 @@ class DistributionStorage::Build {
 
     react {
 
-      whenever $proc.stdout { $build-log-source.log: $^out }
-      whenever $proc.stderr { $build-log-source.log: $^err }
+      whenever $proc.stdout { $build-log-source.log: $^out.chop }
+      whenever $proc.stderr { $build-log-source.log: $^err.chop }
 
       whenever $proc.start( :%*ENV ) {
         $exitcode = .exitcode;
