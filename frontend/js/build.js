@@ -81,6 +81,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     } else {
 
+      buildLogModalBody.classList.remove('autoscrollable-wrapper');
+
       fetch('/build/' + buildId + '/log', {
         method: 'GET',
       })
