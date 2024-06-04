@@ -28,20 +28,6 @@ sub build-routes( DistributionStorage::Database:D :$db!, Supplier:D :$event-supp
 
       }
 
-      get -> DistributionStorage::Session $session, UUID:D $id, 'log' {
-
-        my %build =  $db.select-build-log: :$id;
-
-        if %build<id> {
-          content 'application/json', %( id => %build<id>.Str, log => %build<log> );
-        } else {
-          not-found 'application/json', %( );
-        }
-
-
-      }
-
-
       post -> LoggedIn $session {
 
         my $user =  $session.user;
