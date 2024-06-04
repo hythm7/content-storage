@@ -1,3 +1,5 @@
+use JSON::Fast;
+
 use distribution-storage;
 use distribution-storage-model-user;
 use distribution-storage-model-distribution;
@@ -24,14 +26,6 @@ multi method select-user( --> Seq:D ) { select-user $!pg }
 multi method select-user-username( UUID:D :$id! ) { select-user-username-by-id $!pg, :$id }
 
 multi method select-user-password( Str:D :$username! ) { select-user-password-by-username $!pg, :$username }
-
-method add-distribution( Str:D :$content!, :$user! ) {
-
-  my $meta = $content;
-
-  distribution-add( db =>$!pg.db, :$meta, userid => $user )
-
-}
 
 
 multi method select-distribution ( ) { select-distribution( $!pg ) }
@@ -77,52 +71,41 @@ method select-build-completed( UUID:D :$id! ) { select-build-completed $!pg, :$i
 
 method select-build-log( UUID:D :$id! ) { select-build-log-by-id $!pg, :$id }
 
-my sub distribution-add ( :$db!, :$meta!, :$user! ) {
+method insert-distribution( UUID:D :$user!, UUID:D :$build!, Str:D :$meta! ) {
 
-  my %meta = Rakudo::Internals::JSON.from-json($meta);
+  my $db = $!pg.db;
 
+  my %meta = from-json $meta;
 
-  my $name = %meta<name>;
-  my $version = %meta<version>;
-  my $auth = %meta<auth>;
-  #my $owner = %meta<auth>.split(':').tail;
-  my $api = %meta<api>;
+  my Str:D $name    = %meta<name>;
+  my Str:D $version = %meta<version>;
+  my Str:D $auth    = %meta<auth>;
+  my Any   $api     = %meta<api>;
 
-  my $identity = "$auth:$name:$version:$api";
+  my $identity = identity :$name, :$version, :$auth, :$api;
 
   my $dependencies = %meta<depends>;
 
-  my @provides = |%meta<provides>;
-  my @emulates = |%meta<emulates>;
-  my @resourcs = |%meta<resourcs>;
+  my @provides  = |%meta<provides>;
+  my @emulates  = |%meta<emulates>;
+  my @resources = |%meta<resources>;
   
   $db.begin;
   
-  $db.query(q:to/END/, $name, $version, $auth, $api, $identity, $meta, $user );
+  my $distribution = $db.query(q:to/END/, $user, $name, $version, $auth, $api, $identity, $meta, $build ).value;
     INSERT INTO distribution
-           ( name, version, auth, api, identity, meta, user )
-    values (   $1,      $2,   $3,  $4,       $5,   $6,     $7 )
+           ( "user", "name", "version", "auth", "api", "identity", "meta", "build" )
+    values ( $1,     $2,     $3,        $4,     $5,    $6,         $7,     $8      )
+    RETURNING "id"
     END
 
-  my $id = $db.query('SELECT id from distribution where identity = $1', $identity).value;
-
-  
   if @provides {
-
     my $sth = $db.prepare('insert into provides (distribution, use, file ) values ($1,$2, $3)');
-    @provides.map({ $sth.execute($id, .key, .value) });
+    @provides.map({ $sth.execute($distribution, .key, .value) });
   }
 
   $db.commit;
 
   $db.finish;
-  #insert-into-distribution($!pg, :$user, :$meta,
-  #  :$name, :$version, :$auth, :$api, :$identity
-  #);
-
-  #my @provides = (1, 'okokoko', 'sosososo');
-  #my @provides = %meta<provides>;
-  #
-  #insert-into-provides($!pg, @provides);
 
 }

@@ -44,15 +44,16 @@ class DistributionStorage::Build {
 
   has            $!archive        is required;
   has            $!db             is required;
+  has UUID:D     $!user           is required;
   has UUID:D     $.id             is required;
   has Supplier:D $!event-supplier is required;
 
   my enum Target    <BUILD DISTRIBUTION>;
   my enum Operation <ADD UPDATE DELETE>;
 
-  submethod BUILD( DistributionStorage::Database:D :$!db!, Supplier:D :$!event-supplier!, UUID:D :$user!, :$file! ) {
+  submethod BUILD( DistributionStorage::Database:D :$!db!, Supplier:D :$!event-supplier!, UUID:D :$!user!, :$file! ) {
 
-    $!id = $!db.insert-build: :$user, filename => $file.filename;
+    $!id = $!db.insert-build: :$!user, filename => $file.filename;
     $!archive = $file.body-blob;
 
   }
@@ -121,7 +122,9 @@ class DistributionStorage::Build {
     }
 
 
-    my %meta = from-json $meta-file.slurp;
+    my $meta-content = $meta-file.slurp;
+
+    my %meta = from-json $meta-content;
 
     my Str:D $name    = %meta<name>;
     my Str:D $version = %meta<version>;
@@ -215,6 +218,9 @@ class DistributionStorage::Build {
 
     }
 
+
+    # TODO: Make sure no archives exist
+    
     my $install-archive = $distribution-directory.dirname.IO.add( 'changeme.tar.gz' );
 
     my @install-file = find $install-directory;
@@ -233,13 +239,13 @@ class DistributionStorage::Build {
 
     }
 
+    $!db.insert-distribution: :$!user, build => $!id, meta => $meta-content;
 
-    for archive-read( $install-archive ) -> $entry {
+    #for archive-read( $install-archive ) -> $entry {
 
-      $build-log-source.log: :debug, 'extract: ' ~ $entry.pathname;
+    #  $build-log-source.log: :debug, 'extract: ' ~ $entry.pathname;
 
-
-    }
+    #}
 
     $status = SUCCESS;
 
@@ -280,11 +286,5 @@ class DistributionStorage::Build {
     $!event-supplier.emit( EventSource::Server::Event.new( data => to-json %( :$target, :$operation, :%build, ID => ~$!id ) ) );
 
   }
-
-}
-
-my sub identity ( Str:D :$name!, Str:D :$version!, Str:D :$auth!, Any :$api! --> Str:D ) {
-
-  "$auth:{ $name.subst( '::', '-', :g ) }:$version:{ $api if $api }";
 
 }

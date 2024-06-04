@@ -31,10 +31,10 @@ INTO   "user" (  "username",  "password" )
 values       ( $username, $password )
 
 
--- sub insert-into-distribution(Str :$name!, :$version!, :$auth!, :$api, :$identity!, :$meta!, :$userid! --> +)
+-- sub insert-distribution(:$user!, Str :$name!, :$version!, :$auth!, :$api, :$identity!, :$meta!, :$build!, :$created! --> +)
 INSERT
-INTO   "distribution" ( "name", "version", "auth", "api", "identity", "meta", "userid" )
-VALUES                 ( $name,  $version,  $auth,  $api,  $identity,  $meta,  $userid  )
+INTO   "distribution" ( "user", "name", "version", "auth", "api", "identity", "meta", "build", "created" )
+VALUES                ( $user,  $name,  $version,  $auth,  $api,  $identity,  $meta,  $build,  $created  )
 
 -- sub insert-build(:$user!, Str :$filename! --> $)
 INSERT

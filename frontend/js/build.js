@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       buildLogModalBody.classList.remove('autoscrollable-wrapper');
 
-      fetch('/build/' + buildId + '/log', {
+      fetch('api/v1/build/' + buildId + '/log', {
         method: 'GET',
       })
         .then(response => response.json()) // Assuming the server responds with JSON

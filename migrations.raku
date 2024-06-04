@@ -68,6 +68,10 @@ migration 'Setup', {
 
     add-column "user", type( 'UUID' ), :!null;
 
+    add-column "build", type( 'UUID' ), :!null;
+
+    foreign-key :from<build>, :to<id>, :table<build>;
+
   }
 
   create-table "provides", { 
