@@ -111,6 +111,16 @@ class DistributionStorage::Build {
 
     unless $meta-file.e {
 
+      #TODO: Enforce META
+      #  Distribution Identity:
+      #  based on S22 Identity format should be "<storage>:<auth>:<name>:<version>:<api>"
+      #  So it makes sense to have no colons in distribution name (modules too, may be!), version, auth or api
+
+      #  Dependencies:
+      #  phases (runtime, test, build, development too may be!)
+      #  requirement (required, recommended, optional)
+       
+
       $!db.update-build-meta:   :$!id, test   => ERROR.key;
 
       self!server-message: :$!id, build => %( test => ERROR.value );
