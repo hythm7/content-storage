@@ -50,7 +50,6 @@ migration 'Setup', {
 
   }
 
-
   create-table "distribution", { 
 
     add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
@@ -64,6 +63,12 @@ migration 'Setup', {
 
     add-column "identity", text(), :!null, :unique;
 
+    add-column "provides", arr( text() );
+
+    add-column "tags",     arr( text() );
+
+    add-column "description", text();
+
     add-column "created", timestamp(), :default(now), :!null;
 
     add-column "user", type( 'UUID' ), :!null;
@@ -71,108 +76,6 @@ migration 'Setup', {
     add-column "build", type( 'UUID' ), :!null;
 
     foreign-key :from<build>, :to<id>, :table<build>;
-
-  }
-
-  create-table "provides", { 
-
-    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
-
-    add-column "distribution", type( 'UUID' ), :!null;
-
-    add-column "use",  text(), :!null;
-    add-column "file", text(), :!null;
-
-    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
-
-  }
-
-
-  create-table "resource", { 
-
-    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
-
-    add-column "distribution", type( 'UUID' ), :!null;
-
-    add-column "resources", arr( text() );
-
-    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
-
-  }
-
-  create-table "emulates", { 
-
-    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
-
-    add-column "distribution", type( 'UUID' ), :!null;
-
-    add-column "unit", text();
-    add-column "use",  text();
-
-    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
-
-  }
-
-  create-table "supersedes", { 
-
-    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
-
-    add-column "distribution", type( 'UUID' ), :!null;
-
-    add-column "unit", text();
-    add-column "use",  text();
-
-    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
-
-  }
-
-  create-table "superseded", { 
-
-    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
-
-    add-column "distribution", type( 'UUID' ), :!null;
-
-    add-column "unit", text();
-    add-column "use",  text();
-
-    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
-
-  }
-
-  create-table "excludes", { 
-
-    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
-
-    add-column "distribution", type( 'UUID' ), :!null;
-
-    add-column "unit", text();
-    add-column "use",  text();
-
-    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
-
-  }
-
-  create-table "author", { 
-
-    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
-
-    add-column "distribution", type( 'UUID' ), :!null;
-
-    add-column "authors", arr( text() );
-
-    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
-
-  }
-
-  create-table "tag", { 
-
-    add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
-
-    add-column "distribution", type( 'UUID' ), :!null;
-
-    add-column "tags", arr( text() );
-
-    foreign-key :from<distribution>, :to<id>, :table<distribution>, :cascade;
 
   }
 

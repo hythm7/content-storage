@@ -31,11 +31,10 @@ INTO   "user" (  "username",  "password" )
 values       ( $username, $password )
 
 
--- sub insert-into-distribution(:$user!, Str :$name!, :$version!, :$auth!, :$api, :$identity!, :$meta!, :$build! --> $)
+-- sub insert-into-distribution(:$user!, Str :$name!, :$version!, :$auth!, :$api, :$identity!, :$description!, :$provides!, :$tags!, :$meta!, :$build! --> +)
 INSERT
-INTO   "distribution" ( "user", "name", "version", "auth", "api", "identity", "meta", "build" )
-VALUES                ( $user,  $name,  $version,  $auth,  $api,  $identity,  $meta,  $build  )
-RETURNING "id"
+INTO   "distribution" ( "user", "name", "version", "auth", "api", "identity", "meta", "description", "provides", "tags", "build" )
+VALUES                ( $user,  $name,  $version,  $auth,  $api,  $identity,  $meta,  $description,  $provides,  $tags,  $build  )
 
 -- sub insert-into-build(:$user!, Str :$filename! --> $)
 INSERT
@@ -135,12 +134,6 @@ FROM   "build"
 WHERE  "id" = $id
 
 
--- sub insert-into-provides(:$distribution!, :$use!, :$file! --> +)
-INSERT
-INTO   "provides" ( "distribution", "use", "file" )
-values            ( $distribution,  $use,  $file  )
-
-
 -- sub select-distribution(--> @)
 SELECT * FROM "distribution"
 
@@ -154,47 +147,6 @@ WHERE "user" = $user
 
 -- sub delete-dist(Str :$identity! --> +)
 DELETE FROM "distribution" WHERE "identity" = $identity
-
--- sub insert-into-deps(Str $identity, Str $phase, Str $need, Str $use -->+)
-INSERT INTO "deps" ( "identity", "phase", "need", "use" )
-VALUES           ( $identity,  $phase,  $need,  $use  )
-ON CONFLICT DO NOTHING
-
-
--- sub insert-into-resources(Str $identity, Str $resource -->+)
-INSERT INTO "resources" ( "identity", "resource" )
-VALUES                  ( $identity,  $resource  )
-ON CONFLICT DO NOTHING
-
--- sub insert-into-emulates(Str $identity, Str $unit, Str $use -->+)
-INSERT INTO "emulates" ( "identity", "unit", "use" )
-VALUES                 ( $identity,  $unit,  $use  )
-ON CONFLICT DO NOTHING
-
--- sub insert-into-supersedes(Str $identity, Str $unit, Str $use -->+)
-INSERT INTO "supersedes" ( "identity", "unit", "use" )
-VALUES                   ( $identity,  $unit,  $use  )
-ON CONFLICT DO NOTHING
-
--- sub insert-into-superseded(Str $identity, Str $unit, Str $use -->+)
-INSERT INTO "superseded-by" ( "identity", "unit", "use" )
-VALUES                      ( $identity,  $unit,  $use  )
-ON CONFLICT DO NOTHING
-
--- sub insert-into-excludes(Str $identity, Str $unit, Str $use -->+)
-INSERT INTO "excludes" ( "identity", "unit", "use" )
-VALUES                 ( $identity,  $unit,  $use  )
-ON CONFLICT DO NOTHING
-
--- sub insert-into-authors(Str $identity, Str $author -->+)
-INSERT INTO "authors" ( "identity", "author" )
-VALUES                ( $identity,  $author  )
-ON CONFLICT DO NOTHING
-
--- sub insert-into-tags(Str $identity, Str $tag -->+)
-INSERT INTO "tags" ( "identity", "tag" )
-VALUES             ( $identity,  $tag  )
-ON CONFLICT DO NOTHING
 
 
 -- sub select(Str $name! --> @)

@@ -73,8 +73,6 @@ method select-build-log( UUID:D :$id! ) { select-build-log-by-id $!pg, :$id }
 
 method insert-distribution( UUID:D :$user!, UUID:D :$build!, Str:D :$meta! ) {
 
-  my $db will leave { .finish } = $!pg.db;
-
   my %meta = from-json $meta;
 
   my Str:D $name    = %meta<name>;
@@ -82,22 +80,15 @@ method insert-distribution( UUID:D :$user!, UUID:D :$build!, Str:D :$meta! ) {
   my Str:D $auth    = %meta<auth>;
   my Any   $api     = %meta<api>;
 
+  my Any   $description = %meta<description>;
+
   my $identity = identity :$name, :$version, :$auth, :$api;
 
   my $dependencies = %meta<depends>;
 
-  my @provides  = |%meta<provides>;
-  my @emulates  = |%meta<emulates>;
-  my @resources = |%meta<resources>;
+  my @provides = |%meta<provides>.map( *.key ) if %meta<provides>;
+  my @tags     = |%meta<tags>                  if %meta<tags>;
   
-  $db.begin;
-  
-  my $distribution = insert-into-distribution $db, :$user, :$name, :$version, :$auth, :$api, :$identity, :$meta, :$build;
-
-  if @provides {
-    @provides.map( -> $provided { insert-into-provides $db, :$distribution, use => $provided.key, file => $provided.value });
-  }
-
-  $db.commit;
+  insert-into-distribution $!pg, :$user, :$name, :$version, :$auth, :$api, :$identity, :$meta, :$description, :@provides, :@tags, :$build;
 
 }
