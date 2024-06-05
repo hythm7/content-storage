@@ -13,7 +13,7 @@ has $.pg;
 
 method insert-user( Str:D :$username!,  Str:D :$password! ) {
 
-  insert-user $!pg, :$username, :$password;
+  insert-into-user $!pg, :$username, :$password;
 
 }
 
@@ -37,7 +37,7 @@ method delete-dist(:$identity!) { delete-dist $!pg, :$identity }
 
 method insert-build( UUID:D :$user, Str:D :$filename! ) {
 
-  my $build-id = insert-build $!pg, :$user, :$filename;
+  my $build-id = insert-into-build $!pg, :$user, :$filename;
 
 }
 
@@ -73,7 +73,7 @@ method select-build-log( UUID:D :$id! ) { select-build-log-by-id $!pg, :$id }
 
 method insert-distribution( UUID:D :$user!, UUID:D :$build!, Str:D :$meta! ) {
 
-  my $db = $!pg.db;
+  my $db will leave { .finish } = $!pg.db;
 
   my %meta = from-json $meta;
 
@@ -92,20 +92,12 @@ method insert-distribution( UUID:D :$user!, UUID:D :$build!, Str:D :$meta! ) {
   
   $db.begin;
   
-  my $distribution = $db.query(q:to/END/, $user, $name, $version, $auth, $api, $identity, $meta, $build ).value;
-    INSERT INTO distribution
-           ( "user", "name", "version", "auth", "api", "identity", "meta", "build" )
-    values ( $1,     $2,     $3,        $4,     $5,    $6,         $7,     $8      )
-    RETURNING "id"
-    END
+  my $distribution = insert-into-distribution $db, :$user, :$name, :$version, :$auth, :$api, :$identity, :$meta, :$build;
 
   if @provides {
-    my $sth = $db.prepare('insert into provides (distribution, use, file ) values ($1,$2, $3)');
-    @provides.map({ $sth.execute($distribution, .key, .value) });
+    @provides.map( -> $provided { insert-into-provides $db, :$distribution, use => $provided.key, file => $provided.value });
   }
 
   $db.commit;
-
-  $db.finish;
 
 }

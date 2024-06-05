@@ -25,18 +25,19 @@ SELECT "id", "username", "is-admin"
 FROM  "user"
 
 
--- sub insert-user(Str :$username!, Str :$password! --> +)
+-- sub insert-into-user(Str :$username!, Str :$password! --> +)
 INSERT
 INTO   "user" (  "username",  "password" )
 values       ( $username, $password )
 
 
--- sub insert-distribution(:$user!, Str :$name!, :$version!, :$auth!, :$api, :$identity!, :$meta!, :$build!, :$created! --> +)
+-- sub insert-into-distribution(:$user!, Str :$name!, :$version!, :$auth!, :$api, :$identity!, :$meta!, :$build! --> $)
 INSERT
-INTO   "distribution" ( "user", "name", "version", "auth", "api", "identity", "meta", "build", "created" )
-VALUES                ( $user,  $name,  $version,  $auth,  $api,  $identity,  $meta,  $build,  $created  )
+INTO   "distribution" ( "user", "name", "version", "auth", "api", "identity", "meta", "build" )
+VALUES                ( $user,  $name,  $version,  $auth,  $api,  $identity,  $meta,  $build  )
+RETURNING "id"
 
--- sub insert-build(:$user!, Str :$filename! --> $)
+-- sub insert-into-build(:$user!, Str :$filename! --> $)
 INSERT
 INTO   "build" (  "status",  "user", "filename", "meta",    "test"    )
 VALUES         (  'UNKNOWN', $user,  $filename,  'UNKNOWN', 'UNKNOWN' )
@@ -134,10 +135,10 @@ FROM   "build"
 WHERE  "id" = $id
 
 
--- sub insert-into-provides(@provides --> +)
+-- sub insert-into-provides(:$distribution!, :$use!, :$file! --> +)
 INSERT
 INTO   "provides" ( "distribution", "use", "file" )
-values       ({@provides.map({ 1, .key, .value}})
+values            ( $distribution,  $use,  $file  )
 
 
 -- sub select-distribution(--> @)
