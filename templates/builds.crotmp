@@ -13,25 +13,27 @@
       <table id='distributions-build-table' class="table">
         <thead>
           <tr class="table-primary">
-            <th scope="col">Status</th>
+            <th scope="col" class="text-center">Status</th>
             <th scope="col">User</th>
             <th scope="col">Identity</th>
-            <th scope="col">Meta</th>
-            <th scope="col">Test</th>
-            <th scope="col">Started</th>
-            <th scope="col">Completed</th>
+            <th scope="col" class="text-center">Meta</th>
+            <th scope="col" class="text-center">Test</th>
+            <th scope="col" class="text-center">Started</th>
+            <th scope="col" class="text-center">Completed</th>
+            <th scope="col" class="text-center">Log</th>
           </tr>
         </thead>
         <tbody>
           <@build>
-          <tr data-bs-toggle="modal" data-bs-target="#buildLogModal" data-build-id="<.id>">
-            <td><&status( .status )></td>
+          <tr data-build-id="<.id>">
+            <td class="text-center"><&status( .status )></td>
             <td><.user></td>
             <td><?.identity><.identity></?></td>
-            <td><&status( .meta )></td>
-            <td><&status( .test )></td>
-            <td><?.started><.started.yyyy-mm-dd>     <.started.hh-mm-ss></?></td>
-            <td><?.completed><.completed.yyyy-mm-dd> <.completed.hh-mm-ss></?></td>
+            <td class="text-center"><&status( .meta )></td>
+            <td class="text-center"><&status( .test )></td>
+            <td class="text-center"><?.started><.started.yyyy-mm-dd>     <.started.hh-mm-ss></?></td>
+            <td class="text-center"><?.completed><.completed.yyyy-mm-dd> <.completed.hh-mm-ss></?></td>
+            <td class="text-center" data-bs-toggle="modal" data-bs-target="#buildLogModal" ><i class="bi-eye"></i></td>
           </tr>
           </@>
         </tbody>

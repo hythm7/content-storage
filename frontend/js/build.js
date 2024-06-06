@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // TODO: Set modal title
-    var buildRow = event.relatedTarget;
+    var buildRow = event.relatedTarget.parentNode;
 
     var buildId = buildRow.getAttribute('data-build-id')
 
