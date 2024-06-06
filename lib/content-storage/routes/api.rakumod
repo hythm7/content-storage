@@ -46,9 +46,9 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
       my $user =  $session.user;
 
-      request-body -> (:$file) {
+      request-body -> ( :$file ) {
 
-        my $build = ContentStorage::Build.new: :$db, :$event-supplier, user => $user.id, :$file;
+        my $build = ContentStorage::Build.new: :$db, :$event-supplier, user => $user.id, archive => $file.body-blob;
 
         start $build.build;
 

@@ -51,10 +51,9 @@ class ContentStorage::Build {
   my enum Target    <BUILD DISTRIBUTION>;
   my enum Operation <ADD UPDATE DELETE>;
 
-  submethod BUILD( ContentStorage::Database:D :$!db!, Supplier:D :$!event-supplier!, UUID:D :$!user!, :$file! ) {
+  submethod BUILD( ContentStorage::Database:D :$!db!, Supplier:D :$!event-supplier!, UUID:D :$!user!, :$!archive! ) {
 
-    $!id = $!db.insert-build: :$!user, filename => $file.filename;
-    $!archive = $file.body-blob;
+    $!id = $!db.insert-build: :$!user;
 
   }
 

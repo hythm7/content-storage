@@ -12,21 +12,17 @@
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Version</th>
-          <th scope="col">Auth</th>
-          <th scope="col">Api</th>
-          <th scope="col">Created</th>
+          <th scope="col">Identity</th>
+          <th scope="col" class="text-center">Created</th>
+          <th scope="col" class="text-center">Download</th>
         </tr>
       </thead>
       <tbody>
         <@dist>
           <tr>
-            <td><.name></td>
-            <td><.version></td>
-            <td><.auth></td>
-            <td><?.api><.api></?></td>
-            <td><.created></td>
+            <td><.identity></td>
+            <td class="text-center"><.created></td>
+            <td class="text-center"><i class="bi-download"></i></td>
           </tr>
         </@>
       </tbody>

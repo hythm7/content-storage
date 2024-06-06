@@ -35,9 +35,9 @@ multi method select-distribution ( UUID:D :$user! ) { select-distribution-by-use
 
 method delete-dist(:$identity!) { delete-dist $!pg, :$identity }
 
-method insert-build( UUID:D :$user, Str:D :$filename! ) {
+method insert-build( UUID:D :$user ) {
 
-  my $build-id = insert-into-build $!pg, :$user, :$filename;
+  my $build-id = insert-into-build $!pg, :$user;
 
 }
 

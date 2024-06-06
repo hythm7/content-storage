@@ -36,10 +36,10 @@ INSERT
 INTO   "distribution" ( "user", "name", "version", "auth", "api", "identity", "meta", "description", "provides", "tags", "build" )
 VALUES                ( $user,  $name,  $version,  $auth,  $api,  $identity,  $meta,  $description,  $provides,  $tags,  $build  )
 
--- sub insert-into-build(:$user!, Str :$filename! --> $)
+-- sub insert-into-build(:$user! --> $)
 INSERT
-INTO   "build" (  "status",  "user", "filename", "meta",    "test"    )
-VALUES         (  'UNKNOWN', $user,  $filename,  'UNKNOWN', 'UNKNOWN' )
+INTO   "build" (  "status",  "user", "meta",    "test"    )
+VALUES         (  'UNKNOWN', $user,  'UNKNOWN', 'UNKNOWN' )
 RETURNING "id"
 
 
@@ -112,7 +112,7 @@ FROM   "build"
 WHERE  "id"        = $id
 
 -- sub select-build(--> @)
-SELECT "b"."id",       "b"."status",  "b"."filename", "b"."meta",
+SELECT "b"."id",       "b"."status",  "b"."meta",
        "b"."name",     "b"."version", "b"."auth",     "b"."api",
        "b"."identity", "b"."test",    "b"."started",  "b"."completed",
        ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
@@ -121,7 +121,7 @@ ORDER BY started DESC
 
 
 -- sub select-build-by-id(:$id! --> %)
-SELECT "b"."id",       "b"."status",  "b"."filename", "b"."meta",
+SELECT "b"."id",       "b"."status",  "b"."meta",
        "b"."name",     "b"."version", "b"."auth",     "b"."api",
        "b"."identity", "b"."test",    "b"."started",  "b"."completed",
        ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )

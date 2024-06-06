@@ -28,9 +28,6 @@ migration 'Setup', {
 
     add-column "user", type( 'UUID' ), :!null;
 
-    add-column "filename", text(),    :!null;
-
-
     add-column "meta",     text(), :default( sql( "'UNKNOWN'" ) );
 
     add-column "name",     text();

@@ -32,9 +32,9 @@ sub build-routes( ContentStorage::Database:D :$db!, Supplier:D :$event-supplier!
 
         my $user =  $session.user;
 
-        request-body -> (:$file) {
+        request-body -> ( :$file ) {
 
-          my $build = ContentStorage::Build.new: :$db, :$event-supplier, user => $user.id, :$file;
+          my $build = ContentStorage::Build.new: :$db, :$event-supplier, user => $user.id, archive => $file.body-blob;
 
           start $build.build;
 
