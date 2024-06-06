@@ -1,13 +1,13 @@
 use JSON::Fast;
 
-use distribution-storage;
-use distribution-storage-model-user;
-use distribution-storage-model-distribution;
+use content-storage;
+use content-storage-model-user;
+use content-storage-model-distribution;
 
 use Badger <sql/badger-queries.sql>;
 
 
-unit class DistributionStorage::Database;
+unit class ContentStorage::Database;
 
 has $.pg;
 

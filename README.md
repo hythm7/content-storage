@@ -1,19 +1,19 @@
 NAME
 ====
 
-distribution-storage - Raku distributions storage
+content-storage - Raku distributions storage
 
 SYNOPSIS
 ========
 
 ```raku
-use distribution-storage;
+use content-storage;
 ```
 
 DESCRIPTION
 ===========
 
-distribution-storage is ...
+content-storage is ...
 
 AUTHOR
 ======

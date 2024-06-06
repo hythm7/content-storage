@@ -10,18 +10,18 @@ use Cro::WebApp::Template;
 
 use EventSource::Server;
 
-use distribution-storage;
-use distribution-storage-session;
-use distribution-storage-database;
-use distribution-storage-routes-api;
-use distribution-storage-routes-distribution;
-use distribution-storage-routes-build;
-use distribution-storage-routes-user;
+use content-storage;
+use content-storage-session;
+use content-storage-database;
+use content-storage-routes-api;
+use content-storage-routes-distribution;
+use content-storage-routes-build;
+use content-storage-routes-user;
 
 
 my $pg = DB::Pg.new: conninfo =>  %*ENV<DB_CONN_INFO>, converters => <DateTime>;
 
-my $db = DistributionStorage::Database.new: :$pg;
+my $db = ContentStorage::Database.new: :$pg;
 
 my $openapi-schema = 'openapi.json'.IO;
 
@@ -40,7 +40,7 @@ my sub routes( ) {
 
     after { redirect '/user/login', :see-other if .status == 401 };
 
-    get -> DistributionStorage::Session $session {
+    get -> ContentStorage::Session $session {
 
       my $user =  $session.user;
       my @dist = $db.select-distribution.map( -> $dist {
@@ -56,19 +56,31 @@ my sub routes( ) {
              build        => build-routes( :$db, :$event-supplier ),
              user         => user-routes( :$db );
 
-    get -> DistributionStorage::Session $session, 'server-sent-events' {
+    get -> ContentStorage::Session $session, 'server-sent-events' {
       content 'text/event-stream', $event-source-server.out-supply;
     }
 
-    get -> 'static', *@path {
-      static 'static', @path
+    get -> 'favicon.ico' {
+      static 'static/images/favicon/favicon.ico', 
+    } 
+
+    get -> 'images', *@path {
+      static 'static/images', @path
+    } 
+
+    get -> 'css', *@path {
+      static 'static/css', @path
+    } 
+
+    get -> 'js', *@path {
+      static 'static/js', @path
     } 
   }
 }
 
 
 my $applicator = DB::Migration::Declare::Applicator.new:
-  schema-id => 'distribution-storage',
+  schema-id => 'content-storage',
   source => $*PROGRAM.parent.add('migrations.raku'),
   database => DB::Migration::Declare::Database::Postgres.new,
   connection => $pg;
@@ -78,13 +90,13 @@ my $status = $applicator.to-latest;
 note "Applied $status.migrations.elems() migration(s)";
 
 
-class SessionStore does Cro::HTTP::Session::Pg[DistributionStorage::Session] {
-  method serialize( DistributionStorage::Session $s ) {
+class SessionStore does Cro::HTTP::Session::Pg[ContentStorage::Session] {
+  method serialize( ContentStorage::Session $s ) {
     $s.to-json
   }
 
-  method deserialize( $json --> DistributionStorage::Session ) {
-    DistributionStorage::Session.from-json( $json )
+  method deserialize( $json --> ContentStorage::Session ) {
+    ContentStorage::Session.from-json( $json )
   }
 }
 
@@ -99,7 +111,7 @@ my Cro::Service $http = Cro::HTTP::Server.new(
     SessionStore.new(
       db => $pg,
       sessions-table => 'session',
-      cookie-name => '_distribution-storage-session')
+      cookie-name => '_content-storage-session')
     ], 
     after => [
       Cro::HTTP::Log::File.new( logs => $*OUT, errors => $*ERR )

@@ -1,8 +1,8 @@
 use JSON::Class:auth<zef:vrurg>;
 
-use distribution-storage;
+use content-storage;
 
-unit class DistributionStorage::Model::User;
+unit class ContentStorage::Model::User;
   also is json;
 
 has UUID  $.id;

@@ -4,7 +4,7 @@
     "title": "Distribution Storage",
     "description": "Raku Distribution Storage",
     "contact": {
-      "email": "api@distribution-storage.pakku.org"
+      "email": "api@content-storage.pakku.org"
     },
     "license": {
       "name": "Artistic License 2.0",
@@ -14,7 +14,7 @@
   },
   "servers": [
     {
-      "url": "https://distribution-storage.pakku.org/api/v1"
+      "url": "https://content-storage.pakku.org/api/v1"
     }
   ],
   "tags": [

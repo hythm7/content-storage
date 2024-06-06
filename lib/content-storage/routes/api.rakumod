@@ -3,24 +3,24 @@ use Cro::WebApp::Template;
 use Cro::HTTP::Router;
 use Cro::OpenAPI::RoutesFromDefinition;
 
-use distribution-storage;
-use distribution-storage-session;
-use distribution-storage-database;
-use distribution-storage-build;
-use distribution-storage-model-build;
+use content-storage;
+use content-storage-session;
+use content-storage-database;
+use content-storage-build;
+use content-storage-model-build;
 
-sub api-routes( IO::Path:D :$openapi-schema!, DistributionStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
+sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
 
   openapi $openapi-schema, :ignore-unimplemented, :!validate-responses, {
 
-    operation 'readBuild', -> DistributionStorage::Session $session {
+    operation 'readBuild', -> ContentStorage::Session $session {
 
       my @build = $db.select-build;
 
       content 'application/json', @build;
     }
 
-    operation 'readBuildById', -> DistributionStorage::Session $session, UUID:D $id  {
+    operation 'readBuildById', -> ContentStorage::Session $session, UUID:D $id  {
 
       my %build = $db.select-build: :$id;
 
@@ -28,7 +28,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, DistributionStorage::Database:D :$
 
     }
 
-    operation 'readBuildLogById', -> DistributionStorage::Session $session, UUID:D $id  {
+    operation 'readBuildLogById', -> ContentStorage::Session $session, UUID:D $id  {
 
       my %build =  $db.select-build-log: :$id;
 
@@ -48,7 +48,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, DistributionStorage::Database:D :$
 
       request-body -> (:$file) {
 
-        my $build = DistributionStorage::Build.new: :$db, :$event-supplier, user => $user.id, :$file;
+        my $build = ContentStorage::Build.new: :$db, :$event-supplier, user => $user.id, :$file;
 
         start $build.build;
 
@@ -60,11 +60,11 @@ sub api-routes( IO::Path:D :$openapi-schema!, DistributionStorage::Database:D :$
     }
 
 
-    operation 'userLogout', -> DistributionStorage::Session $session {
+    operation 'userLogout', -> ContentStorage::Session $session {
       $session.set-logged-in-user( Nil );
     }
 
-    operation 'userLogin', -> DistributionStorage::Session $session {
+    operation 'userLogin', -> ContentStorage::Session $session {
 
       request-body -> ( :$username!, :$password! ) {
         
@@ -76,7 +76,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, DistributionStorage::Database:D :$
 
             my %user = $db.select-user( :$username );
 
-            my $user = DistributionStorage::Model::User.new: |%user;
+            my $user = ContentStorage::Model::User.new: |%user;
 
             $session.set-logged-in-user( $user );
 
@@ -91,7 +91,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, DistributionStorage::Database:D :$
       }
     }
 
-    operation 'userCreate', -> DistributionStorage::Session $session {
+    operation 'userCreate', -> ContentStorage::Session $session {
 
       request-body -> ( :$username!, :$password! ) {
         
@@ -109,7 +109,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, DistributionStorage::Database:D :$
       }
     }
 
-    operation 'userLogout', -> DistributionStorage::Session $session {
+    operation 'userLogout', -> ContentStorage::Session $session {
 
       $session.set-logged-in-user( Nil );
       content 'application/json', { description => "successful operation" };

@@ -1,4 +1,4 @@
-unit module DistributionStorage;
+unit module ContentStorage;
 
 sub identity ( Str:D :$name!, Str:D :$version!, Str:D :$auth!, Any :$api! --> Str:D ) is export {
 

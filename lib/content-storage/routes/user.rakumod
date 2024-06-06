@@ -2,20 +2,20 @@ use Crypt::Argon2;
 use Cro::WebApp::Template;
 use Cro::HTTP::Router;
 
-use distribution-storage;
-use distribution-storage-session;
-use distribution-storage-database;
+use content-storage;
+use content-storage-session;
+use content-storage-database;
 
 
-sub user-routes( DistributionStorage::Database:D :$db! ) is export {
+sub user-routes( ContentStorage::Database:D :$db! ) is export {
 
   route {
 
-    get -> DistributionStorage::Session $session, 'register' {
+    get -> ContentStorage::Session $session, 'register' {
       template 'register.crotmp', { :logged-in($session.user.defined), :!error };
     }
 
-    post -> DistributionStorage::Session $session, 'register' {
+    post -> ContentStorage::Session $session, 'register' {
 
       request-body -> ( :$username!, :$password! ) {
         
@@ -32,11 +32,11 @@ sub user-routes( DistributionStorage::Database:D :$db! ) is export {
       }
     }
 
-    get -> DistributionStorage::Session $session, 'login' {
+    get -> ContentStorage::Session $session, 'login' {
       template 'login.crotmp', { :logged-in( $session.user.defined ), :!error };
     }
 
-    post -> DistributionStorage::Session $session, 'login' {
+    post -> ContentStorage::Session $session, 'login' {
       request-body -> ( :$username!, :$password! ) {
         
         my %password = $db.select-user-password( :$username );
@@ -47,7 +47,7 @@ sub user-routes( DistributionStorage::Database:D :$db! ) is export {
 
             my %user = $db.select-user( :$username );
 
-            my $user = DistributionStorage::Model::User.new: |%user;
+            my $user = ContentStorage::Model::User.new: |%user;
 
             $session.set-logged-in-user( $user );
 
@@ -62,7 +62,7 @@ sub user-routes( DistributionStorage::Database:D :$db! ) is export {
       }
     }
 
-    get -> DistributionStorage::Session $session, 'logout' {
+    get -> ContentStorage::Session $session, 'logout' {
       $session.set-logged-in-user( Nil );
       redirect :see-other, '/';
     }

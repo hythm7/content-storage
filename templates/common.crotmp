@@ -5,8 +5,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" href="/static/css/main.css">
-  <link rel="icon" type="image/x-icon" href="/static/images/favicon/favicon.ico">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <title><$title></title>
 </head>
 </:>
@@ -16,8 +16,8 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">
-      <img src="/static/images/logo/camelia-logo.png" alt="Logo" width="42" height="42">
-      Distribution Storage
+      <img src="/images/logo/camelia-logo.png" alt="Logo" width="42" height="42">
+      Content Storage
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -124,7 +124,7 @@
     </ul>
 
     <a href="https://raku.org" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-      <img src="/static/images/logo/camelia-logo.png" alt="Logo" width="42" height="42">
+      <img src="/images/logo/camelia-logo.png" alt="Logo" width="42" height="42">
     </a>
 
       <a href="https://spdx.org/licenses/Artistic-2.0.html" class="text-body-secondary">Artistic License 2.0</a>

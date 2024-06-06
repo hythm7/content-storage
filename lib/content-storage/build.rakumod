@@ -9,8 +9,8 @@ use Log::Dispatch::Source;
 use Log::Dispatch::Destination;
 use Log::Dispatch::File;
 
-use distribution-storage;
-use distribution-storage-database;
+use content-storage;
+use content-storage-database;
 
 enum Status  is export  (
   UNKNOWN   => '<i class="bi bi-exclamation-triangle text-warning"></i>',
@@ -40,7 +40,7 @@ class ServerSentEventsDestination does Log::Dispatch::Destination is export {
 
 }
 
-class DistributionStorage::Build {
+class ContentStorage::Build {
 
   has            $!archive        is required;
   has            $!db             is required;
@@ -51,7 +51,7 @@ class DistributionStorage::Build {
   my enum Target    <BUILD DISTRIBUTION>;
   my enum Operation <ADD UPDATE DELETE>;
 
-  submethod BUILD( DistributionStorage::Database:D :$!db!, Supplier:D :$!event-supplier!, UUID:D :$!user!, :$file! ) {
+  submethod BUILD( ContentStorage::Database:D :$!db!, Supplier:D :$!event-supplier!, UUID:D :$!user!, :$file! ) {
 
     $!id = $!db.insert-build: :$!user, filename => $file.filename;
     $!archive = $file.body-blob;

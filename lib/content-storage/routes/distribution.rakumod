@@ -1,10 +1,10 @@
 use Cro::HTTP::Router;
 use Cro::WebApp::Template;
 
-use distribution-storage-session;
-use distribution-storage-database;
+use content-storage-session;
+use content-storage-database;
 
-sub distribution-routes( DistributionStorage::Database:D :$db! ) is export {
+sub distribution-routes( ContentStorage::Database:D :$db! ) is export {
 
   route {
 
