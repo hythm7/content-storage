@@ -47,18 +47,18 @@
         ],
         "summary": "Add a new distribution to the storage",
         "description": "Add a new distribution to the storage",
-        "operationId": "addPet",
+        "operationId": "addDistribution",
         "requestBody": {
           "description": "Create a new distribution in the storage",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Pet"
+                "$ref": "#/components/schemas/Distribution"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/Pet"
+                "$ref": "#/components/schemas/Distribution"
               }
             }
           },
@@ -70,7 +70,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Pet"
+                  "$ref": "#/components/schemas/Distribution"
                 }
               }
             }
@@ -84,95 +84,6 @@
         }
       }
     },
-    "/distribution/findByStatus": {
-      "get": {
-        "tags": [
-          "distribution"
-        ],
-        "summary": "Finds Pets by status",
-        "description": "Multiple status values can be provided with comma separated strings",
-        "operationId": "findPetsByStatus",
-        "parameters": [
-          {
-            "name": "status",
-            "in": "query",
-            "description": "Status values that need to be considered for filter",
-            "required": false,
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "default": "available",
-              "enum": [
-                "available",
-                "pending",
-                "sold"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Pet"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid status value"
-          }
-        }
-      }
-    },
-    "/distribution/findByTags": {
-      "get": {
-        "tags": [
-          "distribution"
-        ],
-        "summary": "Finds Pets by tags",
-        "description": "Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
-        "operationId": "findPetsByTags",
-        "parameters": [
-          {
-            "name": "tags",
-            "in": "query",
-            "description": "Tags to filter by",
-            "required": false,
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Pet"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid tag value"
-          }
-        }
-      }
-    },
     "/distribution/{distributionId}": {
       "get": {
         "tags": [
@@ -180,7 +91,7 @@
         ],
         "summary": "Find distribution by ID",
         "description": "Returns a single distribution",
-        "operationId": "getPetById",
+        "operationId": "getDistributionById",
         "parameters": [
           {
             "name": "distributionId",
@@ -199,7 +110,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Pet"
+                  "$ref": "#/components/schemas/Distribution"
                 }
               }
             }
@@ -208,48 +119,7 @@
             "description": "Invalid ID supplied"
           },
           "404": {
-            "description": "Pet not found"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "distribution"
-        ],
-        "summary": "Updates a distribution in the storage with form data",
-        "description": "",
-        "operationId": "updatePetWithForm",
-        "parameters": [
-          {
-            "name": "distributionId",
-            "in": "path",
-            "description": "ID of distribution that needs to be updated",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "name",
-            "in": "query",
-            "description": "Name of distribution that needs to be updated",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "description": "Status of distribution that needs to be updated",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Invalid input"
+            "description": "Distribution not found"
           }
         }
       },
@@ -259,7 +129,7 @@
         ],
         "summary": "Deletes a distribution",
         "description": "delete a distribution",
-        "operationId": "deletePet",
+        "operationId": "deleteDistribution",
         "parameters": [
           {
             "name": "api_key",
@@ -273,7 +143,7 @@
           {
             "name": "distributionId",
             "in": "path",
-            "description": "Pet id to delete",
+            "description": "Distribution id to delete",
             "required": true,
             "schema": {
               "type": "integer",
@@ -803,6 +673,50 @@
           }
         }
       }
+    },
+    "/search/distribution": {
+      "get": {
+        "tags": [
+          "search",
+          "distribution"
+        ],
+        "summary": "Search Distribution ",
+        "description": "Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
+        "operationId": "searchDistributionbyName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name to filter by",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Distribution"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid distribution name"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -844,26 +758,6 @@
           }
         }
       },
-      "Customer": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 100000
-          },
-          "username": {
-            "type": "string",
-            "example": "fehguy"
-          },
-          "address": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Address"
-            }
-          }
-        }
-      },
       "Address": {
         "type": "object",
         "properties": {
@@ -885,17 +779,49 @@
           }
         }
       },
-      "Category": {
+      "Distribution": {
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "format": "int64",
-            "example": 1
+            "example": 42
+          },
+          "status": {
+            "type": "string",
+            "example": "RUNNING"
+          },
+          "user": {
+            "type": "string",
+            "example": "john"
+          },
+          "filename": {
+            "type": "string",
+            "example": "filename"
+          },
+          "meta": {
+            "type": "string",
+            "example": "SUCCESS"
           },
           "name": {
             "type": "string",
-            "example": "Dogs"
+            "example": "Name"
+          },
+          "version": {
+            "type": "string",
+            "example": "0.0.1"
+          },
+          "auth": {
+            "type": "string",
+            "example": "raku:username"
+          },
+          "api": {
+            "type": "string",
+            "example": "1"
+          },
+          "created": {
+            "type": "string",
+            "example": "2024-05-19 10:46:51"
           }
         }
       },
@@ -989,60 +915,6 @@
           }
         }
       },
-      "Tag": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "Pet": {
-        "required": [
-          "name",
-          "photoUrls"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 10
-          },
-          "name": {
-            "type": "string",
-            "example": "doggie"
-          },
-          "category": {
-            "$ref": "#/components/schemas/Category"
-          },
-          "photoUrls": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Tag"
-            }
-          },
-          "status": {
-            "type": "string",
-            "description": "distribution status in the store",
-            "enum": [
-              "available",
-              "pending",
-              "sold"
-            ]
-          }
-        }
-      },
       "Builds": {
         "type": "array",
         "items": {
@@ -1087,12 +959,12 @@
       }
     },
     "requestBodies": {
-      "Pet": {
-        "description": "Pet object that needs to be added to the store",
+      "Build": {
+        "description": "Build object that needs to be added to the store",
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/Pet"
+              "$ref": "#/components/schemas/Build"
             }
           }
         }
