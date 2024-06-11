@@ -2,14 +2,17 @@
 "cro": 1
 "endpoints": 
   - 
-    "host-env": "DISTRIBUTION_STORAGE_HOST"
+    "host-env": "CONTENT_STORAGE_HOST"
     "id": "http"
     "name": "HTTP"
-    "port-env": "DISTRIBUTION_STORAGE_PORT"
+    "port-env": "CONTENT_STORAGE_PORT"
     "protocol": "http"
 "entrypoint": "service.raku"
 "env":  []
 "id": "content-storage"
 "links":  []
 "name": "content-storage"
+"ignore":
+  - "frontend/"
+  - "node_modules/"
 ...

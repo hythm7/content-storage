@@ -30,7 +30,7 @@ my $event-supplier = Supplier.new;
 
 my $event-source-server = EventSource::Server.new: supply => $event-supplier.Supply; 
 
-my $api-uri = "http://%*ENV<DISTRIBUTION_STORAGE_HOST>:%*ENV<DISTRIBUTION_STORAGE_PORT>/api/v1/";
+my $api-uri = "http://%*ENV<CONTENT_STORAGE_HOST>:%*ENV<CONTENT_STORAGE_PORT>/api/v1/";
 
 my $api = Cro::HTTP::Client.new( base-uri => $api-uri, content-type => 'application/json' );
 
@@ -106,10 +106,10 @@ class SessionStore does Cro::HTTP::Session::Pg[ContentStorage::Session] {
 
 my Cro::Service $http = Cro::HTTP::Server.new(
   http => <1.1>,
-  host => %*ENV<DISTRIBUTION_STORAGE_HOST> ||
-  die("Missing DISTRIBUTION_STORAGE_HOST in environment"),
-  port => %*ENV<DISTRIBUTION_STORAGE_PORT> ||
-  die("Missing DISTRIBUTION_STORAGE_PORT in environment"),
+  host => %*ENV<CONTENT_STORAGE_HOST> ||
+  die("Missing CONTENT_STORAGE_HOST in environment"),
+  port => %*ENV<CONTENT_STORAGE_PORT> ||
+  die("Missing CONTENT_STORAGE_PORT in environment"),
   application => routes( ),
   before => [
     SessionStore.new(
@@ -124,7 +124,7 @@ my Cro::Service $http = Cro::HTTP::Server.new(
 
   $http.start;
 
-  say "Listening at http://%*ENV<DISTRIBUTION_STORAGE_HOST>:%*ENV<DISTRIBUTION_STORAGE_PORT>";
+  say "Listening at http://%*ENV<CONTENT_STORAGE_HOST>:%*ENV<CONTENT_STORAGE_PORT>";
 
   react {
     whenever signal(SIGINT) {
