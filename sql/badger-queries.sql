@@ -135,8 +135,7 @@ FROM   "build"
 WHERE  "id" = $id
 
 -- sub select-build-count(--> $)
-SELECT (reltuples/relpages) * ( pg_relation_size('build') / (current_setting('block_size')::integer) ) 
-FROM pg_class WHERE relname = 'build';
+SELECT COUNT(*) FROM "build"
 
 -- sub select-distribution(--> @)
 SELECT * FROM "distribution"
