@@ -220,7 +220,17 @@
         ],
         "parameters": [
           {
-            "name": "limit",
+            "name": "page",
+            "in": "query",
+            "description": "Current page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page-limit",
             "in": "query",
             "description": "How many items to return at one time (max 100)",
             "required": false,

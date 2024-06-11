@@ -3,6 +3,7 @@ use DB::Migration::Declare::Database::Postgres;
 use DB::Pg;
 
 use Cro::HTTP::Log::File;
+use Cro::HTTP::Client;
 use Cro::HTTP::Server;
 use Cro::HTTP::Router;
 use Cro::HTTP::Session::Pg;
@@ -29,6 +30,9 @@ my $event-supplier = Supplier.new;
 
 my $event-source-server = EventSource::Server.new: supply => $event-supplier.Supply; 
 
+my $api-uri = "http://%*ENV<DISTRIBUTION_STORAGE_HOST>:%*ENV<DISTRIBUTION_STORAGE_PORT>/api/v1/";
+
+my $api = Cro::HTTP::Client.new( base-uri => $api-uri, content-type => 'application/json' );
 
 
 
@@ -53,7 +57,7 @@ my sub routes( ) {
 
     include <api v1>      => api-routes( :$openapi-schema, :$db, :$event-supplier ),
              distribution => distribution-routes( :$db ),
-             build        => build-routes( :$db, :$event-supplier ),
+             build        => build-routes( :$api, :$db, :$event-supplier ),
              user         => user-routes( :$db );
 
     get -> ContentStorage::Session $session, 'server-sent-events' {

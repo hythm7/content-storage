@@ -1,3 +1,5 @@
+use JSON::Fast;
+use Cro::HTTP::Client;
 use Cro::HTTP::Router;
 use Cro::WebApp::Template;
 
@@ -6,7 +8,7 @@ use content-storage-session;
 use content-storage-database;
 use content-storage-build;
 
-sub build-routes( ContentStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
+sub build-routes( Cro::HTTP::Client:D :$api!, ContentStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
 
     route {
 
@@ -14,9 +16,18 @@ sub build-routes( ContentStorage::Database:D :$db!, Supplier:D :$event-supplier!
 
         my $user =  $session.user;
 
-        my @build = $db.select-build.map( -> %build { ContentStorage::Model::Build.new( |%build ) } );
+        #my $response = await $api.get( 'build', query => { page => 1, page-limit => 10 } );
+        my $response = await $api.get( 'build' );
 
-        template 'builds.crotmp', { :$user, :@build };
+        my $first    = $response.header: 'x-first';
+        my $previous = $response.header: 'x-previous';
+        my $current  = $response.header: 'x-current';
+        my $next     = $response.header: 'x-next';
+        my $last     = $response.header: 'x-last';
+
+        my @build = await $response.body;
+
+        template 'builds.crotmp', { :$user, :@build, :$first, :$previous, :$current, :$next, :$last };
 
       }
 

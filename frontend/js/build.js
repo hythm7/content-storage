@@ -17,6 +17,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const evtSource = new EventSource('/server-sent-events');
 
+  const pagination = document.getElementsByClassName("pagination")[0];
+
+  const elementFirstPage    = document.getElementById('first-page');
+  const elementPreviousPage = document.getElementById('previous-page');
+  const elementCurrentPage  = document.getElementById('current-page');
+  const elementNextPage     = document.getElementById('next-page');
+  const elementLastPage     = document.getElementById('last-page');
+
   var buildUpdate = function (id, data) {
 
     var row = tableBody.querySelector('[data-build-id="' + id + '"]');
@@ -116,4 +124,98 @@ document.addEventListener('DOMContentLoaded', function () {
 
   });
 
+  var buildUpdateTable = function (event) {
+
+    var page = event.target.getAttribute('data-page')
+
+    fetch('api/v1/build?page=' + page, {
+      method: 'GET',
+    })
+      .then( (response) => {
+
+        const first    = response.headers.get('x-first');
+        const previous = response.headers.get('x-previous');
+        const current  = response.headers.get('x-current');
+        const next     = response.headers.get('x-next');
+        const last     = response.headers.get('x-last');
+
+        elementFirstPage.dataset.page    = first;
+        elementPreviousPage.dataset.page = previous;
+        elementCurrentPage.dataset.page  = current;
+        elementNextPage.dataset.page     = next;
+        elementLastPage.dataset.page     = last;
+
+        return response.json();
+
+      } )
+      .then(data => {
+
+        tableBody.innerHTML = '';
+
+        data.forEach( function( obj ) {
+
+        const row = createBuildRow( obj );
+
+        tableBody.appendChild( row )
+
+        } );
+
+      })
+      .catch(error => {
+        console.error('Error Processing:', error);
+      });
+
+  }
+
+  pagination.addEventListener('click', buildUpdateTable )
+
 });
+
+  var createBuildRow = function (data) {
+
+    const row = document.createElement("tr")
+
+    row.dataset.buildId = data.id;
+
+    const status    = document.createElement('td');
+    const user      = document.createElement('td');
+    const identity  = document.createElement('td');
+    const meta      = document.createElement('td');
+    const test      = document.createElement('td');
+    const started   = document.createElement('td');
+    const completed = document.createElement('td');
+    const log       = document.createElement('td');
+
+    status.className    = "text-center";
+    meta.className      = "text-center";
+    test.className      = "text-center";
+    started.className   = "text-center";
+    completed.className = "text-center";
+    log.className       = "text-center";
+
+    status.innerText = data.status;
+    user.innerText = data.user;
+    identity.innerText = data.identity;
+    meta.innerText = data.meta;
+    test.innerText = data.test;
+    started.innerText = data.started;
+    completed.innerText = data.completed;
+
+    log.innerHTML = '<i class="bi-eye">';
+    log.dataset.bsToggle = 'modal';
+    log.dataset.bsTarget = '#buildLogModal';
+
+    row.appendChild( status );
+    row.appendChild( user );
+    row.appendChild( identity );
+    row.appendChild( meta );
+    row.appendChild( test );
+    row.appendChild( started );
+    row.appendChild( completed );
+    row.appendChild( log );
+
+    return row;
+
+  }
+
+

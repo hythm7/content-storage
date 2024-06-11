@@ -42,8 +42,10 @@ method insert-build( UUID:D :$user ) {
 }
 
 
-multi method select-build( )              { select-build $!pg             }
+multi method select-build( Int:D :$offset!, Int:D :$limit! ) { select-build $!pg, :$offset, :$limit  }
 multi method select-build( UUID:D :$id! ) { select-build-by-id $!pg, :$id }
+
+method select-build-count( ) { select-build-count $!pg }
 
 method update-build-status( UUID:D :$id!, Str:D :$status! ) {
   update-build-status $!pg, :$id, :$status;

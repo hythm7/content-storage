@@ -9,13 +9,49 @@ use content-storage-database;
 use content-storage-build;
 use content-storage-model-build;
 
+class Pager {
+
+  subset PageID is export of Int where * > 0;
+
+  has Int:D    $.total      is required;
+  has Int:D    $.page-limit is required;
+  has PageID:D $.page       is required;
+
+  method limit  ( ) { $!page-limit          }
+  method offset ( ) { ( $!page - 1 ) * $!page-limit }
+
+  method first    ( --> PageID ) { 1 }
+
+  method previous ( --> PageID ) { $!page > 1 ?? $!page - 1 !! $!page }
+
+  method current  ( --> PageID ) { $!page }
+
+  method next     ( --> PageID ) { $!page < ( $!total div $!page-limit ) ?? $!page + 1 !! $!page }
+
+  method last     ( --> PageID ) { ceiling $!total / $!page-limit }
+
+}
+
 sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
 
   openapi $openapi-schema, :ignore-unimplemented, :!validate-responses, {
 
-    operation 'readBuild', -> ContentStorage::Session $session {
 
-      my @build = $db.select-build;
+    operation 'readBuild', -> ContentStorage::Session $session, Int:D :$page = 1, Int:D :$page-limit = 1 {
+
+      my Int:D $total = $db.select-build-count.Int;
+
+      my $pager = Pager.new: :$total, :$page, :$page-limit;
+
+
+      response.append-header: 'x-first',    $pager.first;
+      response.append-header: 'x-previous', $pager.previous;
+      response.append-header: 'x-current',  $pager.current;
+      response.append-header: 'x-next',     $pager.next;
+      response.append-header: 'x-last',     $pager.last;
+
+
+      my @build = $db.select-build: offset => $pager.offset, limit => $pager.limit;
 
       content 'application/json', @build;
     }

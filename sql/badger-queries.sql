@@ -111,13 +111,14 @@ SELECT "completed"
 FROM   "build"
 WHERE  "id"        = $id
 
--- sub select-build(--> @)
+-- sub select-build(Int :$offset, Int :$limit! --> @)
 SELECT "b"."id",       "b"."status",  "b"."meta",
        "b"."name",     "b"."version", "b"."auth",     "b"."api",
        "b"."identity", "b"."test",    "b"."started",  "b"."completed",
        ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
 FROM "build" "b"
 ORDER BY started DESC
+LIMIT $limit OFFSET $offset
 
 
 -- sub select-build-by-id(:$id! --> %)
@@ -133,6 +134,9 @@ SELECT "id", "log"
 FROM   "build"
 WHERE  "id" = $id
 
+-- sub select-build-count(--> $)
+SELECT (reltuples/relpages) * ( pg_relation_size('build') / (current_setting('block_size')::integer) ) 
+FROM pg_class WHERE relname = 'build';
 
 -- sub select-distribution(--> @)
 SELECT * FROM "distribution"
