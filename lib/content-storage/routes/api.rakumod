@@ -11,24 +11,24 @@ use content-storage-model-build;
 
 class Pager {
 
-  subset PageID is export of Int where * > 0;
+  has Int:D $.total      is required;
+  has Int:D $.page-limit is required;
+  has Int:D $.page       is required;
 
-  has Int:D    $.total      is required;
-  has Int:D    $.page-limit is required;
-  has PageID:D $.page       is required;
+  method limit  ( --> UInt:D ) {                  $!page-limit }
+  method offset ( --> UInt:D ) { ( $!page - 1 ) * $!page-limit }
 
-  method limit  ( ) { $!page-limit          }
-  method offset ( ) { ( $!page - 1 ) * $!page-limit }
+  method pages ( --> UInt:D ) { ( $!total - 1 ) div $!page-limit + 1 }
 
-  method first    ( --> PageID ) { 1 }
+  method first    ( --> UInt:D ) { 1 }
 
-  method previous ( --> PageID ) { $!page > 1 ?? $!page - 1 !! $!page }
+  method previous ( --> UInt:D ) { $!page > 1 ?? $!page - 1 !! $!page }
 
-  method current  ( --> PageID ) { $!page }
+  method current  ( --> UInt:D ) { $!page }
 
-  method next     ( --> PageID ) { $!page < ( $!total div $!page-limit ) ?? $!page + 1 !! $!page }
+  method next     ( --> UInt:D ) { $!page < self.last ?? $!page + 1 !! $!page }
 
-  method last     ( --> PageID ) { ceiling $!total / $!page-limit }
+  method last     ( --> UInt:D ) { max 1, self.pages }
 
 }
 

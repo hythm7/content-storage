@@ -124,9 +124,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   });
 
-  var buildUpdateTable = function (event) {
+  const buildUpdateTable = function (event) {
 
-    var page = event.target.getAttribute('data-page')
+    const page = event.target.getAttribute('data-page')
+
+    if (page === null) { return false }
 
     fetch('api/v1/build?page=' + page, {
       method: 'GET',
@@ -139,11 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const next     = response.headers.get('x-next');
         const last     = response.headers.get('x-last');
 
-        elementFirstPage.dataset.page    = first;
-        elementPreviousPage.dataset.page = previous;
-        elementCurrentPage.dataset.page  = current;
-        elementNextPage.dataset.page     = next;
-        elementLastPage.dataset.page     = last;
+        buildUpdatePagination( first, previous, current, next, last );
 
         return response.json();
 
@@ -167,11 +165,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
   }
 
+  const buildUpdatePagination = function ( first, previous, current, next, last) {
+
+        elementFirstPage.dataset.page    = first;
+        elementPreviousPage.dataset.page = previous;
+        elementCurrentPage.dataset.page  = current;
+        elementNextPage.dataset.page     = next;
+        elementLastPage.dataset.page     = last;
+
+        if ( first == current ) {
+          elementFirstPage.classList.add( "disabled" );
+        } else {
+
+          elementFirstPage.classList.remove( "disabled" );
+        }
+
+        if ( previous == current ) {
+          elementPreviousPage.classList.add( "disabled" );
+        } else {
+
+          elementPreviousPage.classList.remove( "disabled" );
+        }
+
+        if ( next == current ) {
+          elementNextPage.classList.add( "disabled" );
+        } else {
+
+          elementNextPage.classList.remove( "disabled" );
+        }
+
+        if ( last == current ) {
+          elementLastPage.classList.add( "disabled" );
+        } else {
+
+          elementLastPage.classList.remove( "disabled" );
+        }
+
+  }
+
   pagination.addEventListener('click', buildUpdateTable )
 
 });
 
-  var createBuildRow = function (data) {
+  const createBuildRow = function (data) {
 
     const row = document.createElement("tr")
 
