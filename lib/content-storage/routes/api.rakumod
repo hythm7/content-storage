@@ -34,10 +34,11 @@ class Pager {
 
 sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
 
+  # TODO: Handle errors
   openapi $openapi-schema, :ignore-unimplemented, :!validate-responses, {
 
 
-    operation 'readBuild', -> ContentStorage::Session $session, Int:D :$page = 1, Int:D :$page-limit = 1 {
+    operation 'readBuild', -> ContentStorage::Session $session, Int:D :$page = 1, Int:D :$page-limit = 10 {
 
       my Int:D $total = $db.select-build-count.Int;
 
