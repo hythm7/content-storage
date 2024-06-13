@@ -24,29 +24,17 @@
           </tr>
         </thead>
         <tbody>
-          <@build>
-          <tr data-build-id="<.id>">
-            <td class="text-center"><&status( .status )></td>
-            <td><.user></td>
-            <td><?.identity><.identity></?></td>
-            <td class="text-center"><&status( .meta )></td>
-            <td class="text-center"><&status( .test )></td>
-            <td class="text-center"><?.started><.started></?></td>
-            <td class="text-center"><?.completed><.completed></?></td>
-            <td class="text-center" data-bs-toggle="modal" data-bs-target="#buildLogModal" ><i class="bi-eye"></i></td>
-          </tr>
-          </@>
         </tbody>
         <tfoot>
           <tr>
             <td colspan="8">
               <nav aria-label="Page navigation example">
                 <ul class="pagination pagination-lg justify-content-center">
-                  <li class="page-item"> <i id="first-page"    class="page-link bi-chevron-double-left"  data-page="<.first>"></i></li>
-                  <li class="page-item"> <i id="previous-page" class="page-link bi-chevron-left"         data-page="<.previous>"></i></li>
-                  <li class="page-item"> <i id="current-page"  class="page-link bi-circle"               data-page="<.current>"></i></li>
-                  <li class="page-item"> <i id="next-page"     class="page-link bi-chevron-right"        data-page="<.next>"></i></li>
-                  <li class="page-item"> <i id="last-page"     class="page-link bi-chevron-double-right" data-page="<.last>"></i></li>
+                  <li class="page-item"> <i id="first-page"    class="page-link bi-chevron-double-left" > </i></li>
+                  <li class="page-item"> <i id="previous-page" class="page-link bi-chevron-left"        > </i></li>
+                  <li class="page-item"> <i id="current-page"  class="page-link bi-circle"              > </i></li>
+                  <li class="page-item"> <i id="next-page"     class="page-link bi-chevron-right"       > </i></li>
+                  <li class="page-item"> <i id="last-page"     class="page-link bi-chevron-double-right"> </i></li>
                 </ul>
               </nav>
             </td>
@@ -83,20 +71,3 @@
 <&script( :src('/js/main.bundle.js') )>
 
 <&body-close>
-
-<:sub status( $status )>
-  <?{ $status eq 'RUNNING' }>
-    <div class="spinner-grow spinner-grow-sm text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  </?>
-  <!?{ $status eq 'UNKNOWN' }>
-    <i class="bi bi-exclamation-triangle text-warning"></i>
-  </?>
-  <!?{ $status eq 'ERROR' }>
-    <i class="bi bi-x text-danger"></i>
-  </?>
-  <!?{ $status eq 'SUCCESS' }>
-    <i class="bi bi-check text-success"></i>
-  </?>
-</:>

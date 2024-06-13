@@ -47,11 +47,11 @@ multi method select-build( UUID:D :$id! ) { select-build-by-id $!pg, :$id }
 
 method select-build-count( ) { select-build-count $!pg }
 
-method update-build-status( UUID:D :$id!, Str:D :$status! ) {
+method update-build-status( UUID:D :$id!, Int:D :$status! ) {
   update-build-status $!pg, :$id, :$status;
 }
 
-method update-build-meta ( UUID:D :$id!, Str:D :$meta! ) { update-build-meta    $!pg, :$id, :$meta }
+method update-build-meta ( UUID:D :$id!, Int:D :$meta! ) { update-build-meta    $!pg, :$id, :$meta }
 
 method update-build-name    ( UUID:D :$id!, Str:D :$name!    ) { update-build-name    $!pg, :$id, :$name    }
 method update-build-version ( UUID:D :$id!, Str:D :$version! ) { update-build-version $!pg, :$id, :$version }
@@ -61,7 +61,7 @@ method update-build-api     ( UUID:D :$id!, Str:D :$api!     ) { update-build-ap
 method update-build-identity ( UUID:D :$id!, Str:D :$identity! ) { update-build-identity $!pg, :$id, :$identity }
 
 
-method update-build-test ( UUID:D :$id!, Str:D :$test! ) { update-build-test  $!pg, :$id, :$test  }
+method update-build-test ( UUID:D :$id!, Int:D :$test! ) { update-build-test  $!pg, :$id, :$test  }
 
 method update-build-started(   UUID:D :$id! ) { update-build-started $!pg,   :$id }
 method update-build-completed( UUID:D :$id! ) { update-build-completed $!pg, :$id }

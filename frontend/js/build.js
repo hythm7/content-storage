@@ -124,9 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   });
 
-  const buildUpdateTable = function (event) {
-
-    const page = event.target.getAttribute('data-page')
+  const buildUpdateTable = function (page) {
 
     if (page === null) { return false }
 
@@ -203,7 +201,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   }
 
-  pagination.addEventListener('click', buildUpdateTable )
+  pagination.addEventListener('click', function (event) { 
+    buildUpdateTable( event.target.getAttribute('data-page') )
+  });
+
+
+  buildUpdateTable( 1 )
 
 });
 

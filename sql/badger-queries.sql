@@ -38,17 +38,17 @@ VALUES                ( $user,  $name,  $version,  $auth,  $api,  $identity,  $m
 
 -- sub insert-into-build(:$user! --> $)
 INSERT
-INTO   "build" (  "status",  "user", "meta",    "test"    )
-VALUES         (  'UNKNOWN', $user,  'UNKNOWN', 'UNKNOWN' )
+INTO   "build" ( "status", "user", "meta", "test" )
+VALUES         (  3,       $user,   3,      3     )
 RETURNING "id"
 
 
--- sub update-build-status(:$id!, Str :$status! --> +)
+-- sub update-build-status(:$id!, Int :$status! --> +)
 UPDATE "build"
 set    "status" = $status
 WHERE  "id"     = $id
 
--- sub update-build-meta(:$id!, Str :$meta! --> +)
+-- sub update-build-meta(:$id!, Int :$meta! --> +)
 UPDATE "build"
 set    "meta" = $meta
 WHERE  "id"   = $id
@@ -80,7 +80,7 @@ set    "api" = $api
 WHERE  "id"  = $id
 
 
--- sub update-build-test(:$id!, Str :$test! --> +)
+-- sub update-build-test(:$id!, Int :$test! --> +)
 UPDATE "build"
 set    "test" = $test
 WHERE  "id"   = $id

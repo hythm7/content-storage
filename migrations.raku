@@ -24,11 +24,11 @@ migration 'Setup', {
 
     add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
 
-    add-column "status", text(), :default( sql( "'UNKNOWN'" ) );
+    add-column "status", integer();
 
     add-column "user", type( 'UUID' ), :!null;
 
-    add-column "meta",     text(), :default( sql( "'UNKNOWN'" ) );
+    add-column "meta",     integer();
 
     add-column "name",     text();
     add-column "version",  text();
@@ -38,7 +38,7 @@ migration 'Setup', {
     add-column "identity", text();
 
 
-    add-column "test",  text(), :default( sql( "'UNKNOWN'" ) );
+    add-column "test",  integer();
 
     add-column "started",   timestamp(), :default(Any);
     add-column "completed", timestamp(), :default(Any);

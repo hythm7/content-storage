@@ -12,12 +12,7 @@ use Log::Dispatch::File;
 use content-storage;
 use content-storage-database;
 
-enum Status  is export  (
-  UNKNOWN   => '<i class="bi bi-exclamation-triangle text-warning"></i>',
-  ERROR     => '<i class="bi bi-x text-danger"></i>',
-  SUCCESS   => '<i class="bi bi-check text-success"></i>',
-  RUNNING   => '<div class="spinner-grow spinner-grow-sm text-primary" role="status"><span class="visually-hidden">Loading...</span></div>',
-);
+enum Status  is export <SUCCESS ERROR RUNNING UNKNOWN>;
 
 class BuildLogSource does Log::Dispatch::Source is export { }
 
@@ -86,13 +81,13 @@ class ContentStorage::Build {
     my $completed;
 
     $!db.update-build-started: :$!id;
-    $!db.update-build-status:  :$!id, status => RUNNING.key;
+    $!db.update-build-status:  :$!id, status => +RUNNING;
 
     $datetime = $!db.select-build-started: :$!id;
 
     $started = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
 
-    $status = RUNNING.value;
+    $status = +RUNNING;
 
     self!server-message: :$!id, build => %( :$status, :$started );
 
@@ -123,9 +118,9 @@ class ContentStorage::Build {
       #  requirement (required, recommended, optional)
        
 
-      $!db.update-build-meta:   :$!id, test   => ERROR.key;
+      $!db.update-build-meta:   :$!id, test   => +ERROR;
 
-      self!server-message: :$!id, build => %( test => ERROR.value );
+      self!server-message: :$!id, build => %( test => +ERROR );
 
       self!fail-build: :$!id;
 
@@ -145,7 +140,7 @@ class ContentStorage::Build {
 
     my $identity = identity :$name, :$version, :$auth, :$api;
 
-    $!db.update-build-meta: :$!id,   meta => SUCCESS.key;
+    $!db.update-build-meta: :$!id,   meta => +SUCCESS;
 
     $!db.update-build-name:    :$!id, :$name;
     $!db.update-build-version: :$!id, :$version;
@@ -158,14 +153,14 @@ class ContentStorage::Build {
     $build-log-source.log: :debug, "identity: $identity";
 
 
-    self!server-message: :$!id, build => %( :$identity, meta => SUCCESS.value );
+    self!server-message: :$!id, build => %( :$identity, meta => +SUCCESS );
 
 
-    $test = RUNNING;
+    $test = +RUNNING;
 
-    $!db.update-build-test: :$!id, test   => $test.key;
+    $!db.update-build-test: :$!id, :$test;
 
-    self!server-message: :$!id, build => %( test => $test.value );
+    self!server-message: :$!id, build => %( :$test );
 
     my $test-directory = $distribution-directory.add( 'test' );
 
@@ -188,11 +183,11 @@ class ContentStorage::Build {
 
 
 
-    $test = $exitcode ?? ERROR !! SUCCESS;
+    $test = $exitcode ?? +ERROR !! +SUCCESS;
 
-    $!db.update-build-test:   :$!id, test   => $test.key;
+    $!db.update-build-test:   :$!id, test   => $test;
 
-    self!server-message: :$!id, build => %( test => $test.value );
+    self!server-message: :$!id, build => %( test => $test );
 
     # TODO Add logs to db
 
@@ -259,9 +254,7 @@ class ContentStorage::Build {
 
     #}
 
-    $status = SUCCESS;
-
-    $!db.update-build-status: :$!id, status => $status.key;
+    $!db.update-build-status: :$!id, status => +SUCCESS;
 
     $!db.update-build-log: :$!id, log => $log-file.slurp;
 
@@ -271,7 +264,7 @@ class ContentStorage::Build {
 
     $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
 
-    self!server-message: :$!id, build => %( status => $status.value, :$completed );
+    self!server-message: :$!id, build => %( status => +SUCCESS, :$completed );
 
     True;
 
@@ -279,9 +272,7 @@ class ContentStorage::Build {
 
   method !fail-build ( UUID:D :$!id! ) {
 
-    my $status = ERROR;
-
-    $!db.update-build-status: :$!id, status => $status.key;
+    $!db.update-build-status: :$!id, status => +ERROR;
 
     $!db.update-build-completed: :$!id;
 
@@ -289,7 +280,7 @@ class ContentStorage::Build {
 
     my $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
 
-    self!server-message: :$!id, build => %( status => $status.value, :$completed );
+    self!server-message: :$!id, build => %( status => +ERROR, :$completed );
 
   }
 
