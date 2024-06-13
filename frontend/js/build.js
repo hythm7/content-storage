@@ -25,18 +25,23 @@ document.addEventListener('DOMContentLoaded', function () {
   const elementNextPage     = document.getElementById('next-page');
   const elementLastPage     = document.getElementById('last-page');
 
-  var buildUpdate = function (id, data) {
+  const buildUpdate = function (id, data) {
 
-    var row = tableBody.querySelector('[data-build-id="' + id + '"]');
+    const row = tableBody.querySelector('[data-build-id="' + id + '"]');
 
     if ( row ) {
-      var tds  = row.getElementsByTagName('td');
+
+      const tds  = row.getElementsByTagName('td');
 
       Object.keys(data).forEach( (key) => {
 
-        var td = tds[tableHeadThs.indexOf(key)];
+        const td = tds[tableHeadThs.indexOf(key)];
 
-        td.innerHTML = data[key];
+        const value = data[key];
+
+        if      ( typeof value === 'string' ) { td.innerText = value                 }
+        else if ( typeof value === 'number' ) { td.innerHTML = statusToHTML( value ) }
+        else { console.log( 'Invalid ' + value ) }
 
       } );
     }
@@ -232,15 +237,15 @@ document.addEventListener('DOMContentLoaded', function () {
     completed.className = "text-center";
     log.className       = "text-center";
 
-    status.innerText = data.status;
+    status.innerHTML = statusToHTML( data.status );
     user.innerText = data.user;
     identity.innerText = data.identity;
-    meta.innerText = data.meta;
-    test.innerText = data.test;
+    meta.innerHTML = statusToHTML( data.meta );
+    test.innerHTML = statusToHTML( data.test );
     started.innerText = data.started;
     completed.innerText = data.completed;
 
-    log.innerHTML = '<i class="bi-eye">';
+    log.innerHTML = iconEyeHTML;
     log.dataset.bsToggle = 'modal';
     log.dataset.bsTarget = '#buildLogModal';
 
@@ -258,3 +263,38 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
+const iconSuccess = document.createElement('i');
+iconSuccess.classList.add('bi', 'bi-check', 'text-success' );
+
+const iconError = document.createElement('i');
+iconError.classList.add('bi', 'bi-x', 'text-danger' );
+
+const iconWarning = document.createElement('i');
+iconWarning.classList.add('bi', 'bi-exclamation-triangle', 'text-warning' );
+
+const spinnerRunning = document.createElement('div');
+spinnerRunning.classList.add('spinner-grow', 'spinner-grow-sm', 'text-primary' );
+
+const status = Object.freeze({
+
+  SUCCESS: 0,  
+  ERROR:   1,  
+  RUNNING: 2,  
+  UNKNOWN: 3,  
+
+});
+
+const iconEyeHTML                 = '<i class="bi bi-eye text-primary">';
+const iconCheckHTML               = '<i class="bi bi-check text-success">';
+const iconXHTML                   = '<i class="bi bi-x text-danger">';
+const iconExclamationTriangleHTML = '<i class="bi bi-exclamation-triangle text-warning">';
+const spinnerGrowHTML             = '<div class="spinner-grow spinner-grow-sm text-primary">';
+
+const statusToHTML = function ( value ) {
+
+  if      ( value === status.SUCCESS ) { return iconCheckHTML                }
+  else if ( value === status.ERROR   ) { return iconXHTML                    }
+  else if ( value === status.UNKNOWN ) { return iconExclamationTriangleHTML  }
+  else if ( value === status.RUNNING ) { return spinnerGrowHTML              }
+
+}
