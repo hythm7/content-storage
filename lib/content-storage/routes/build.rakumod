@@ -16,7 +16,6 @@ sub build-routes( Cro::HTTP::Client:D :$api!, ContentStorage::Database:D :$db!, 
 
         my $user =  $session.user;
 
-        #my $response = await $api.get( 'build', query => { page => 1, page-limit => 10 } );
         my $response = await $api.get( 'build' );
 
         my $first    = $response.header: 'x-first';
@@ -25,9 +24,7 @@ sub build-routes( Cro::HTTP::Client:D :$api!, ContentStorage::Database:D :$db!, 
         my $next     = $response.header: 'x-next';
         my $last     = $response.header: 'x-last';
 
-        my @build = await $response.body;
-
-        template 'builds.crotmp', { :$user, :@build, :$first, :$previous, :$current, :$next, :$last };
+        template 'builds.crotmp', { :$user, :$first, :$previous, :$current, :$next, :$last };
 
       }
 
