@@ -12,11 +12,11 @@ use Log::Dispatch::File;
 use content-storage;
 use content-storage-database;
 
-enum Status  is export <SUCCESS ERROR RUNNING UNKNOWN>;
+enum Status  <SUCCESS ERROR RUNNING UNKNOWN>;
 
-class BuildLogSource does Log::Dispatch::Source is export { }
+class BuildLogSource does Log::Dispatch::Source { }
 
-class ServerSentEventsDestination does Log::Dispatch::Destination is export {
+class ServerSentEventsDestination does Log::Dispatch::Destination {
 
   has Str      $!type           is built;
   has Supplier $!event-supplier is built is required;
@@ -76,16 +76,11 @@ class ContentStorage::Build {
 
     my $status;
     my $test;
-    my $datetime;
-    my $started;
-    my $completed;
 
     $!db.update-build-started: :$!id;
     $!db.update-build-status:  :$!id, status => +RUNNING;
 
-    $datetime = $!db.select-build-started: :$!id;
-
-    $started = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
+    my $started = $!db.select-build-started: :$!id;
 
     $status = +RUNNING;
 
@@ -260,9 +255,7 @@ class ContentStorage::Build {
 
     $!db.update-build-completed: :$!id;
 
-    $datetime = $!db.select-build-completed: :$!id;
-
-    $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
+    my $completed = $!db.select-build-completed: :$!id;
 
     self!server-message: :$!id, build => %( status => +SUCCESS, :$completed );
 
@@ -276,9 +269,7 @@ class ContentStorage::Build {
 
     $!db.update-build-completed: :$!id;
 
-    my $datetime = $!db.select-build-completed: :$!id;
-
-    my $completed = "$datetime.yyyy-mm-dd() $datetime.hh-mm-ss()";
+    my $completed = $!db.select-build-completed: :$!id;
 
     self!server-message: :$!id, build => %( status => +ERROR, :$completed );
 
