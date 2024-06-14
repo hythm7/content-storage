@@ -263,18 +263,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
-const iconSuccess = document.createElement('i');
-iconSuccess.classList.add('bi', 'bi-check', 'text-success' );
-
-const iconError = document.createElement('i');
-iconError.classList.add('bi', 'bi-x', 'text-danger' );
-
-const iconWarning = document.createElement('i');
-iconWarning.classList.add('bi', 'bi-exclamation-triangle', 'text-warning' );
-
-const spinnerRunning = document.createElement('div');
-spinnerRunning.classList.add('spinner-grow', 'spinner-grow-sm', 'text-primary' );
-
 const status = Object.freeze({
 
   SUCCESS: 0,  
