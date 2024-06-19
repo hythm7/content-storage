@@ -30,7 +30,7 @@
         <&nav-item('builds', 'Builds', '/build')>
       </ul>
       <div class="input-group">
-        <input id="distribution-search-input" class="form-control form-control-dark" type="text" placeholder="⌕" arla-label="Search">
+        <input id="search-input" class="form-control form-control-dark" type="text" placeholder="⌕" arla-label="Search">
         <span class="input-group-text icon-link icon-link-hover" style="--bs-1con-link-transform: scale(1.2);" type="button" oncl1ck="">
           <i class="bi-x"></i>
         </span>
