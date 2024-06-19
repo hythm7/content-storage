@@ -6,32 +6,32 @@ import * as bootstrap from 'bootstrap'
 
 document.addEventListener('DOMContentLoaded', function () {
 
-  const dropzoneModal = new bootstrap.Modal(document.getElementById('dropzone-modal'));
-  const dropArea = document.getElementById('drop-area');
-  const fileInput = document.getElementById('file');
+  const dropzone_modal = new bootstrap.Modal(document.getElementById('dropzone-modal'));
+  const drop_area = document.getElementById('drop-area');
+  const drop_area_input = document.getElementById('drop-area-input');
 
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (event) {
-    dropArea.addEventListener(event, function (e) {
+    drop_area.addEventListener(event, function (e) {
       e.preventDefault();
       e.stopPropagation();
     });
   });
 
   ['dragenter', 'dragover'].forEach(function (event) {
-    dropArea.addEventListener(event, function () {
-      dropArea.classList.add('highlight');
+    drop_area.addEventListener(event, function () {
+      drop_area.classList.add('highlight');
     });
   });
 
 
   ['dragleave', 'drop'].forEach(function (event) {
-    dropArea.addEventListener(event, function () {
-      dropArea.classList.remove('highlight');
+    drop_area.addEventListener(event, function () {
+      drop_area.classList.remove('highlight');
     });
   });
 
 // Handle dropped files
-  dropArea.addEventListener('drop', function (e) {
+  drop_area.addEventListener('drop', function (e) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -39,32 +39,32 @@ document.addEventListener('DOMContentLoaded', function () {
     var files = e.dataTransfer.files;
 
     // Display the files in the file-input field
-    fileInput.files = files;
+    drop_area_input.files = files;
 
     showDropzoneFiles(files);
   });
 
-  var submitButton = document.getElementById('submit-button');
- // Handle submit button click event
-  submitButton.addEventListener('click', function () {
+  const drop_area_submit = document.getElementById('drop-area-submit');
+
+  drop_area_submit.addEventListener('click', function () {
     // Get the selected files
-    var files = fileInput.files;
+    let files = drop_area_input.files;
 
     // Create FormData object and append files to it
-    var formData = new FormData();
-    for (var i = 0; i < files.length; i++) {
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
       formData.append('file', files[i]);
     }
 
     // Use Fetch API to send files to the server
-    fetch('/build', {
+    fetch('/api/v1/build', {
       method: 'POST',
       body: formData
     })
     .then(response => response.json()) // Assuming the server responds with JSON
     .then(data => {
       console.log(data);
-      dropzoneModal.hide();
+      dropzone_modal.hide();
       //document.location.href="/build"
       //data.forEach(addBuild);
       //window.location.reload();
@@ -76,17 +76,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  fileInput.addEventListener('change', function (event) {
+  drop_area_input.addEventListener('change', function (event) {
 
-    var files = fileInput.files;
+    var files = drop_area_input.files;
     showDropzoneFiles(files)
 
   });
 
   function showDropzoneFiles( files ) {
 
-    var fileInputLabel = document.querySelector('.form-label');
-    var progress = dropArea.querySelector('#progress');
+    const drop_area_input_label = drop_area.querySelector('.form-label');
+    const progress = drop_area.querySelector('#progress');
 
     if (files.length > 0) {
 
@@ -94,19 +94,19 @@ document.addEventListener('DOMContentLoaded', function () {
       progress.innerHTML = '';
 
       files.forEach((file) => {
-        var max = file.size;
-        var fileProgressDiv = '<div class="progress-bar overflow-visible text-dark" style="width: 0%">' + file.name + '</div>';
-        var fileProgress = '<div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="' + max + '">'
-        fileProgress += fileProgressDiv + '</div>';
+        let max = file.size;
+        let file_progress_div = '<div class="progress-bar overflow-visible text-dark" style="width: 0%">' + file.name + '</div>';
+        let file_progress = '<div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="' + max + '">'
+        file_progress += file_progress_div + '</div>';
         
-        progress.innerHTML += fileProgress;
+        progress.innerHTML += file_progress;
 
       });
-      submitButton.classList.remove('disabled');
+      drop_area_submit.classList.remove('disabled');
     } else {
 
-      fileInputLabel.innerText = 'Drag and drop your distribution here or click to select a file.';
-      submitButton.classList.add('disabled');
+      drop_area_input_label.innerText = 'Drag and drop your distribution here or click to select a file.';
+      drop_area_submit.classList.add('disabled');
 
     }
   }
