@@ -4,16 +4,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const ansi = new AnsiUp;
 
-  const buildTable = document.getElementById('distributions-build-table');
-  const tableHead  = buildTable.getElementsByTagName('thead')[0];
-  const tableBody  = buildTable.getElementsByTagName('tbody')[0];
+  const build_table      = document.getElementById('build-table');
+  const build_table_head = build_table.getElementsByTagName('thead')[0];
+  const build_table_body = build_table.getElementsByTagName('tbody')[0];
 
-  const tableHeadThs = Array.from(tableHead.getElementsByTagName('th')).map( (elem) => { return elem.innerText.toLowerCase() } );
+  const tableBuildHeadThs = Array.from(build_table_head.getElementsByTagName('th')).map( (elem) => { return elem.innerText.toLowerCase() } );
 
-  const buildLogModal = document.getElementById('buildLogModal')
-  const buildLog      = document.getElementById('build-log')
+  const build_log_modal = document.getElementById('build-log-modal')
+  const build_log_div   = document.getElementById('build-log-div')
 
-  const buildLogModalBody = buildLogModal.querySelector('.modal-body')
+  const buildLogModalBody = build_log_modal.querySelector('.modal-body')
 
   const evtSource = new EventSource('/server-sent-events');
 
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const buildUpdate = function (id, data) {
 
-    const row = tableBody.querySelector('[data-build-id="' + id + '"]');
+    const row = build_table_body.querySelector('[data-build-id="' + id + '"]');
 
     if ( row ) {
 
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       Object.keys(data).forEach( (key) => {
 
-        const td = tds[tableHeadThs.indexOf(key)];
+        const td = tds[tableBuildHeadThs.indexOf(key)];
 
         const value = data[key];
 
@@ -71,11 +71,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const element = document.createElement('div');
 
     element.innerHTML = ansi.ansi_to_html( event.data );
-    buildLog.appendChild(element);
+    build_log_div.appendChild(element);
 
   }
 
-  buildLogModal.addEventListener('show.bs.modal', event => {
+  build_log_modal.addEventListener('show.bs.modal', event => {
 
 
     // TODO: Set modal title
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var buildId = buildRow.getAttribute('data-build-id')
 
-    buildLogModal.setAttribute('data-build-id', buildId)
+    build_log_modal.setAttribute('data-build-id', buildId)
 
     var buildRunning = buildRow.querySelector('.spinner-grow');
 
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
           element.innerHTML = log;
 
-          buildLog.appendChild(element);
+          build_log_div.appendChild(element);
 
         })
         .catch(error => {
@@ -118,14 +118,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   });
 
-  buildLogModal.addEventListener('hidden.bs.modal', event => {
+  build_log_modal.addEventListener('hidden.bs.modal', event => {
 
-    var buildId = buildLogModal.getAttribute('data-build-id')
+    var buildId = build_log_modal.getAttribute('data-build-id')
 
     evtSource.removeEventListener(buildId, buildEvent)
 
-    var buildLogModalBody = buildLogModal.querySelector('.modal-body')
-    buildLog.innerHTML = '';
+    var buildLogModalBody = build_log_modal.querySelector('.modal-body')
+    build_log_div.innerHTML = '';
 
   });
 
@@ -151,13 +151,13 @@ document.addEventListener('DOMContentLoaded', function () {
       } )
       .then(data => {
 
-        tableBody.innerHTML = '';
+        build_table_body.innerHTML = '';
 
         data.forEach( function( obj ) {
 
         const row = createBuildRow( obj );
 
-        tableBody.appendChild( row )
+        build_table_body.appendChild( row )
 
         } );
 
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     log.innerHTML = iconEyeHTML;
     log.dataset.bsToggle = 'modal';
-    log.dataset.bsTarget = '#buildLogModal';
+    log.dataset.bsTarget = '#build-log-modal';
 
     row.appendChild( status );
     row.appendChild( user );

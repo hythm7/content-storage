@@ -115,12 +115,13 @@ my Cro::Service $http = Cro::HTTP::Server.new(
     SessionStore.new(
       db => $pg,
       sessions-table => 'session',
-      cookie-name => '_content-storage-session')
-    ], 
-    after => [
-      Cro::HTTP::Log::File.new( logs => $*OUT, errors => $*ERR )
-    ]
-  );
+      cookie-name => 'SESSION_CONTENT_STORAGE'
+    )
+  ], 
+  after => [
+    Cro::HTTP::Log::File.new( logs => $*OUT, errors => $*ERR )
+  ]
+);
 
   $http.start;
 
