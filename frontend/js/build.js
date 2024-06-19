@@ -2,7 +2,8 @@ import { AnsiUp } from 'ansi_up';
 
 document.addEventListener('DOMContentLoaded', function () {
 
-  const ansi = new AnsiUp;
+  let timeout;
+  const search_input = document.getElementById('search-input');
 
   const build_table      = document.getElementById('build-table');
   const build_table_head = build_table.getElementsByTagName('thead')[0];
@@ -24,6 +25,26 @@ document.addEventListener('DOMContentLoaded', function () {
   const elementCurrentPage  = document.getElementById('current-page');
   const elementNextPage     = document.getElementById('next-page');
   const elementLastPage     = document.getElementById('last-page');
+
+  const ansi = new AnsiUp;
+
+  search_input.addEventListener("keyup", (event) => {
+
+    clearTimeout(timeout);
+
+    timeout = setTimeout(function() {
+      const query = event.target.value;
+
+      searchBuild( query )
+
+  }, 800);
+
+  });
+
+  const searchBuild = function ( query ) {
+
+    console.log( query )
+  }
 
   const buildUpdate = function (id, data) {
 
