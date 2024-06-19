@@ -684,21 +684,21 @@
         }
       }
     },
-    "/search/distribution": {
+    "/search/build": {
       "get": {
         "tags": [
           "search",
-          "distribution"
+          "build"
         ],
-        "summary": "Search Distribution ",
+        "summary": "Search Build ",
         "description": "Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
-        "operationId": "searchDistributionbyName",
+        "operationId": "searchBuild",
         "parameters": [
           {
             "name": "name",
             "in": "query",
             "description": "Name to filter by",
-            "required": false,
+            "required": true,
             "explode": true,
             "schema": {
               "type": "array",
@@ -716,14 +716,14 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Distribution"
+                    "$ref": "#/components/schemas/Build"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid distribution name"
+            "description": "Invalid build name"
           }
         }
       }
