@@ -37,7 +37,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
   # TODO: Handle errors
   openapi $openapi-schema, :ignore-unimplemented, :!validate-responses, {
 
-    operation 'readBuild', -> ContentStorage::Session $session, Int:D :$page = 1, Int:D :$page-limit = 10 {
+    operation 'readBuild', -> ContentStorage::Session $session, Int:D :$page = 1, Int:D :$page-limit = 2 {
 
       my Int:D $total = $db.select-build-count.Int;
 
@@ -92,6 +92,24 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
         content 'application/json', %data;
 
       }
+    }
+
+    operation 'searchBuild', -> ContentStorage::Session $session, Str:D :$name, Int:D :$page = 1, Int:D :$page-limit = 2 {
+
+      my Int:D $total = $db.select-build-count.Int;
+
+      my $pager = Pager.new: :$total, :$page, :$page-limit;
+
+      response.append-header: 'x-first',    $pager.first;
+      response.append-header: 'x-previous', $pager.previous;
+      response.append-header: 'x-current',  $pager.current;
+      response.append-header: 'x-next',     $pager.next;
+      response.append-header: 'x-last',     $pager.last;
+
+
+      my @build = $db.search-build: :$name, offset => $pager.offset, limit => $pager.limit;
+
+      content 'application/json', @build;
     }
 
 

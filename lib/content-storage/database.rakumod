@@ -73,6 +73,10 @@ method select-build-completed( UUID:D :$id! ) { select-build-completed $!pg, :$i
 
 method select-build-log( UUID:D :$id! ) { select-build-log-by-id $!pg, :$id }
 
+multi method search-build( Str:D :$name!, Int:D :$offset!, Int:D :$limit! ) {
+  search-build $!pg, :$name, :$offset, :$limit 
+}
+
 method insert-distribution( UUID:D :$user!, UUID:D :$build!, Str:D :$meta! ) {
 
   my %meta = from-json $meta;

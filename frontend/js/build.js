@@ -33,7 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
     clearTimeout(timeout);
 
     timeout = setTimeout(function() {
-      const query = event.target.value;
+
+      const query = event.target.value.trim();
 
       searchBuild( query )
 
@@ -44,9 +45,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const searchBuild = function ( query ) {
 
     console.log( query )
+
   }
 
-  const buildUpdate = function (id, data) {
+  const updateBuild = function (id, data) {
 
     const row = build_table_body.querySelector('[data-build-id="' + id + '"]');
 
@@ -82,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if ( message.target == 'BUILD' ) {
 
       if ( message.operation == 'UPDATE' ) {
-        buildUpdate( message.ID, message.build );
+        updateBuild( message.ID, message.build );
       }
     }
   });
@@ -150,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   });
 
-  const buildUpdateTable = function (page) {
+  const updateBuildTable = function (page) {
 
     if (page === null) { return false }
 
@@ -165,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const next     = response.headers.get('x-next');
         const last     = response.headers.get('x-last');
 
-        buildUpdatePagination( first, previous, current, next, last );
+        updateBuildTablePagination( first, previous, current, next, last );
 
         return response.json();
 
@@ -189,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   }
 
-  const buildUpdatePagination = function ( first, previous, current, next, last) {
+  const updateBuildTablePagination = function ( first, previous, current, next, last) {
 
         elementFirstPage.dataset.page    = first;
         elementPreviousPage.dataset.page = previous;
@@ -228,11 +230,11 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   pagination.addEventListener('click', function (event) { 
-    buildUpdateTable( event.target.getAttribute('data-page') )
+    updateBuildTable( event.target.getAttribute('data-page') )
   });
 
 
-  buildUpdateTable( 1 )
+  updateBuildTable( 1 )
 
 });
 
