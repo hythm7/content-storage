@@ -34,17 +34,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     timeout = setTimeout(function() {
 
-      const query = event.target.value.trim();
+      const name = event.target.value.trim();
 
-      searchBuild( query )
+      searchBuild( name )
 
   }, 800);
 
   });
 
-  const searchBuild = function ( query ) {
+  const searchBuild = function ( name ) {
 
-    console.log( query )
+    console.log( name )
+    updateBuildTable( new URLSearchParams( { name: name, page: 1 } ) )
 
   }
 
@@ -152,22 +153,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   });
 
-  const updateBuildTable = function (page) {
+  const updateBuildTable = function (query) {
 
-    if (page === null) { return false }
 
-    fetch('api/v1/build?page=' + page, {
+    console.log(query.toString());
+    fetch('api/v1/build?' + query.toString(), {
       method: 'GET',
     })
       .then( (response) => {
 
-        const first    = response.headers.get('x-first');
-        const previous = response.headers.get('x-previous');
-        const current  = response.headers.get('x-current');
-        const next     = response.headers.get('x-next');
-        const last     = response.headers.get('x-last');
-
-        updateBuildTablePagination( first, previous, current, next, last );
+        updateBuildTablePagination( query, response.headers );
 
         return response.json();
 
@@ -191,13 +186,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
   }
 
-  const updateBuildTablePagination = function ( first, previous, current, next, last) {
+  const updateBuildTablePagination = function ( query, headers ) {
 
-        elementFirstPage.dataset.page    = first;
-        elementPreviousPage.dataset.page = previous;
-        elementCurrentPage.dataset.page  = current;
-        elementNextPage.dataset.page     = next;
-        elementLastPage.dataset.page     = last;
+        query.delete( 'page' );
+        let entries = Object.fromEntries( query )
+
+        const first    = headers.get('x-first');
+        const previous = headers.get('x-previous');
+        const current  = headers.get('x-current');
+        const next     = headers.get('x-next');
+        const last     = headers.get('x-last');
+
+        elementFirstPage.dataset.query    = new URLSearchParams( { ...entries, page:  first    } );
+
+        elementPreviousPage.dataset.query = new URLSearchParams( { ...entries, page:  previous } );
+
+        elementCurrentPage.dataset.query  = new URLSearchParams( { ...entries, page:  current  } );
+
+        elementNextPage.dataset.query     = new URLSearchParams( { ...entries, page:  next     } );
+
+        elementLastPage.dataset.query     = new URLSearchParams( { ...entries, page:  last     } );
 
         if ( first == current ) {
           elementFirstPage.classList.add( "disabled" );
@@ -230,11 +238,11 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   pagination.addEventListener('click', function (event) { 
-    updateBuildTable( event.target.getAttribute('data-page') )
+    updateBuildTable( new URLSearchParams( event.target.getAttribute('data-query') ) )
   });
 
 
-  updateBuildTable( 1 )
+  updateBuildTable( new URLSearchParams( { page: 1 } ) )
 
 });
 
