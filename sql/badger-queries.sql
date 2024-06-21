@@ -111,7 +111,7 @@ SELECT "completed"
 FROM   "build"
 WHERE  "id"        = $id
 
--- sub select-build(Int :$offset!, Int :$limit! --> @)
+-- sub select-build(UInt :$offset!, UInt :$limit! --> @)
 SELECT "b"."id",       "b"."status",  "b"."meta",
        "b"."name",     "b"."version", "b"."auth",     "b"."api",
        "b"."identity", "b"."test",    "b"."started",  "b"."completed",
@@ -136,16 +136,6 @@ WHERE  "id" = $id
 
 -- sub select-build-count(--> $)
 SELECT COUNT(*) FROM "build"
-
--- sub search-build(Str :$name!, Int :$offset!, Int :$limit! --> @)
-SELECT "b"."id",       "b"."status",  "b"."meta",
-       "b"."name",     "b"."version", "b"."auth",     "b"."api",
-       "b"."identity", "b"."test",    "b"."started",  "b"."completed",
-       ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
-FROM "build" "b"
-WHERE  "b"."name" = $name
-ORDER BY started DESC
-LIMIT $limit OFFSET $offset
 
 
 -- sub select-distribution(--> @)

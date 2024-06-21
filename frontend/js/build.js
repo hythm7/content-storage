@@ -157,6 +157,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     console.log(query.toString());
+
+    if ( ! query.has('page') ) { return false }
+
     fetch('api/v1/build?' + query.toString(), {
       method: 'GET',
     })
@@ -183,6 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(error => {
         console.error('Error Processing:', error);
       });
+
 
   }
 

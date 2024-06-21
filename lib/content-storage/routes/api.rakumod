@@ -4,44 +4,21 @@ use Cro::HTTP::Router;
 use Cro::OpenAPI::RoutesFromDefinition;
 
 use content-storage;
+use content-storage-pager;
 use content-storage-session;
 use content-storage-database;
 use content-storage-build;
 use content-storage-model-build;
-
-class Pager {
-
-  has Int:D $.total      is required;
-  has Int:D $.page-limit is required;
-  has Int:D $.page       is required;
-
-  method limit  ( --> UInt:D ) {                  $!page-limit }
-  method offset ( --> UInt:D ) { ( $!page - 1 ) * $!page-limit }
-
-  method pages ( --> UInt:D ) { ( $!total - 1 ) div $!page-limit + 1 }
-
-  method first    ( --> UInt:D ) { 1 }
-
-  method previous ( --> UInt:D ) { $!page > 1 ?? $!page - 1 !! $!page }
-
-  method current  ( --> UInt:D ) { $!page }
-
-  method next     ( --> UInt:D ) { $!page < self.last ?? $!page + 1 !! $!page }
-
-  method last     ( --> UInt:D ) { max 1, self.pages }
-
-}
 
 sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
 
   # TODO: Handle errors
   openapi $openapi-schema, :ignore-unimplemented, :!validate-responses, {
 
-    operation 'readBuild', -> ContentStorage::Session $session, Str :$name, Int:D :$page = 1, Int:D :$page-limit = 2 {
-
+    operation 'readBuild', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
       my Int:D $total = $db.select-build-count.Int;
 
-      my $pager = Pager.new: :$total, :$page, :$page-limit;
+      my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 
       response.append-header: 'x-first',    $pager.first;
       response.append-header: 'x-previous', $pager.previous;
@@ -94,11 +71,11 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
       }
     }
 
-    operation 'searchBuild', -> ContentStorage::Session $session, Str:D :$name, Int:D :$page = 1, Int:D :$page-limit = 2 {
+    operation 'searchBuild', -> ContentStorage::Session $session, Str:D :$name, Int:D :$page = 1, UInt :$limit = 2 {
 
       my Int:D $total = $db.select-build-count.Int;
 
-      my $pager = Pager.new: :$total, :$page, :$page-limit;
+      my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 
       response.append-header: 'x-first',    $pager.first;
       response.append-header: 'x-previous', $pager.previous;

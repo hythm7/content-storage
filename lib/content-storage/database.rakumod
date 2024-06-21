@@ -42,7 +42,7 @@ method insert-build( UUID:D :$user ) {
 }
 
 
-multi method select-build( Int:D :$offset!, Int:D :$limit! ) { select-build $!pg, :$offset, :$limit  }
+multi method select-build( UInt :$offset!, UInt :$limit! ) { select-build $!pg, :$offset, :$limit  }
 multi method select-build( UUID:D :$id! ) { select-build-by-id $!pg, :$id }
 
 method select-build-count( ) { select-build-count $!pg }
@@ -72,10 +72,6 @@ method select-build-started(   UUID:D :$id! ) { select-build-started $!pg,   :$i
 method select-build-completed( UUID:D :$id! ) { select-build-completed $!pg, :$id }
 
 method select-build-log( UUID:D :$id! ) { select-build-log-by-id $!pg, :$id }
-
-multi method search-build( Str:D :$name!, Int:D :$offset!, Int:D :$limit! ) {
-  search-build $!pg, :$name, :$offset, :$limit 
-}
 
 method insert-distribution( UUID:D :$user!, UUID:D :$build!, Str:D :$meta! ) {
 

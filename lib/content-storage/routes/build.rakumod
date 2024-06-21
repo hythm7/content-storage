@@ -10,47 +10,39 @@ use content-storage-build;
 
 sub build-routes( Cro::HTTP::Client:D :$api!, ContentStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
 
-    route {
+  route {
 
-      get -> ContentStorage::Session $session {
+    get -> ContentStorage::Session $session {
 
-        my $user =  $session.user;
+      my $user =  $session.user;
 
-        my $response = await $api.get( 'build' );
+      template 'builds.crotmp', { :$user };
 
-        my $first    = $response.header: 'x-first';
-        my $previous = $response.header: 'x-previous';
-        my $current  = $response.header: 'x-current';
-        my $next     = $response.header: 'x-next';
-        my $last     = $response.header: 'x-last';
+    }
 
-        template 'builds.crotmp', { :$user, :$first, :$previous, :$current, :$next, :$last };
+    get -> ContentStorage::Session $session, UUID:D $id {
 
-      }
+      my %build = $db.select-build: :$id;
 
-      get -> ContentStorage::Session $session, UUID:D $id {
+      content 'application/json', ContentStorage::Model::Build.new( |%build ).to-json;
 
-        my %build = $db.select-build: :$id;
+    }
 
-        content 'application/json', ContentStorage::Model::Build.new( |%build ).to-json;
+    post -> LoggedIn $session {
 
-      }
+      my $user =  $session.user;
 
-      post -> LoggedIn $session {
+      request-body -> ( :$file ) {
 
-        my $user =  $session.user;
+        my $build = ContentStorage::Build.new: :$db, :$event-supplier, user => $user.id, archive => $file.body-blob;
 
-        request-body -> ( :$file ) {
+        start $build.build;
 
-          my $build = ContentStorage::Build.new: :$db, :$event-supplier, user => $user.id, archive => $file.body-blob;
+        my %data = %( id => $build.id.Str );
 
-          start $build.build;
+        content 'application/json', %data;
 
-          my %data = %( id => $build.id.Str );
-
-          content 'application/json', %data;
-
-        }
       }
     }
+  }
 }
