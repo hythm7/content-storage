@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const searchBuild = function ( name ) {
 
-    console.log( name )
     updateBuildTable( new URLSearchParams( { name: name, page: 1 } ) )
 
   }
@@ -201,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const next     = headers.get('x-next');
         const last     = headers.get('x-last');
 
+        console.log(first, previous, current,next,last)
         elementFirstPage.dataset.query    = new URLSearchParams( { ...entries, page:  first    } );
 
         elementPreviousPage.dataset.query = new URLSearchParams( { ...entries, page:  previous } );

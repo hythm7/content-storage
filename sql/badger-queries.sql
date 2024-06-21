@@ -120,6 +120,16 @@ FROM "build" "b"
 ORDER BY started DESC
 LIMIT $limit OFFSET $offset
 
+-- sub select-build-by-name(Str :$name, UInt :$offset!, UInt :$limit! --> @)
+SELECT "b"."id",       "b"."status",  "b"."meta",
+       "b"."name",     "b"."version", "b"."auth",     "b"."api",
+       "b"."identity", "b"."test",    "b"."started",  "b"."completed",
+       ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
+FROM "build" "b"
+WHERE "b"."name" ILIKE $name
+ORDER BY started DESC
+LIMIT $limit OFFSET $offset
+
 
 -- sub select-build-by-id(:$id! --> %)
 SELECT "b"."id",       "b"."status",  "b"."meta",

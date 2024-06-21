@@ -27,7 +27,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
       response.append-header: 'x-last',     $pager.last;
 
 
-      my @build = $db.select-build: offset => $pager.offset, limit => $pager.limit;
+      my @build = $db.select-build: :$name, offset => $pager.offset, limit => $pager.limit;
 
       content 'application/json', @build;
     }

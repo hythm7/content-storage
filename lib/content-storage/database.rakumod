@@ -42,6 +42,9 @@ method insert-build( UUID:D :$user ) {
 }
 
 
+multi method select-build( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
+  select-build-by-name $!pg, name => $name ~ "%", :$offset, :$limit
+}
 multi method select-build( UInt :$offset!, UInt :$limit! ) { select-build $!pg, :$offset, :$limit  }
 multi method select-build( UUID:D :$id! ) { select-build-by-id $!pg, :$id }
 
