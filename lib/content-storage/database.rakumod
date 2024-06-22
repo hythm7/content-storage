@@ -43,12 +43,12 @@ method insert-build( UUID:D :$user ) {
 
 
 multi method select-build( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
-  select-build-by-name $!pg, name => $name ~ "%", :$offset, :$limit
+  select-build-by-name $!pg, name => $name ~ '%', :$offset, :$limit
 }
 multi method select-build( UInt :$offset!, UInt :$limit! ) { select-build $!pg, :$offset, :$limit  }
 multi method select-build( UUID:D :$id! ) { select-build-by-id $!pg, :$id }
-
-method select-build-count( ) { select-build-count $!pg }
+multi method select-build( 'count', Str:D :$name! ) { select-build-by-name-count $!pg, name => $name ~ '%' }
+multi method select-build( 'count' ) { select-build-count $!pg  }
 
 method update-build-status( UUID:D :$id!, Int:D :$status! ) {
   update-build-status $!pg, :$id, :$status;

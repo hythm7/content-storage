@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const ansi = new AnsiUp;
 
-  search_input.addEventListener("keyup", (event) => {
+  search_input.addEventListener("input", (event) => {
 
     clearTimeout(timeout);
 

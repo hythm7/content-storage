@@ -16,7 +16,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
   openapi $openapi-schema, :ignore-unimplemented, :!validate-responses, {
 
     operation 'readBuild', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
-      my Int:D $total = $db.select-build-count.Int;
+      my Int:D $total = $db.select-build: 'count', :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 

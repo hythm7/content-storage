@@ -144,6 +144,10 @@ SELECT "id", "log"
 FROM   "build"
 WHERE  "id" = $id
 
+-- sub select-build-by-name-count(Str :$name! --> $)
+SELECT COUNT(*) FROM "build" "b"
+WHERE "b"."name" ILIKE $name
+
 -- sub select-build-count(--> $)
 SELECT COUNT(*) FROM "build"
 
