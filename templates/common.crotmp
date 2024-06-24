@@ -24,9 +24,6 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarToggler">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-      <?{ $user }>
-        <&nav-item('distributions', 'Distributions', '/distribution')>
-      </?>
         <&nav-item('builds', 'Builds', '/build')>
       </ul>
       <div class="input-group">
