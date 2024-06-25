@@ -1,4 +1,4 @@
-<:sub head(:$title)>
+<:macro page( :$title, :$script, :$user )>
 <!doctype html>
 
 <html lang="en">
@@ -8,11 +8,13 @@
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <title><$title></title>
+  <script src="/js/main.bundle.js"></script>
+  <?$script> <@$script : $src> <script src="<$src>"></script> </@> </?>
 </head>
-</:>
 
-<:sub header(:$active, :$user)>
+<body>
 <header>
+
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">
@@ -24,7 +26,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarToggler">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <&nav-item('builds', 'Builds', '/build')>
+        <&nav-item( 'Builds', '/build' )>
       </ul>
       <div class="input-group">
         <input id="search-input" class="form-control form-control-dark" type="text" placeholder="⌕" arla-label="Search">
@@ -51,8 +53,8 @@
       </?>
       <!>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <&nav-item('login', 'Login', '/user/login')>
-        <&nav-item('register', 'Register', '/user/register')>
+        <&nav-item( 'Login', '/user/login' )>
+        <&nav-item( 'Register', '/user/register' )>
       </ul>
       </!>
 
@@ -60,23 +62,6 @@
   </div>
 </nav>
 
-<div id="alert" class="position-absolute start-50 translate-middle-x">
-  <div class="alert alert-warning fade" role="alert">
-  </div>
-</div> 
-
-<:sub nav-item($id, $title, $link)>
-  <li class="nav-item text-nowrap <?{ $active eq $id }> active</?>">
-    <a class="nav-link" aria-current="page" href="<$link>">
-    <$title>
-    <?{ $active eq $id }> <span class="visually-hidden">(current)</span> </?>
-    </a>
-  </li>
-</:>
-</header>
-</:>
-
-<:sub dropzone>
 <div class="modal fade" id="dropzone-modal" tabindex="-1" aria-labelledby="dropzone-modal-label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
@@ -104,15 +89,18 @@
     </div>
   </div>
 </div>
-</:>
 
-<:macro page>
+<div id="alert" class="position-absolute start-50 translate-middle-x">
+  <div class="alert alert-warning fade" role="alert">
+  </div>
+</div> 
+
+</header>
+
 <div class="container">
-<:body>
+  <:body>
 </div>
-</:macro>
 
-<:sub footer>
 <div class="container-fluid mt-5">
   <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
     <ul class="nav col-md-4">
@@ -127,17 +115,11 @@
       <a href="https://spdx.org/licenses/Artistic-2.0.html" class="text-body-secondary">Artistic License 2.0</a>
   </footer>
 </div>
-</:>
 
-<:sub body-open>
-<body>
-</:>
-
-<:sub body-close>
 </body>
-</:>
+</html>
+</:macro>
 
-<:sub script(:$src)>
-<script src="<$src>"></script>
+<:sub nav-item( $title, $link )>
+  <li class="nav-item text-nowrap"> <a class="nav-link" aria-current="page" href="<$link>"> <$title> </a> </li>
 </:>
-

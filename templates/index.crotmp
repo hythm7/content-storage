@@ -1,12 +1,6 @@
-<:use 'templates/common.crotmp'>
+<:use 'templates/base.crotmp'>
 
-<&head( :title( 'Distributions' ) )>
-
-<&body-open>
-
-<&header( :active( 'distributions' ), :user( .user ) )>
-
-<|page>
+<|page( :title( 'Home' ), :user( .user ) )>
   <div class="page-content">
     <h2>Distributions</h2>
     <table class="table">
@@ -33,11 +27,3 @@
     </table>
   </div>
 </|>
-
-<&dropzone>
-
-<&footer>
-
-<&script( :src('/js/main.bundle.js') )>
-
-<&body-close>

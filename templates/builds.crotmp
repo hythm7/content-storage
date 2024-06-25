@@ -1,12 +1,26 @@
-<:use 'templates/common.crotmp'>
+<:use 'templates/base.crotmp'>
 
-<&head( :title( 'Builds' ) )>
+<|page( :title( 'Builds' ), :script('/js/build.bundle.js'), :user( .user ) )>
 
-<&body-open>
+  <!-- Modal -->
+  <div class="modal fade" id="build-log-modal" tabindex="-1" aria-labelledby="build-log-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="build-log-modal-label">Logs</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="build-log-div">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<&header( :active( 'build' ), :user( .user ) )>
-
-<|page>
   <div class="page-content">
     <h2>Builds</h2>
     <div>
@@ -42,32 +56,5 @@
         </tfoot>
       </table>
     </div>
-    <!-- Modal -->
-    <div class="modal fade" id="build-log-modal" tabindex="-1" aria-labelledby="build-log-modal-label" aria-hidden="true">
-      <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="build-log-modal-label">Modal title</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div id="build-log-div">
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </|>
-
-<&dropzone>
-
-<&footer>
-
-<&script( :src('/js/build.bundle.js') )>
-<&script( :src('/js/main.bundle.js') )>
-
-<&body-close>

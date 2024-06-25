@@ -47,10 +47,7 @@ my sub routes( ) {
     get -> ContentStorage::Session $session {
 
       my $user =  $session.user;
-      my @dist = $db.select-distribution.map( -> $dist {
-        #$dist<created> = Date.new($dist<created>).Str;
-        $dist;
-      });
+      my @dist = $db.select-distribution;
 
       template 'index.crotmp', { :$user, :@dist };
     }
