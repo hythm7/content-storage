@@ -90,11 +90,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
     }
 
 
-    operation 'userLogout', -> ContentStorage::Session $session {
-      $session.set-logged-in-user( Nil );
-    }
-
-    operation 'userLogin', -> ContentStorage::Session $session {
+    operation 'loginUser', -> ContentStorage::Session $session {
 
       request-body -> ( :$username!, :$password! ) {
         
@@ -121,7 +117,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
       }
     }
 
-    operation 'userCreate', -> ContentStorage::Session $session {
+    operation 'registerUser', -> ContentStorage::Session $session {
 
       request-body -> ( :$username!, :$password! ) {
         
@@ -139,7 +135,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
       }
     }
 
-    operation 'userLogout', -> ContentStorage::Session $session {
+    operation 'logoutUser', -> ContentStorage::Session $session {
 
       $session.set-logged-in-user( Nil );
       content 'application/json', { description => "successful operation" };
@@ -147,13 +143,12 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
     }
 
     #operation 'userRead', -> Admin $session {
-    operation 'userRead', -> LoggedIn $session {
+    operation 'readUser', -> LoggedIn $session {
 
       my @user = $db.select-user;
 
       content 'application/json', @user ;
     }
-
 
   }
 }

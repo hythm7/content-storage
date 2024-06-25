@@ -411,7 +411,7 @@
     "/user": {
       "get": {    
         "summary": "List all users",
-        "operationId": "userRead",
+        "operationId": "readUser",
         "tags": [
           "user"
         ],
@@ -538,9 +538,50 @@
         ],
         "summary": "Logs user into the system",
         "description": "",
-        "operationId": "userLogin",
+        "operationId": "loginUser",
         "requestBody": {
-          "description": "Create a new usere",
+          "description": "Login usere",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username/password supplied"
+          }
+        }
+      }
+    },
+    "/user/register": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Register user into the system",
+        "description": "",
+        "operationId": "registerUser",
+        "requestBody": {
+          "description": "Create a new user",
           "content": {
             "application/json": {
               "schema": {
@@ -579,11 +620,21 @@
         ],
         "summary": "Logs out current logged in user session",
         "description": "",
-        "operationId": "userLogout",
+        "operationId": "logoutUser",
         "parameters": [],
         "responses": {
-          "default": {
-            "description": "successful operation"
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username/password supplied"
           }
         }
       }

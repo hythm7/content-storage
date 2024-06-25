@@ -36,10 +36,7 @@
       </div>
       <?{ $user }>
       <div>
-        <button class="btn text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#dropzone-modal" aria-expanded="false">
-          Add Distribution
-          <#><i class="bi-person"></i></#>
-        </button>
+        <button class="btn text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#dropzone-modal" aria-expanded="false"> Add Distribution </button>
       </div>
       <div class="dropdown">
         <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -47,26 +44,88 @@
         </button>
         <ul class="dropdown-menu dropdown-menu-lg-end">
           <li><a class="dropdown-item" href="#"><$user.username></a></li>
-          <li><a class="dropdown-item" href="/user/logout">logout</a></li>
+          <li><a class="dropdown-item" href="/api/v1/user/logout">logout</a></li>
         </ul>
       </div>
       </?>
       <!>
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <&nav-item( 'Login', '/user/login' )>
-        <&nav-item( 'Register', '/user/register' )>
-      </ul>
+      <div>
+        <button class="btn text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#login-modal" aria-expanded="false"> Login </button>
+      </div>
+      <div>
+        <button class="btn text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#register-modal" aria-expanded="false"> Register </button>
+      </div>
       </!>
 
     </div>
   </div>
 </nav>
 
+<div class="modal fade" id="login-modal" tabindex="-1" aria-labelledby="login-modal-label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Login</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="login-alert" class="alert alert-danger d-none" role="alert"></div>
+        <form method="post" action="/api/v1/user/login">
+          <div class="form-group">
+            <label for="login-username">Username</label>
+            <input type="text" name="username" class="form-control" id="login-username" autocomplete="on" required>
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" name="password" class="form-control" id="login-password" autocomplete="on" required>
+          </div>
+          <div style="padding-top: 10px">
+            <input type="submit" value="Log In" class="btn btn-primary" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="register-modal" tabindex="-1" aria-labelledby="register-modal-label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Register</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="register-alert" class="alert alert-danger d-none" role="alert"></div>
+          <form method="post" action="/api/v1/user/register">
+            <div class="form-group">
+              <label for="register-username">Username</label>
+              <input type="text" name="username" class="form-control" id="register-username" autocomplete="on" required>
+            </div>
+            <div class="form-group">
+              <label for="register-password">Password</label>
+              <input type="password" name="password" class="form-control" id="register-password" autocomplete="on" required>
+            </div>
+            <div style="padding-top: 10px">
+              <input type="submit" value="Register" class="btn btn-primary" />
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="dropzone-modal" tabindex="-1" aria-labelledby="dropzone-modal-label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="dropzone-modal-label">Dropzone</h1>
+        <h1 class="modal-title fs-5" id="dropzone-modal-title">Dropzone</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">

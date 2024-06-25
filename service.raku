@@ -42,7 +42,7 @@ my sub routes( ) {
 
   route {
 
-    after { redirect '/user/login', :see-other if .status == 401 };
+    #after { redirect '/user/login', :see-other if .status == 401 };
 
     get -> ContentStorage::Session $session {
 
