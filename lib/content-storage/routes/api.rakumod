@@ -109,10 +109,10 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
             content 'application/json', %user;
 
           } else {
-            bad-request 'application/json', { error => 'Incorrect password.' };
+            forbidden 'application/json', { message => 'Incorrect password.' };
           }
         } else {
-            bad-request 'application/json', { error => 'Incorrect username or password.' };
+            forbidden 'application/json', { message => 'Incorrect username or password.' };
         }
       }
     }

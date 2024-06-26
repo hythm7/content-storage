@@ -69,8 +69,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div id="login-alert" class="alert alert-danger d-none" role="alert"></div>
-        <form method="post" action="/api/v1/user/login">
+        <div id="login-alert" class="alert alert-primary" role="alert"></div>
+        <form id="login-form">
           <div class="form-group">
             <label for="login-username">Username</label>
             <input type="text" name="username" class="form-control" id="login-username" autocomplete="on" required>
@@ -99,8 +99,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div id="register-alert" class="alert alert-danger d-none" role="alert"></div>
-          <form method="post" action="/api/v1/user/register">
+        <div id="register-alert" class="alert" role="alert"></div>
+          <form id="register-form" method="post" action="/api/v1/user/register">
             <div class="form-group">
               <label for="register-username">Username</label>
               <input type="text" name="username" class="form-control" id="register-username" autocomplete="on" required>
