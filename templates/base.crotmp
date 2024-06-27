@@ -44,7 +44,7 @@
         </button>
         <ul class="dropdown-menu dropdown-menu-lg-end">
           <li><a class="dropdown-item" href="#"><$user.username></a></li>
-          <li><a class="dropdown-item" href="/api/v1/user/logout">logout</a></li>
+          <li><button class="btn dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#logout-modal" aria-expanded="false"> Logout </button><li>
         </ul>
       </div>
       </?>
@@ -85,6 +85,7 @@
         </form>
       </div>
       <div class="modal-footer">
+        <button class="btn btn-primary" data-bs-target="#register-modal" data-bs-toggle="modal">Register</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
@@ -100,7 +101,7 @@
       </div>
       <div class="modal-body">
         <div id="register-alert" class="alert" role="alert"></div>
-          <form id="register-form" method="post" action="/api/v1/user/register">
+          <form id="register-form">
             <div class="form-group">
               <label for="register-username">Username</label>
               <input type="text" name="username" class="form-control" id="register-username" autocomplete="on" required>
@@ -111,6 +112,28 @@
             </div>
             <div style="padding-top: 10px">
               <input type="submit" value="Register" class="btn btn-primary" />
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="logout-modal" tabindex="-1" aria-labelledby="logout-modal-label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Logout</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="logout-alert" class="alert" role="alert"></div>
+          <form id="logout-form">
+            <div style="padding-top: 10px">
+              <input type="submit" value="Logout" class="btn btn-primary" />
             </div>
         </form>
       </div>

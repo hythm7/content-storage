@@ -25,10 +25,11 @@ SELECT "id", "username", "is-admin"
 FROM  "user"
 
 
--- sub insert-into-user(Str :$username!, Str :$password! --> +)
+-- sub insert-into-user(Str :$username!, Str :$password! --> %)
 INSERT
 INTO   "user" (  "username",  "password" )
 values       ( $username, $password )
+RETURNING "id"
 
 
 -- sub insert-into-distribution(:$user!, Str :$name!, :$version!, :$auth!, :$api, :$identity!, :$description!, :$provides!, :$tags!, :$meta!, :$build! --> +)

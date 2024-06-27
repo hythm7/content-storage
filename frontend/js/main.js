@@ -6,17 +6,21 @@ import * as bootstrap from 'bootstrap'
 
 document.addEventListener('DOMContentLoaded', function () {
 
-  const login_alert_element    = document.getElementById("login-alert");
   const register_alert_element = document.getElementById("register-alert");
+  const login_alert_element    = document.getElementById("login-alert");
+  const logout_alert_element   = document.getElementById("logout-alert");
 
-  const login_form_element    = document.getElementById('login-form');
   const register_form_element = document.getElementById('register-form');
+  const login_form_element    = document.getElementById('login-form');
+  const logout_form_element   = document.getElementById('logout-form');
 
-  const login_modal_element    = document.getElementById('login-modal');
   const register_modal_element = document.getElementById('register-modal');
+  const login_modal_element    = document.getElementById('login-modal');
+  const logout_modal_element   = document.getElementById('logout-modal');
 
-  const login_modal    = new bootstrap.Modal( login_modal_element );
   const register_modal = new bootstrap.Modal( register_modal_element );
+  const login_modal    = new bootstrap.Modal( login_modal_element );
+  const logout_modal   = new bootstrap.Modal( logout_modal_element );
 
   const dropzone_modal_element = document.getElementById('dropzone-modal');
 
@@ -25,61 +29,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const drop_area = document.getElementById('drop-area');
   const drop_area_input = document.getElementById('drop-area-input');
 
-  login_modal_element.addEventListener('show.bs.modal', event => {
-    login_alert_element.classList.remove( 'alert-success' );
-    login_alert_element.classList.remove( 'alert-danger'  );
-    login_alert_element.classList.add(    'alert-primary' );
-
-    login_alert_element.innerHTML = 'Please enter username and password'
-
-  })
-
-  login_form_element.addEventListener("submit", (event) => {
-
-    event.preventDefault();
-
-
-    let username = document.getElementById("login-username");
-    let password = document.getElementById("login-password");
-
-    const body = new URLSearchParams({ 'username': username.value, 'password': password.value })
-
-    fetch('/api/v1/user/login', {
-      method: 'POST',
-      body: body,
-    })
-    .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
-    .then( data => {
-
-      if ( data.ok ) {
-
-        login_alert_element.classList.remove( 'alert-primary' );
-        login_alert_element.classList.remove( 'alert-danger'  );
-        login_alert_element.classList.add(    'alert-success' );
-
-        login_alert_element.innerText = 'Logged In successfully!';
-
-        setTimeout( function( ) { window.location.reload(); }, 777 );
-
-      } else {
-
-        login_alert_element.classList.remove( 'alert-primary' );
-        login_alert_element.classList.remove( 'alert-success' );
-        login_alert_element.classList.add(    'alert-danger'  );
-
-        login_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
-
-      }
-
-    } )
-    .catch(error => {
-
-      console.error('Error Processing:', error);
-      // Handle errors
-    } );
-
-
-  });
 
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (event) {
     drop_area.addEventListener(event, function (e) {
@@ -181,5 +130,166 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
   }
+
+  register_modal_element.addEventListener('show.bs.modal', event => {
+    register_alert_element.classList.remove( 'alert-success' );
+    register_alert_element.classList.remove( 'alert-danger'  );
+    register_alert_element.classList.add(    'alert-primary' );
+
+    register_alert_element.innerHTML = 'Please enter username and password'
+
+  })
+
+  register_form_element.addEventListener("submit", (event) => {
+
+    event.preventDefault();
+
+    let username = document.getElementById("register-username");
+    let password = document.getElementById("register-password");
+
+    const body = new URLSearchParams({ 'username': username.value, 'password': password.value })
+
+    fetch('/api/v1/user/register', {
+      method: 'POST',
+      body: body,
+    })
+    .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+    .then( data => {
+
+      if ( data.ok ) {
+
+        register_alert_element.classList.remove( 'alert-primary' );
+        register_alert_element.classList.remove( 'alert-danger'  );
+        register_alert_element.classList.add(    'alert-success' );
+
+        register_alert_element.innerText = 'Success!';
+
+        setTimeout( function( ) {
+
+          register_modal.hide();
+          login_modal.show();
+
+        }, 777 );
+
+      } else {
+
+        register_alert_element.classList.remove( 'alert-primary' );
+        register_alert_element.classList.remove( 'alert-success' );
+        register_alert_element.classList.add(    'alert-danger'  );
+
+        register_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
+
+      }
+
+    } )
+    .catch(error => {
+
+      console.error('Error Processing:', error);
+      // Handle errors
+    } );
+
+  });
+
+
+  login_modal_element.addEventListener('show.bs.modal', event => {
+    login_alert_element.classList.remove( 'alert-success' );
+    login_alert_element.classList.remove( 'alert-danger'  );
+    login_alert_element.classList.add(    'alert-primary' );
+
+    login_alert_element.innerHTML = 'Please enter username and password'
+
+  })
+
+  login_form_element.addEventListener("submit", (event) => {
+
+    event.preventDefault();
+
+
+    let username = document.getElementById("login-username");
+    let password = document.getElementById("login-password");
+
+    const body = new URLSearchParams({ 'username': username.value, 'password': password.value })
+
+    fetch('/api/v1/user/login', {
+      method: 'POST',
+      body: body,
+    })
+    .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+    .then( data => {
+
+      if ( data.ok ) {
+
+        login_alert_element.classList.remove( 'alert-primary' );
+        login_alert_element.classList.remove( 'alert-danger'  );
+        login_alert_element.classList.add(    'alert-success' );
+
+        login_alert_element.innerText = 'Success!';
+
+        setTimeout( function( ) { window.location.reload(); }, 777 );
+
+      } else {
+
+        login_alert_element.classList.remove( 'alert-primary' );
+        login_alert_element.classList.remove( 'alert-success' );
+        login_alert_element.classList.add(    'alert-danger'  );
+
+        login_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
+
+      }
+
+    } )
+    .catch(error => {
+
+      console.error('Error Processing:', error);
+      // Handle errors
+    } );
+
+  });
+
+  logout_modal_element.addEventListener('show.bs.modal', event => {
+    logout_alert_element.classList.remove( 'alert-success' );
+    logout_alert_element.classList.remove( 'alert-danger'  );
+    logout_alert_element.classList.add(    'alert-primary' );
+
+    logout_alert_element.innerHTML = 'Are you sure you want to logout!'
+
+  })
+
+  logout_form_element.addEventListener("submit", (event) => {
+
+    event.preventDefault();
+
+    fetch( '/api/v1/user/logout' )
+    .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+    .then( data => {
+
+      if ( data.ok ) {
+
+        logout_alert_element.classList.remove( 'alert-primary' );
+        logout_alert_element.classList.remove( 'alert-danger'  );
+        logout_alert_element.classList.add(    'alert-success' );
+
+        logout_alert_element.innerText = 'Success!';
+
+        setTimeout( function( ) { window.location.reload(); }, 777 );
+
+      } else {
+
+        logout_alert_element.classList.remove( 'alert-primary' );
+        logout_alert_element.classList.remove( 'alert-success' );
+        logout_alert_element.classList.add(    'alert-danger'  );
+
+        logout_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
+
+      }
+
+    } )
+    .catch(error => {
+
+      console.error('Error Processing:', error);
+      // Handle errors
+    } );
+
+  });
 
 });

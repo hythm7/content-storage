@@ -123,13 +123,13 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
         
         if $db.select-user( :$username ) {
 
-          content 'application/json', { error => "User $username is already registered" };
+          conflict 'application/json', { message => "User $username is already registered" };
 
         } else {
 
-          $db.insert-user( :$username, password => argon2-hash( $password ) );
+          my %user = $db.insert-user( :$username, password => argon2-hash( $password ) );
 
-          content 'application/json', {};
+          content 'application/json', %user;
 
         }
       }
@@ -137,8 +137,11 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     operation 'logoutUser', -> ContentStorage::Session $session {
 
+      my $user = $session.user;
+
       $session.set-logged-in-user( Nil );
-      content 'application/json', { description => "successful operation" };
+
+      content 'application/json', { id => $user.id, username => $user.username };
 
     }
 
