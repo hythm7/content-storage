@@ -27,7 +27,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarToggler">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <&nav-item( 'Builds', '/build' )>
+        <li class="nav-item"> <a class="nav-link" href="/build">Builds</a> </li>
       </ul>
       <div class="input-group">
         <input id="search-input" class="form-control form-control-dark" type="text" placeholder="⌕" arla-label="Search">

@@ -28,7 +28,7 @@
       <tfoot>
         <tr>
           <td colspan="5">
-            <&table-pagination>
+            <&table-pagination( :id( 'distribution-table-navigation' ) )>
           </td>
         </tr>
       </tfoot>

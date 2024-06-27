@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const evtSource = new EventSource('/server-sent-events');
 
-  const pagination = document.getElementsByClassName("pagination")[0];
+  const build_table_navigation = document.getElementById( 'build-table-navigation' );
 
   const elementFirstPage    = document.getElementById('first-page');
   const elementPreviousPage = document.getElementById('previous-page');
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   }
 
-  pagination.addEventListener('click', function (event) { 
+  build_table_navigation.addEventListener('click', function (event) { 
     updateBuildTable( new URLSearchParams( event.target.getAttribute('data-query') ) )
   });
 

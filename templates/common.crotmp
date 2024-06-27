@@ -1,10 +1,6 @@
-<:sub nav-item( $title, $link )>
-  <li class="nav-item text-nowrap"> <a class="nav-link" aria-current="page" href="<$link>"> <$title> </a> </li>
-</:>
-
-<:sub table-pagination>
+<:sub table-pagination( :$id )>
   <nav aria-label="Page navigation">
-    <ul class="pagination pagination-lg justify-content-center">
+    <ul id="<$id>" class="pagination pagination-lg justify-content-center">
       <li class="page-item"> <i id="first-page"    class="page-link bi-chevron-double-left" > </i></li>
       <li class="page-item"> <i id="previous-page" class="page-link bi-chevron-left"        > </i></li>
       <li class="page-item"> <i id="current-page"  class="page-link bi-circle"              > </i></li>
