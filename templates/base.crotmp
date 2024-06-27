@@ -1,3 +1,4 @@
+<:use 'templates/common.crotmp'>
 <:macro page( :$title, :$script, :$user )>
 <!doctype html>
 
@@ -201,7 +202,3 @@
 </body>
 </html>
 </:macro>
-
-<:sub nav-item( $title, $link )>
-  <li class="nav-item text-nowrap"> <a class="nav-link" aria-current="page" href="<$link>"> <$title> </a> </li>
-</:>

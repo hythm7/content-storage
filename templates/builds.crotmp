@@ -1,3 +1,4 @@
+<:use 'templates/common.crotmp'>
 <:use 'templates/base.crotmp'>
 
 <|page( :title( 'Builds' ), :script('/js/build.bundle.js'), :user( .user ) )>
@@ -42,15 +43,7 @@
         <tfoot>
           <tr>
             <td colspan="8">
-              <nav aria-label="Page navigation example">
-                <ul class="pagination pagination-lg justify-content-center">
-                  <li class="page-item"> <i id="first-page"    class="page-link bi-chevron-double-left" > </i></li>
-                  <li class="page-item"> <i id="previous-page" class="page-link bi-chevron-left"        > </i></li>
-                  <li class="page-item"> <i id="current-page"  class="page-link bi-circle"              > </i></li>
-                  <li class="page-item"> <i id="next-page"     class="page-link bi-chevron-right"       > </i></li>
-                  <li class="page-item"> <i id="last-page"     class="page-link bi-chevron-double-right"> </i></li>
-                </ul>
-              </nav>
+              <&table-pagination>
             </td>
           </tr>
         </tfoot>
