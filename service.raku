@@ -49,7 +49,7 @@ my sub routes( ) {
       my $user =  $session.user;
       my @dist = $db.select-distribution;
 
-      template 'index.crotmp', { :$user, :@dist };
+      template 'home.crotmp', { :$user, :@dist };
     }
 
     include <api v1>      => api-routes( :$openapi-schema, :$db, :$event-supplier ),

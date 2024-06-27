@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if      ( typeof value === 'string' ) { td.innerText = value                 }
         else if ( typeof value === 'number' ) { td.innerHTML = statusToHTML( value ) }
-        else { console.log( 'Invalid ' + value ) }
+        else { console.error( 'Invalid ' + value ) }
 
       } );
     }
@@ -154,9 +154,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const updateBuildTable = function (query) {
 
-
-    console.log(query.toString());
-
     if ( ! query.has('page') ) { return false }
 
     fetch('api/v1/build?' + query.toString(), {
@@ -200,7 +197,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const next     = headers.get('x-next');
         const last     = headers.get('x-last');
 
-        console.log(first, previous, current,next,last)
         elementFirstPage.dataset.query    = new URLSearchParams( { ...entries, page:  first    } );
 
         elementPreviousPage.dataset.query = new URLSearchParams( { ...entries, page:  previous } );
