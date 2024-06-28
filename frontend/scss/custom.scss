@@ -35,7 +35,6 @@ $enable-shadows: true;
 
 // Customize some defaults
 
-$btn-link-hover-color:white;
 $btn-white-space: nowrap;
 
 $primary: #86b7fe;
@@ -56,6 +55,7 @@ $camelia-purple: #841bac;
 // Required
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/variables-dark";
+
 
 $custom-colors: (
 
@@ -78,6 +78,7 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 @import "bootstrap/scss/utilities";
 @import "bootstrap/scss/root";
 @import "bootstrap/scss/reboot";
+
 
 $navbar-light-color: $camelia-white;
 $navbar-light-brand-color: $camelia-white;
