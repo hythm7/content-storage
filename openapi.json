@@ -41,6 +41,74 @@
   ],
   "paths": {
     "/distribution": {
+      "get": {    
+        "summary": "List distributions",
+        "operationId": "readDistribution",
+        "tags": [
+          "build"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name to filter by",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Current page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "How many items to return at one time (max 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],  
+        "responses": {
+          "200": {
+            "description": "An paged array of distributions",
+            "headers": {
+              "x-next": {
+                "description": "A link to the next page of responses",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Distributions"
+                }
+              }   
+            }   
+          },  
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }   
+      },
       "post": {
         "tags": [
           "distribution"
@@ -1003,6 +1071,12 @@
             "format": "int32",
             "example": 1
           }
+        }
+      },
+      "Distributions": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Distribution"
         }
       },
       "Builds": {

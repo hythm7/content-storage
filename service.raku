@@ -44,18 +44,10 @@ my sub routes( ) {
 
     #after { redirect '/user/login', :see-other if .status == 401 };
 
-    get -> ContentStorage::Session $session {
-
-      my $user =  $session.user;
-      my @dist = $db.select-distribution;
-
-      template 'home.crotmp', { :$user, :@dist };
-    }
-
-    include <api v1>      => api-routes( :$openapi-schema, :$db, :$event-supplier ),
-             distribution => distribution-routes( :$db ),
-             build        => build-routes( :$api, :$db, :$event-supplier ),
-             user         => user-routes( :$db );
+    include                 distribution-routes( :$db ),
+            build        => build-routes( :$api, :$db, :$event-supplier ),
+            user         => user-routes( :$db ),
+            <api v1>     => api-routes( :$openapi-schema, :$db, :$event-supplier );
 
     get -> ContentStorage::Session $session, 'server-sent-events' {
       content 'text/event-stream', $event-source-server.out-supply;

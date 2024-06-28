@@ -153,16 +153,32 @@ WHERE "b"."name" ILIKE $name
 SELECT COUNT(*) FROM "build"
 
 
--- sub select-distribution(--> @)
-SELECT * FROM "distribution"
+-- sub select-distribution(UInt :$offset!, UInt :$limit! --> @)
+SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
+FROM "distribution" "d"
+ORDER BY "created" DESC
+LIMIT $limit OFFSET $offset
 
--- sub select-distribution-by-id(:$id! --> $)
-SELECT * FROM "distribution"
-WHERE "id" = $id
+-- sub select-distribution-by-name(Str :$name, UInt :$offset!, UInt :$limit! --> @)
+SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
+FROM "distribution" "d"
+WHERE "d"."name" ILIKE $name
+ORDER BY "created" DESC
+LIMIT $limit OFFSET $offset
 
--- sub select-distribution-by-user(:$user! --> @)
-SELECT * FROM "distribution"
-WHERE "user" = $user
+
+-- sub select-distribution-by-id(:$id! --> %)
+SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
+FROM "distribution" "d"
+WHERE  "d"."id" = $id
+
+-- sub select-distribution-by-name-count(Str :$name! --> $)
+SELECT COUNT(*) FROM "distribution" "d"
+WHERE "d"."name" ILIKE $name
+
+-- sub select-distribution-count(--> $)
+SELECT COUNT(*) FROM "distribution"
+
 
 -- sub delete-dist(Str :$identity! --> +)
 DELETE FROM "distribution" WHERE "identity" = $identity

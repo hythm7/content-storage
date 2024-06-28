@@ -27,11 +27,14 @@ multi method select-user-username( UUID:D :$id! ) { select-user-username-by-id $
 
 multi method select-user-password( Str:D :$username! ) { select-user-password-by-username $!pg, :$username }
 
+multi method select-distribution( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
+  select-distribution-by-name $!pg, name => $name ~ '%', :$offset, :$limit
+}
+multi method select-distribution( UInt :$offset!, UInt :$limit! ) { select-distribution $!pg, :$offset, :$limit  }
+multi method select-distribution( UUID:D :$id! ) { select-distribution-by-id $!pg, :$id }
+multi method select-distribution( 'count', Str:D :$name! ) { select-distribution-by-name-count $!pg, name => $name ~ '%' }
+multi method select-distribution( 'count' ) { select-distribution-count $!pg  }
 
-multi method select-distribution ( ) { select-distribution( $!pg ) }
-
-multi method select-distribution ( UUID:D :$id!   ) { select-distribution-by-id   $!pg, :$id   }
-multi method select-distribution ( UUID:D :$user! ) { select-distribution-by-user $!pg, :$user }
 
 method delete-dist(:$identity!) { delete-dist $!pg, :$identity }
 

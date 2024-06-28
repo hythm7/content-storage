@@ -3,7 +3,8 @@ import { AnsiUp } from 'ansi_up';
 document.addEventListener('DOMContentLoaded', function () {
 
   let timeout;
-  const search_input = document.getElementById('search-input');
+
+  const build_search_input = document.getElementById('search-input');
 
   const build_table      = document.getElementById('build-table');
   const build_table_head = build_table.getElementsByTagName('thead')[0];
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const buildLogModalBody = build_log_modal.querySelector('.modal-body')
 
-  const evtSource = new EventSource('/server-sent-events');
+  const build_event_source = new EventSource('/server-sent-events');
 
   const build_table_navigation = document.getElementById( 'build-table-navigation' );
 
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const ansi = new AnsiUp;
 
-  search_input.addEventListener("input", (event) => {
+  build_search_input.addEventListener("input", (event) => {
 
     clearTimeout(timeout);
 
@@ -72,12 +73,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
-  evtSource.onerror = (err) => {
+  build_event_source.onerror = (err) => {
     console.error("EventSource failed:", err);
   }
 
 
-  evtSource.addEventListener('message',  (event) => {
+  build_event_source.addEventListener('message',  (event) => {
 
     var message = JSON.parse(event.data);
 
@@ -113,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if ( buildRunning ) {
 
       buildLogModalBody.classList.add('autoscrollable-wrapper');
-      evtSource.addEventListener(buildId, buildEvent)
+      build_event_source.addEventListener(buildId, buildEvent)
 
     } else {
 
@@ -145,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var buildId = build_log_modal.getAttribute('data-build-id')
 
-    evtSource.removeEventListener(buildId, buildEvent)
+    build_event_source.removeEventListener(buildId, buildEvent)
 
     var buildLogModalBody = build_log_modal.querySelector('.modal-body')
     build_log_div.innerHTML = '';

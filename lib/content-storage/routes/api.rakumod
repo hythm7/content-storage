@@ -15,6 +15,24 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
   # TODO: Handle errors
   openapi $openapi-schema, :ignore-unimplemented, :!validate-responses, {
 
+    operation 'readDistribution', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
+      my Int:D $total = $db.select-distribution: 'count', :$name;
+
+      my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
+
+      response.append-header: 'x-first',    $pager.first;
+      response.append-header: 'x-previous', $pager.previous;
+      response.append-header: 'x-current',  $pager.current;
+      response.append-header: 'x-next',     $pager.next;
+      response.append-header: 'x-last',     $pager.last;
+
+
+      my @distribution = $db.select-distribution: :$name, offset => $pager.offset, limit => $pager.limit;
+
+      content 'application/json', @distribution;
+
+    }
+
     operation 'readBuild', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
       my Int:D $total = $db.select-build: 'count', :$name;
 
@@ -71,23 +89,23 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
       }
     }
 
-    operation 'searchBuild', -> ContentStorage::Session $session, Str:D :$name, Int:D :$page = 1, UInt :$limit = 2 {
+    #operation 'searchBuild', -> ContentStorage::Session $session, Str:D :$name, Int:D :$page = 1, UInt :$limit = 2 {
 
-      my Int:D $total = $db.select-build-count.Int;
+    #  my Int:D $total = $db.select-build-count.Int;
 
-      my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
+    #  my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 
-      response.append-header: 'x-first',    $pager.first;
-      response.append-header: 'x-previous', $pager.previous;
-      response.append-header: 'x-current',  $pager.current;
-      response.append-header: 'x-next',     $pager.next;
-      response.append-header: 'x-last',     $pager.last;
+    #  response.append-header: 'x-first',    $pager.first;
+    #  response.append-header: 'x-previous', $pager.previous;
+    #  response.append-header: 'x-current',  $pager.current;
+    #  response.append-header: 'x-next',     $pager.next;
+    #  response.append-header: 'x-last',     $pager.last;
 
 
-      my @build = $db.search-build: :$name, offset => $pager.offset, limit => $pager.limit;
+    #  my @build = $db.search-build: :$name, offset => $pager.offset, limit => $pager.limit;
 
-      content 'application/json', @build;
-    }
+    #  content 'application/json', @build;
+    #}
 
 
     operation 'loginUser', -> ContentStorage::Session $session {
