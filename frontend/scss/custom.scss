@@ -34,6 +34,20 @@ $enable-shadows: true;
 @import "bootstrap/scss/functions";
 
 // Customize some defaults
+
+$btn-link-hover-color:white;
+$btn-white-space: nowrap;
+
+$primary: #86b7fe;
+
+$camelia-blue:   #0101fe;
+$camelia-yellow: #fefe01;
+$camelia-pink:   #fe3265;
+$camelia-green:  #01fc01;
+$camelia-white:  #fafafa;
+$camelia-black:  #010101;
+$camelia-purple: #841bac;
+
 //$body-color: #333;
 //$body-bg: #fff;
 //$border-radius: .4rem;
@@ -42,11 +56,34 @@ $enable-shadows: true;
 // Required
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/variables-dark";
+
+$custom-colors: (
+
+  "camelia-blue":   $camelia-blue,
+  "camelia-yellow": $camelia-yellow,
+  "camelia-pink":   $camelia-pink,
+  "camelia-green":  $camelia-green,
+  "camelia-white":  $camelia-white,
+  "camelia-black":  $camelia-black,
+  "camelia-purple": $camelia-purple,
+
+);
+
+// Merge the maps
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";
 @import "bootstrap/scss/root";
 @import "bootstrap/scss/reboot";
+
+$navbar-light-color: $camelia-white;
+$navbar-light-brand-color: $camelia-white;
+//$navbar-light-hover-color: $camelia-blue;
+//$navbar-light-brand-hover-color: $camelia-blue;
+
 
 @import "bootstrap/scss/type";
 @import "bootstrap/scss/images";

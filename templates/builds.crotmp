@@ -7,7 +7,7 @@
   <div class="modal fade" id="build-log-modal" tabindex="-1" aria-labelledby="build-log-modal-label" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
       <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header bg-primary">
           <h1 class="modal-title fs-5" id="build-log-modal-label">Logs</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
