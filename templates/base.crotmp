@@ -40,7 +40,7 @@
         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#dropzone-modal" aria-expanded="false">Add</button>
       </div>
       <div class="dropdown">
-        <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn btn-primary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="bi-person"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-lg-end">
@@ -65,8 +65,8 @@
 <div class="modal fade" id="login-modal" tabindex="-1" aria-labelledby="login-modal-label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
-      <div class="modal-header bg-primary">
-        <h1 class="modal-title fs-5">Login</h1>
+      <div class="modal-header bg-primary text-white">
+        <h1 class="modal-title fs-3">Login</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -96,8 +96,8 @@
 <div class="modal fade" id="register-modal" tabindex="-1" aria-labelledby="register-modal-label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
-      <div class="modal-header bg-primary">
-        <h1 class="modal-title fs-5">Register</h1>
+      <div class="modal-header bg-primary text-white">
+        <h1 class="modal-title fs-3">Register</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -126,8 +126,8 @@
 <div class="modal fade" id="logout-modal" tabindex="-1" aria-labelledby="logout-modal-label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
-      <div class="modal-header bg-primary">
-        <h1 class="modal-title fs-5">Logout</h1>
+      <div class="modal-header bg-primary text-white">
+        <h1 class="modal-title fs-3">Logout</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -148,8 +148,8 @@
 <div class="modal fade" id="dropzone-modal" tabindex="-1" aria-labelledby="dropzone-modal-label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
-      <div class="modal-header bg-primary">
-        <h1 class="modal-title fs-5" id="dropzone-modal-title">Dropzone</h1>
+      <div class="modal-header bg-primary text-white">
+        <h1 class="modal-title fs-3" id="dropzone-modal-title">Dropzone</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
