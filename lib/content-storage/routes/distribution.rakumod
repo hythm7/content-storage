@@ -8,7 +8,7 @@ sub distribution-routes( ContentStorage::Database:D :$db! ) is export {
 
   route {
 
-    get -> LoggedIn $session {
+    get -> ContentStorage::Session $session {
 
       my $user =  $session.user;
 
