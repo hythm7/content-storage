@@ -9,8 +9,8 @@
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <title><$title></title>
-  <script src="/js/main.bundle.js"></script>
-  <?$script> <@$script : $src> <script src="<$src>"></script> </@> </?>
+  <script type="module" src="/js/main.bundle.js"></script>
+  <?$script> <@$script : $src> <script type="module" src="<$src>"></script> </@> </?>
 </head>
 
 <body>
