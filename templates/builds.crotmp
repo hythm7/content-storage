@@ -43,7 +43,7 @@
         <tfoot>
           <tr>
             <td colspan="8">
-              <&table-pagination( :id( 'build-table-navigation' ) )>
+              <&table-pagination>
             </td>
           </tr>
         </tfoot>

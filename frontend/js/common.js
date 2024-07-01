@@ -24,8 +24,92 @@ const statusToHTML = function ( value ) {
 
 }
 
+const table_body = document.getElementsByTagName('tbody')[0];
+const table_head = document.getElementsByTagName('thead')[0];
 
-export const createDistributionTableRow = function (data) {
+const table_head_ths = Array.from(table_head.getElementsByTagName('th')).map( (elem) => { return elem.innerText.toLowerCase() } );
+
+export const searchDistribution = function ( name ) {
+
+  updateDistributionTable( new URLSearchParams( { name: name, page: 1 } ) )
+
+}
+
+export const searchBuild = function ( name ) {
+
+  updateBuildTable( new URLSearchParams( { name: name, page: 1 } ) )
+
+}
+
+
+export const updateDistributionTable = function (query) {
+
+  if ( ! query.has('page') ) { return false }
+
+  fetch('api/v1/distribution?' + query.toString(), {
+    method: 'GET',
+  })
+    .then( (response) => {
+
+      updateTablePagination( query, response.headers );
+
+      return response.json();
+
+    } )
+    .then(data => {
+
+      table_body.innerHTML = '';
+
+      data.forEach( function( obj ) {
+
+        const row = createDistributionTableRow( obj );
+
+        table_body.appendChild( row )
+
+      } );
+
+    })
+    .catch(error => {
+      console.error('Error Processing:', error);
+    });
+
+}
+
+export const updateBuildTable = function (query) {
+
+  if ( ! query.has('page') ) { return false }
+
+  fetch('api/v1/build?' + query.toString(), {
+    method: 'GET',
+  })
+    .then( (response) => {
+
+      updateTablePagination( query, response.headers );
+
+      return response.json();
+
+    } )
+    .then(data => {
+
+      table_body.innerHTML = '';
+
+      data.forEach( function( obj ) {
+
+        const row = createBuildTableRow( obj );
+
+        table_body.appendChild( row )
+
+      } );
+
+    })
+    .catch(error => {
+      console.error('Error Processing:', error);
+    });
+
+
+}
+
+const createDistributionTableRow = function (data) {
 
   const row = document.createElement("tr")
 
@@ -59,7 +143,7 @@ export const createDistributionTableRow = function (data) {
 
 }
 
-export const createBuildTableRow = function (data) {
+const createBuildTableRow = function (data) {
 
   const row = document.createElement("tr")
 
@@ -106,10 +190,32 @@ export const createBuildTableRow = function (data) {
 
 }
 
+export const updateBuildTableRow = function (id, data) {
+
+  const row = table_body.querySelector('[data-build-id="' + id + '"]');
+
+  if ( row ) {
+
+    const tds  = row.getElementsByTagName('td');
+
+    Object.keys(data).forEach( (key) => {
+
+      const td = tds[table_head_ths.indexOf(key)];
+
+      const value = data[key];
+
+      if      ( typeof value === 'string' ) { td.innerText = value                 }
+      else if ( typeof value === 'number' ) { td.innerHTML = statusToHTML( value ) }
+      else { console.error( 'Invalid ' + value ) }
+
+    } );
+  }
+
+}
 
 
 
-export const updateTablePagination = function ( query, headers ) {
+const updateTablePagination = function ( query, headers ) {
 
   const elementFirstPage    = document.getElementById('first-page');
   const elementPreviousPage = document.getElementById('previous-page');

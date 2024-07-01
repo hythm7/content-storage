@@ -1,7 +1,7 @@
 
 import {
-  updateTablePagination,
-  createDistributionTableRow,
+  searchDistribution,
+  updateDistributionTable,
 } from './common.js';
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -10,11 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const distribution_search_input = document.getElementById('search-input');
 
-  const distribution_table      = document.getElementById('distribution-table');
-
-  const distribution_table_body = distribution_table.getElementsByTagName('tbody')[0];
-
-  const distribution_table_navigation = document.getElementById( 'distribution-table-navigation' );
+  const table_pagination = document.getElementById( 'table-pagination' );
 
   distribution_search_input.addEventListener("input", (event) => {
 
@@ -30,50 +26,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   });
 
-  const searchDistribution = function ( name ) {
-
-    updateDistributionTable( new URLSearchParams( { name: name, page: 1 } ) )
-
-  }
-
-  const updateDistributionTable = function (query) {
-
-    if ( ! query.has('page') ) { return false }
-
-    fetch('api/v1/distribution?' + query.toString(), {
-      method: 'GET',
-    })
-      .then( (response) => {
-
-        updateTablePagination( query, response.headers );
-
-        return response.json();
-
-      } )
-      .then(data => {
-
-        distribution_table_body.innerHTML = '';
-
-        data.forEach( function( obj ) {
-
-        const row = createDistributionTableRow( obj );
-
-        distribution_table_body.appendChild( row )
-
-        } );
-
-      })
-      .catch(error => {
-        console.error('Error Processing:', error);
-      });
-
-  }
-
-
-  distribution_table_navigation.addEventListener('click', function (event) { 
+  table_pagination.addEventListener('click', function (event) { 
     updateDistributionTable( new URLSearchParams( event.target.getAttribute('data-query') ) )
   });
-
 
   updateDistributionTable( new URLSearchParams( { page: 1 } ) )
 
