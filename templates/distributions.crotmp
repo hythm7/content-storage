@@ -1,7 +1,7 @@
 <:use 'templates/common.crotmp'>
 <:use 'templates/base.crotmp'>
 
-<|page( :title( 'Distribuions' ), :script('/js/distribution.bundle.js'), :user( .user ) )>
+<|page( :title( 'Distributions' ), :script('/js/distribution.bundle.js'), :user( .user ) )>
   <div class="page-content">
     <h2>Distributions</h2>
     <table id="distribution-table" class="table">
