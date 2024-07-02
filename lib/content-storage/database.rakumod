@@ -79,7 +79,7 @@ method select-build-completed( UUID:D :$id! ) { select-build-completed $!pg, :$i
 
 method select-build-log( UUID:D :$id! ) { select-build-log-by-id $!pg, :$id }
 
-method insert-distribution( UUID:D :$user!, UUID:D :$build!, Str:D :$meta! ) {
+method insert-distribution( UUID:D :$user!, UUID:D :$build!, Str:D :$meta!, Str :$readme, Str :$changes!  ) {
 
   my %meta = from-json $meta;
 
@@ -97,6 +97,6 @@ method insert-distribution( UUID:D :$user!, UUID:D :$build!, Str:D :$meta! ) {
   my @provides = |%meta<provides>.map( *.key ) if %meta<provides>;
   my @tags     = |%meta<tags>                  if %meta<tags>;
   
-  insert-into-distribution $!pg, :$user, :$name, :$version, :$auth, :$api, :$identity, :$meta, :$description, :@provides, :@tags, :$build;
+  insert-into-distribution $!pg, :$user, :$name, :$version, :$auth, :$api, :$identity, :$meta, :$description, :$readme, :$changes, :@provides, :@tags, :$build;
 
 }

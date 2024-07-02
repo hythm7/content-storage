@@ -32,10 +32,10 @@ values       ( $username, $password )
 RETURNING "id"
 
 
--- sub insert-into-distribution(:$user!, Str :$name!, :$version!, :$auth!, :$api, :$identity!, :$description!, :$provides!, :$tags!, :$meta!, :$build! --> +)
+-- sub insert-into-distribution(:$user!, Str :$name!, :$version!, :$auth!, :$api, :$identity!, Str :$description!, Str :$readme, Str :$changes,  :$provides!, :$tags!, :$meta!, :$build! --> +)
 INSERT
-INTO   "distribution" ( "user", "name", "version", "auth", "api", "identity", "meta", "description", "provides", "tags", "build" )
-VALUES                ( $user,  $name,  $version,  $auth,  $api,  $identity,  $meta,  $description,  $provides,  $tags,  $build  )
+INTO   "distribution" ( "user", "name", "version", "auth", "api", "identity", "meta", "description", "readme", "changes", "provides", "tags", "build" )
+VALUES                ( $user,  $name,  $version,  $auth,  $api,  $identity,  $meta,  $description,  $readme,  $changes,  $provides,  $tags,  $build  )
 
 -- sub insert-into-build(:$user! --> $)
 INSERT

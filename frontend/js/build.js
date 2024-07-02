@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const build_search_input = document.getElementById('search-input');
 
-  const build_log_modal = document.getElementById('build-log-modal')
+  const build_log_modal = document.getElementById('build-modal')
   const build_log_div   = document.getElementById('build-log-div')
 
   const buildLogModalBody = build_log_modal.querySelector('.modal-body')
@@ -66,7 +66,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   build_log_modal.addEventListener('show.bs.modal', event => {
-
 
     // TODO: Set modal title
     var buildRow = event.relatedTarget.parentNode;

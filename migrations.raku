@@ -47,6 +47,7 @@ migration 'Setup', {
 
   }
 
+
   create-table "distribution", { 
 
     add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
@@ -65,6 +66,8 @@ migration 'Setup', {
     add-column "tags",     arr( text() );
 
     add-column "description", text();
+    add-column "readme",      text();
+    add-column "changes",     text();
 
     add-column "created", timestamp(), :default(now), :!null;
 

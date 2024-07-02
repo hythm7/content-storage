@@ -175,7 +175,7 @@ const createBuildTableRow = function (data) {
 
   log.innerHTML = iconEyeHTML;
   log.dataset.bsToggle = 'modal';
-  log.dataset.bsTarget = '#build-log-modal';
+  log.dataset.bsTarget = '#build-modal';
 
   row.appendChild( status );
   row.appendChild( user );

@@ -62,6 +62,7 @@
   </div>
 </nav>
 
+<!-- Login Modal -->
 <div class="modal fade" id="login-modal" tabindex="-1" aria-labelledby="login-modal-label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
@@ -93,6 +94,7 @@
   </div>
 </div>
 
+<!-- Register Modal -->
 <div class="modal fade" id="register-modal" tabindex="-1" aria-labelledby="register-modal-label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
@@ -123,6 +125,7 @@
   </div>
 </div>
 
+<!-- Logout Modal -->
 <div class="modal fade" id="logout-modal" tabindex="-1" aria-labelledby="logout-modal-label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
@@ -145,6 +148,7 @@
   </div>
 </div>
 
+<!-- Dropzone Modal -->
 <div class="modal fade" id="dropzone-modal" tabindex="-1" aria-labelledby="dropzone-modal-label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
@@ -172,6 +176,50 @@
     </div>
   </div>
 </div>
+
+<!-- Build Modal -->
+<div class="modal fade" id="build-modal" tabindex="-1" aria-labelledby="build-modal-label" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h1 class="modal-title fs-3" id="build-modal-label">Build</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <span class="badge text-bg-primary">Koko</span>
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page">Logs</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="build-log-div"></div>
+       </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Distribution Modal -->
+<div class="modal fade" id="distribution-modal" tabindex="-1" aria-labelledby="distribution-modal-label" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h1 class="modal-title fs-3" id="distribution-modal-label">Distribution</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div id="alert" class="position-absolute start-50 translate-middle-x">
   <div class="alert alert-warning fade" role="alert">

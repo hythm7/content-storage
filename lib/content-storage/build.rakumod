@@ -223,31 +223,14 @@ class ContentStorage::Build {
 
     # TODO: Make sure no archives exist
     
-    my $install-archive = $distribution-directory.dirname.IO.add( 'changeme.tar.gz' );
+    my $readme-file  = $distribution-directory.add: 'README.md';
+    my $changes-file = $distribution-directory.add: 'Changes';
 
-    my @install-file = find $install-directory;
+    my Str $readme = $readme-file.slurp   if $readme-file.e;
+    my Str $changes = $changes-file.slurp if $changes-file.e;
 
-    with archive-write( $install-archive.Str ) -> $archive-write {
+    $!db.insert-distribution: :$!user, build => $!id, meta => $meta-content, :$readme, :$changes;
 
-      $build-log-source.log: :debug, 'install-archive: ' ~ $install-archive;
-
-      @install-file.map( -> $file {
-
-        $archive-write.write: $file.IO.relative( $install-directory ), $file;
-
-      } );
-
-      $archive-write.close;
-
-    }
-
-    $!db.insert-distribution: :$!user, build => $!id, meta => $meta-content;
-
-    #for archive-read( $install-archive ) -> $entry {
-
-    #  $build-log-source.log: :debug, 'extract: ' ~ $entry.pathname;
-
-    #}
 
     $!db.update-build-status: :$!id, status => +SUCCESS;
 
