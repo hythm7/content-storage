@@ -1,5 +1,5 @@
 
-const status = Object.freeze({
+export const build_status = Object.freeze({
 
   SUCCESS: 0,
   ERROR:   1,
@@ -13,14 +13,14 @@ const iconEyeHTML                 = '<i class="bi bi-eye text-primary">';
 const iconCheckHTML               = '<i class="bi bi-check text-success">';
 const iconXHTML                   = '<i class="bi bi-x text-danger">';
 const iconExclamationTriangleHTML = '<i class="bi bi-exclamation-triangle text-warning">';
-const spinnerGrowHTML             = '<div class="spinner-grow spinner-grow-sm text-primary">';
+const spinnerGrowHTML             = '<div class="spinner-grow spinner-grow-sm text-primary"></div>';
 
-const statusToHTML = function ( value ) {
+const build_status_to_HTML = function ( value ) {
 
-  if      ( value === status.SUCCESS ) { return iconCheckHTML                }
-  else if ( value === status.ERROR   ) { return iconXHTML                    }
-  else if ( value === status.UNKNOWN ) { return iconExclamationTriangleHTML  }
-  else if ( value === status.RUNNING ) { return spinnerGrowHTML              }
+  if      ( value === build_status.SUCCESS ) { return iconCheckHTML                }
+  else if ( value === build_status.ERROR   ) { return iconXHTML                    }
+  else if ( value === build_status.UNKNOWN ) { return iconExclamationTriangleHTML  }
+  else if ( value === build_status.RUNNING ) { return spinnerGrowHTML              }
 
 }
 
@@ -148,43 +148,39 @@ const createBuildTableRow = function (data) {
   const row = document.createElement("tr")
 
   row.dataset.buildId = data.id;
+  row.dataset.bsToggle = 'modal';
+  row.dataset.bsTarget = '#build-modal';
 
-  const status    = document.createElement('td');
-  const user      = document.createElement('td');
-  const identity  = document.createElement('td');
-  const meta      = document.createElement('td');
-  const test      = document.createElement('td');
-  const started   = document.createElement('td');
-  const completed = document.createElement('td');
-  const log       = document.createElement('td');
 
-  status.className    = "text-center";
-  meta.className      = "text-center";
-  test.className      = "text-center";
-  started.className   = "text-center";
-  completed.className = "text-center";
-  log.className       = "text-center";
+  const build_status = document.createElement('td');
+  const user         = document.createElement('td');
+  const identity     = document.createElement('td');
+  const meta         = document.createElement('td');
+  const test         = document.createElement('td');
+  const started      = document.createElement('td');
+  const completed    = document.createElement('td');
 
-  status.innerHTML = statusToHTML( data.status );
+  build_status.className = "text-center";
+  meta.className         = "text-center";
+  test.className         = "text-center";
+  started.className      = "text-center";
+  completed.className    = "text-center";
+
+  build_status.innerHTML = build_status_to_HTML( data.status );
   user.innerText = data.user;
   identity.innerText = data.identity;
-  meta.innerHTML = statusToHTML( data.meta );
-  test.innerHTML = statusToHTML( data.test );
+  meta.innerHTML = build_status_to_HTML( data.meta );
+  test.innerHTML = build_status_to_HTML( data.test );
   started.innerText = data.started;
   completed.innerText = data.completed;
 
-  log.innerHTML = iconEyeHTML;
-  log.dataset.bsToggle = 'modal';
-  log.dataset.bsTarget = '#build-modal';
-
-  row.appendChild( status );
+  row.appendChild( build_status );
   row.appendChild( user );
   row.appendChild( identity );
   row.appendChild( meta );
   row.appendChild( test );
   row.appendChild( started );
   row.appendChild( completed );
-  row.appendChild( log );
 
   return row;
 
@@ -205,7 +201,7 @@ export const updateBuildTableRow = function (id, data) {
       const value = data[key];
 
       if      ( typeof value === 'string' ) { td.innerText = value                 }
-      else if ( typeof value === 'number' ) { td.innerHTML = statusToHTML( value ) }
+      else if ( typeof value === 'number' ) { td.innerHTML = build_status_to_HTML( value ) }
       else { console.error( 'Invalid ' + value ) }
 
     } );

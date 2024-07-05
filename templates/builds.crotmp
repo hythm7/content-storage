@@ -16,14 +16,13 @@
             <th scope="col" class="text-center">Test</th>
             <th scope="col" class="text-center">Started</th>
             <th scope="col" class="text-center">Completed</th>
-            <th scope="col" class="text-center">Log</th>
           </tr>
         </thead>
         <tbody>
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="8">
+            <td colspan="7">
               <&table-pagination>
             </td>
           </tr>

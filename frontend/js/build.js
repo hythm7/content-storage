@@ -1,4 +1,5 @@
 import {
+  build_status,
   searchBuild,
   updateBuildTable,
   updateBuildTableRow,
@@ -13,10 +14,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const build_search_input = document.getElementById('search-input');
 
-  const build_log_modal = document.getElementById('build-modal')
-  const build_log_div   = document.getElementById('build-log-div')
+  const build_modal   = document.getElementById('build-modal')
+  const build_log = document.getElementById('build-log')
 
-  const buildLogModalBody = build_log_modal.querySelector('.modal-body')
+  const buildLogModalBody = build_modal.querySelector('.modal-body')
 
   const build_event_source = new EventSource('/server-sent-events');
 
@@ -61,35 +62,32 @@ document.addEventListener('DOMContentLoaded', function () {
     const element = document.createElement('div');
 
     element.innerHTML = ansi.ansi_to_html( event.data );
-    build_log_div.appendChild(element);
+    build_log.appendChild(element);
 
   }
 
-  build_log_modal.addEventListener('show.bs.modal', event => {
+  build_modal.addEventListener('show.bs.modal', event => {
 
     // TODO: Set modal title
-    var buildRow = event.relatedTarget.parentNode;
+    var buildRow = event.relatedTarget;
 
     var buildId = buildRow.getAttribute('data-build-id')
 
-    build_log_modal.setAttribute('data-build-id', buildId)
+    build_modal.setAttribute('data-build-id', buildId)
 
-    var buildRunning = buildRow.querySelector('.spinner-grow');
+    fetch( 'api/v1/build/' + buildId )
+      .then(response => response.json()) // Assuming the server responds with JSON
+      .then(data => {
 
-    if ( buildRunning ) {
+        if ( data.status == build_status.RUNNING ) {
 
-      buildLogModalBody.classList.add('autoscrollable-wrapper');
-      build_event_source.addEventListener(buildId, buildEvent)
+          buildLogModalBody.classList.add('autoscrollable-wrapper');
 
-    } else {
+          build_event_source.addEventListener(buildId, buildEvent)
 
-      buildLogModalBody.classList.remove('autoscrollable-wrapper');
+        } else {
 
-      fetch('api/v1/build/' + buildId + '/log', {
-        method: 'GET',
-      })
-        .then(response => response.json()) // Assuming the server responds with JSON
-        .then(data => {
+          buildLogModalBody.classList.remove('autoscrollable-wrapper');
 
           const element = document.createElement('div');
 
@@ -97,24 +95,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
           element.innerHTML = log;
 
-          build_log_div.appendChild(element);
+          build_log.appendChild(element);
+        }
 
-        })
-        .catch(error => {
-          console.error('Error Processing:', error);
-        });
-    }
+      })
+      .catch(error => {
+        console.error('Error Processing:', error);
+      });
 
   });
 
-  build_log_modal.addEventListener('hidden.bs.modal', event => {
+  build_modal.addEventListener('hidden.bs.modal', event => {
 
-    var buildId = build_log_modal.getAttribute('data-build-id')
+    var buildId = build_modal.getAttribute('data-build-id')
 
     build_event_source.removeEventListener(buildId, buildEvent)
 
-    var buildLogModalBody = build_log_modal.querySelector('.modal-body')
-    build_log_div.innerHTML = '';
+    var buildLogModalBody = build_modal.querySelector('.modal-body')
+    build_log.innerHTML = '';
 
   });
 

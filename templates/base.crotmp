@@ -186,17 +186,15 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <ul class="nav nav-pills mb-3" id="build-pills-tab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="build-details-tab" data-bs-toggle="pill" data-bs-target="#build-details-div" type="button" role="tab" aria-controls="build-details-div" aria-selected="true">Details</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="build-log-tab" data-bs-toggle="pill" data-bs-target="#build-log-div" type="button" role="tab" aria-controls="build-log-div" aria-selected="false">Log</button>
-          </li>
-        </ul>
-        <div class="tab-content" id="build-pills-tab-content">
-          <div class="tab-pane fade show active" id="build-details-div" role="tabpanel" aria-labelledby="build-details-tab" tabindex="0">Some details here</div>
-          <div class="tab-pane fade" id="build-log-div" role="tabpanel" aria-labelledby="build-log-tab" tabindex="0"></div>
+        <div> <!-- Needed for autoscroll to work as expected -->
+          <nav>
+            <div class="nav nav-pills mb-3" id="build-pills-tab" role="tablist">
+                <button class="nav-link active" id="build-log-tab" data-bs-toggle="pill" data-bs-target="#build-log" type="button" role="tab" aria-controls="build-log" aria-selected="false">Log</button>
+            </div>
+          </nav>
+          <div class="tab-content" id="build-pills-tab-content">
+            <div class="tab-pane fade show active" id="build-log" role="tabpanel" aria-labelledby="build-log-tab" tabindex="0"></div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -215,6 +213,20 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        <nav>
+          <div class="nav nav-pills mb-3" id="distribution-pills-tab" role="tablist">
+              <button class="nav-link active" id="distribution-info-tab"    data-bs-toggle="pill" data-bs-target="#distribution-info"    type="button" role="tab" aria-controls="distribution-info"    aria-selected="false">Info</button>
+              <button class="nav-link"        id="distribution-readme-tab"  data-bs-toggle="pill" data-bs-target="#distribution-readme"  type="button" role="tab" aria-controls="distribution-readme"  aria-selected="false">Readme</button>
+              <button class="nav-link"        id="distribution-changes-tab" data-bs-toggle="pill" data-bs-target="#distribution-changes" type="button" role="tab" aria-controls="distribution-changes" aria-selected="false">Changes</button>
+              <button class="nav-link"        id="distribution-build-tab"  data-bs-toggle="pill"  data-bs-target="#distribution-build"   type="button" role="tab" aria-controls="distribution-build"   aria-selected="false">Build</button>
+          </div>
+        </nav>
+        <div class="tab-content" id="build-pills-tab-content">
+          <div class="tab-pane fade show active" id="distribution-info"    role="tabpanel" aria-labelledby="build-log-tab"          tabindex="0"></div>
+          <div class="tab-pane fade"             id="distribution-readme"  role="tabpanel" aria-labelledby="build-readme-tab"       tabindex="0"></div>
+          <div class="tab-pane fade"             id="distribution-changes" role="tabpanel" aria-labelledby="build-changes-tab"      tabindex="0"></div>
+          <div class="tab-pane fade"             id="distribution-build"   role="tabpanel" aria-labelledby="distribution-build-tab" tabindex="0"></div>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -113,19 +113,13 @@ FROM   "build"
 WHERE  "id"        = $id
 
 -- sub select-build(UInt :$offset!, UInt :$limit! --> @)
-SELECT "b"."id",       "b"."status",  "b"."meta",
-       "b"."name",     "b"."version", "b"."auth",     "b"."api",
-       "b"."identity", "b"."test",    "b"."started",  "b"."completed",
-       ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
+SELECT "b".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
 FROM "build" "b"
 ORDER BY started DESC
 LIMIT $limit OFFSET $offset
 
 -- sub select-build-by-name(Str :$name, UInt :$offset!, UInt :$limit! --> @)
-SELECT "b"."id",       "b"."status",  "b"."meta",
-       "b"."name",     "b"."version", "b"."auth",     "b"."api",
-       "b"."identity", "b"."test",    "b"."started",  "b"."completed",
-       ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
+SELECT "b".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
 FROM "build" "b"
 WHERE "b"."name" ILIKE $name
 ORDER BY started DESC
@@ -133,10 +127,7 @@ LIMIT $limit OFFSET $offset
 
 
 -- sub select-build-by-id(:$id! --> %)
-SELECT "b"."id",       "b"."status",  "b"."meta",
-       "b"."name",     "b"."version", "b"."auth",     "b"."api",
-       "b"."identity", "b"."test",    "b"."started",  "b"."completed",
-       ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
+SELECT "b".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
 FROM "build" "b"
 WHERE  "b"."id" = $id
 
@@ -156,14 +147,14 @@ SELECT COUNT(*) FROM "build"
 -- sub select-distribution(UInt :$offset!, UInt :$limit! --> @)
 SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
 FROM "distribution" "d"
-ORDER BY "created" DESC
+ORDER BY "d"."created" DESC
 LIMIT $limit OFFSET $offset
 
 -- sub select-distribution-by-name(Str :$name, UInt :$offset!, UInt :$limit! --> @)
 SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
 FROM "distribution" "d"
 WHERE "d"."name" ILIKE $name
-ORDER BY "created" DESC
+ORDER BY "d"."created" DESC
 LIMIT $limit OFFSET $offset
 
 

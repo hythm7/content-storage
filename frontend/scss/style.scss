@@ -144,7 +144,7 @@ $bootstrap-icons-font-dir: "bootstrap-icons/font/fonts";
 }
 
 .autoscrollable-wrapper {
-  overflow: scroll;
+  overflow: auto;
   max-height: 100%;
   display: flex;
   flex-direction: column-reverse;
