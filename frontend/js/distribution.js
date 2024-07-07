@@ -1,3 +1,5 @@
+import DOMPurify from 'dompurify';
+import { marked } from 'marked';
 
 import {
   searchDistribution,
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         distribution_modal_badge.innerText = data.identity;
 
-        distribution_readme.innerHTML = data.readme;
+        distribution_readme.innerHTML = DOMPurify.sanitize( marked.parse( data.readme ) );
 
       })
       .catch(error => {
