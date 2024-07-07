@@ -8,14 +8,14 @@ export const build_status = Object.freeze({
 
 });
 
-const iconDownloadHTML            = '<i class="bi bi-download text-primary">';
-const iconEyeHTML                 = '<i class="bi bi-eye text-primary">';
-const iconCheckHTML               = '<i class="bi bi-check text-success">';
-const iconXHTML                   = '<i class="bi bi-x text-danger">';
-const iconExclamationTriangleHTML = '<i class="bi bi-exclamation-triangle text-warning">';
+const iconDownloadHTML            = '<i class="bi bi-download text-primary"></i>';
+const iconEyeHTML                 = '<i class="bi bi-eye text-primary"></i>';
+const iconCheckHTML               = '<i class="bi bi-check text-success"></i>';
+const iconXHTML                   = '<i class="bi bi-x text-danger"></i>';
+const iconExclamationTriangleHTML = '<i class="bi bi-exclamation-triangle text-warning"></i>';
 const spinnerGrowHTML             = '<div class="spinner-grow spinner-grow-sm text-primary"></div>';
 
-const build_status_to_HTML = function ( value ) {
+export const build_status_to_HTML = function ( value ) {
 
   if      ( value === build_status.SUCCESS ) { return iconCheckHTML                }
   else if ( value === build_status.ERROR   ) { return iconXHTML                    }

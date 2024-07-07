@@ -90,7 +90,7 @@ class ContentStorage::Build {
 
     for archive-read( $source-archive, destpath => ~$distribution-directory ) -> $entry {
 
-      $build-log-source.log: :debug, 'extract: ' ~ $entry.pathname;
+      # $build-log-source.log: :debug, 'extract: ' ~ $entry.pathname;
 
       $entry.extract;
 

@@ -1,5 +1,6 @@
 import {
   build_status,
+  build_status_to_HTML,
   searchBuild,
   updateBuildTable,
   updateBuildTableRow,
@@ -14,10 +15,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const build_search_input = document.getElementById('search-input');
 
-  const build_modal   = document.getElementById('build-modal')
+  const build_modal       = document.getElementById('build-modal')
+  const build_modal_badge = document.getElementById('build-modal-badge')
+
   const build_log = document.getElementById('build-log')
 
-  const buildLogModalBody = build_modal.querySelector('.modal-body')
 
   const build_event_source = new EventSource('/server-sent-events');
 
@@ -69,9 +71,13 @@ document.addEventListener('DOMContentLoaded', function () {
   build_modal.addEventListener('show.bs.modal', event => {
 
     // TODO: Set modal title
-    var buildRow = event.relatedTarget;
 
-    var buildId = buildRow.getAttribute('data-build-id')
+    const buildRow = event.relatedTarget;
+
+    const buildId = buildRow.getAttribute('data-build-id')
+
+    const build_modal_body = build_modal.querySelector('.modal-body')
+
 
     build_modal.setAttribute('data-build-id', buildId)
 
@@ -79,15 +85,21 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(response => response.json()) // Assuming the server responds with JSON
       .then(data => {
 
+        let badge_html = build_status_to_HTML( data.status );
+
+        if ( data.identity ) { badge_html = data.identity + ' ' + badge_html }
+
+        build_modal_badge.innerHTML = badge_html ;
+
         if ( data.status == build_status.RUNNING ) {
 
-          buildLogModalBody.classList.add('autoscrollable-wrapper');
+          build_modal_body.classList.add('autoscrollable-wrapper');
 
           build_event_source.addEventListener(buildId, buildEvent)
 
         } else {
 
-          buildLogModalBody.classList.remove('autoscrollable-wrapper');
+          build_modal_body.classList.remove('autoscrollable-wrapper');
 
           const element = document.createElement('div');
 
@@ -111,8 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     build_event_source.removeEventListener(buildId, buildEvent)
 
-    var buildLogModalBody = build_modal.querySelector('.modal-body')
-    build_log.innerHTML = '';
+    build_modal_badge.innerHTML = '';
+    build_log.innerHTML         = '';
 
   });
 
