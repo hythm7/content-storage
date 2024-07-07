@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const distribution_readme  = document.getElementById('distribution-readme')
   const distribution_changes = document.getElementById('distribution-changes')
-  const distribution_build   = document.getElementById('distribution-build')
 
   const table_pagination = document.getElementById( 'table-pagination' );
 
@@ -37,7 +36,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         distribution_modal_badge.innerText = data.identity;
 
-        distribution_readme.innerHTML = DOMPurify.sanitize( marked.parse( data.readme ) );
+        const readme  = data.readme;
+        const changes = data.changes;
+
+        if ( readme ) {
+          distribution_readme.innerHTML = DOMPurify.sanitize( marked.parse( data.readme ) );
+        }
+
+        if ( changes ) {
+          distribution_changes.innerHTML = DOMPurify.sanitize( data.changes.replace(/(?:\n)/g, '<br>') );
+        }
 
       })
       .catch(error => {
@@ -49,7 +57,9 @@ document.addEventListener('DOMContentLoaded', function () {
   distribution_modal.addEventListener('hidden.bs.modal', event => {
 
     distribution_modal_badge.innerHTML = '';
-    distribution_readme.innerHTML = '';
+
+    distribution_readme.innerHTML  = '';
+    distribution_changes.innerHTML = '';
 
   });
 
