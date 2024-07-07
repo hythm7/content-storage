@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const distribution_modal       = document.getElementById('distribution-modal')
   const distribution_modal_badge = document.getElementById('distribution-modal-badge')
 
+  const distribution_readme  = document.getElementById('distribution-readme')
+  const distribution_changes = document.getElementById('distribution-changes')
+  const distribution_build   = document.getElementById('distribution-build')
+
   const table_pagination = document.getElementById( 'table-pagination' );
 
   distribution_modal.addEventListener('show.bs.modal', event => {
@@ -31,6 +35,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         distribution_modal_badge.innerText = data.identity;
 
+        distribution_readme.innerHTML = data.readme;
+
       })
       .catch(error => {
         console.error('Error Processing:', error);
@@ -41,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
   distribution_modal.addEventListener('hidden.bs.modal', event => {
 
     distribution_modal_badge.innerHTML = '';
+    distribution_readme.innerHTML = '';
 
   });
 
