@@ -70,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   build_modal.addEventListener('show.bs.modal', event => {
 
-    // TODO: Set modal title
 
     const buildRow = event.relatedTarget;
 
@@ -82,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
     build_modal.setAttribute('data-build-id', buildId)
 
     fetch( 'api/v1/build/' + buildId )
-      .then(response => response.json()) // Assuming the server responds with JSON
+      .then(response => response.json())
       .then(data => {
 
         if ( data.identity ) { build_modal_badge.innerText = data.identity }

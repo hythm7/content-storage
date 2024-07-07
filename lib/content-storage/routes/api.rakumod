@@ -33,6 +33,14 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     }
 
+    operation 'readDistributionById', -> ContentStorage::Session $session, UUID:D $id  {
+
+      my %distribution = $db.select-distribution: :$id;
+
+      content 'application/json', %distribution;
+
+    }
+
     operation 'readBuild', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
       my Int:D $total = $db.select-build: 'count', :$name;
 

@@ -159,7 +159,7 @@
         ],
         "summary": "Find distribution by ID",
         "description": "Returns a single distribution",
-        "operationId": "getDistributionById",
+        "operationId": "readDistributionById",
         "parameters": [
           {
             "name": "distributionId",
@@ -167,8 +167,7 @@
             "description": "ID of distribution to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
@@ -879,83 +878,16 @@
   },
   "components": {
     "schemas": {
-      "Order": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 10
-          },
-          "distributionId": {
-            "type": "integer",
-            "format": "int64",
-            "example": 198772
-          },
-          "quantity": {
-            "type": "integer",
-            "format": "int32",
-            "example": 7
-          },
-          "shipDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "status": {
-            "type": "string",
-            "description": "Order Status",
-            "example": "approved",
-            "enum": [
-              "placed",
-              "approved",
-              "delivered"
-            ]
-          },
-          "complete": {
-            "type": "boolean"
-          }
-        }
-      },
-      "Address": {
-        "type": "object",
-        "properties": {
-          "street": {
-            "type": "string",
-            "example": "437 Lytton"
-          },
-          "city": {
-            "type": "string",
-            "example": "Palo Alto"
-          },
-          "state": {
-            "type": "string",
-            "example": "CA"
-          },
-          "zip": {
-            "type": "string",
-            "example": "94301"
-          }
-        }
-      },
       "Distribution": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 42
-          },
-          "status": {
             "type": "string",
-            "example": "RUNNING"
+            "example": 42
           },
           "user": {
             "type": "string",
             "example": "john"
-          },
-          "filename": {
-            "type": "string",
-            "example": "filename"
           },
           "meta": {
             "type": "string",
@@ -987,8 +919,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int64",
+            "type": "string",
             "example": 42
           },
           "status": {
