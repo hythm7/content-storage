@@ -85,11 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(response => response.json()) // Assuming the server responds with JSON
       .then(data => {
 
-        let badge_html = build_status_to_HTML( data.status );
-
-        if ( data.identity ) { badge_html = data.identity + ' ' + badge_html }
-
-        build_modal_badge.innerHTML = badge_html ;
+        if ( data.identity ) { build_modal_badge.innerText = data.identity }
 
         if ( data.status == build_status.RUNNING ) {
 

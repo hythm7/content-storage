@@ -114,6 +114,8 @@ const createDistributionTableRow = function (data) {
   const row = document.createElement("tr")
 
   row.dataset.distributionId = data.id;
+  row.dataset.bsToggle = 'modal';
+  row.dataset.bsTarget = '#distribution-modal';
 
   const name     = document.createElement('td');
   const version  = document.createElement('td');

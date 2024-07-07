@@ -193,7 +193,9 @@
                   <button class="nav-link active" id="build-log-tab" data-bs-toggle="pill" data-bs-target="#build-log" type="button" role="tab" aria-controls="build-log" aria-selected="false">Log</button>
               </div>
             </nav>
-            <div><span id="build-modal-badge" class="badge text-primary"></span></div>
+            <div>
+              <span id="build-modal-badge" class="badge text-primary"></span>
+            </div>
           </div>
           <div class="tab-content" id="build-pills-tab-content">
             <div class="tab-pane fade show active" id="build-log" role="tabpanel" aria-labelledby="build-log-tab" tabindex="0"></div>
