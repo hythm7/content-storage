@@ -254,17 +254,45 @@
 </div>
 
 <div class="container-fluid mt-5">
-  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-    <ul class="nav">
-      <li class="nav-item"><a href="/" class="nav-link px-2 text-body-secondary">Home</a></li>
+  <footer class="py-3 border-top">
+    <ul class="navbar-nav flex-row flex-wrap ms-md-auto justify-content-between">
       <li class="nav-item"><a href="https://raku.org" class="nav-link px-2 text-body-secondary">Raku</a></li>
+      <li class="nav-item">
+        <a href="https://raku.org"> <img src="/images/logo/camelia-logo.png" alt="Logo" width="42" height="42"></a>
+      </li>
+      <div class="nav-item dropdown">
+        <button class="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center"
+                id="bd-theme"
+                type="button"
+                aria-expanded="false"
+                data-bs-toggle="dropdown"
+                data-bs-display="static"
+                aria-label="Toggle theme (auto)">
+          <i class="bi bi-circle-half my-1 theme-icon-active"></i>
+          <span class="d-lg-none ms-2" id="bd-theme-text">Toggle theme</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+          <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+              <i class="bi bi-sun-fill me-2 opacity-50"></i>
+              <i class="bi bi-check2 ms-auto d-none"></i>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+              <i class="bi bi-moon-stars-fill me-2 opacity-50"></i>
+              <i class="bi bi-check2 ms-auto d-none"></i>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+              <i class="bi bi-circle-half me-2 opacity-50"></i>
+              <i class="bi bi-check2 ms-auto d-none"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
     </ul>
-
-    <a href="https://raku.org">
-      <img src="/images/logo/camelia-logo.png" alt="Logo" width="42" height="42">
-    </a>
-
-      <a href="https://spdx.org/licenses/Artistic-2.0.html" class="text-body-secondary">Artistic License 2.0</a>
   </footer>
 </div>
 
