@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   distribution_modal.addEventListener('show.bs.modal', event => {
 
-    const distribution_row = event.relatedTarget;
+    const distribution_row = event.relatedTarget.parentNode;
 
     const distribution_id = distribution_row.getAttribute('data-distribution-id')
 

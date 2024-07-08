@@ -114,8 +114,6 @@ const createDistributionTableRow = function (data) {
   const row = document.createElement("tr")
 
   row.dataset.distributionId = data.id;
-  row.dataset.bsToggle = 'modal';
-  row.dataset.bsTarget = '#distribution-modal';
 
   const name     = document.createElement('td');
   const version  = document.createElement('td');
@@ -123,6 +121,9 @@ const createDistributionTableRow = function (data) {
   const api      = document.createElement('td');
   const created  = document.createElement('td');
   const download = document.createElement('td');
+
+  name.dataset.bsToggle = 'modal';
+  name.dataset.bsTarget = '#distribution-modal';
 
   created.className  = "text-center";
   download.className = "text-center";

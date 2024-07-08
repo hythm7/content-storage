@@ -85,6 +85,8 @@ $navbar-light-brand-color: $camelia-white;
 //$navbar-light-hover-color: $camelia-blue;
 //$navbar-light-brand-hover-color: $camelia-blue;
 
+$table-hover-bg:    $primary;
+$table-hover-color: $camelia-white;
 
 @import "bootstrap/scss/type";
 @import "bootstrap/scss/images";
