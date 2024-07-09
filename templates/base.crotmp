@@ -254,14 +254,11 @@
 </div>
 
 <div class="container-fluid mt-5">
-  <footer class="py-3 border-top">
-    <ul class="navbar-nav flex-row flex-wrap ms-md-auto justify-content-between">
-      <li class="nav-item"><a href="https://raku.org" class="nav-link px-2 text-body-secondary">Raku</a></li>
-      <li class="nav-item">
-        <a href="https://raku.org"> <img src="/images/logo/camelia-logo.png" alt="Logo" width="42" height="42"></a>
-      </li>
-      <div class="nav-item dropdown">
-        <button class="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center"
+  <footer class="py-3 border-top d-flex justify-content-between">
+      <div><a href="/" class="nav-link px-2 text-body-secondary">Home</a></div>
+      <div><a href="https://raku.org"> <img src="/images/logo/camelia-logo.png" alt="Logo" width="42" height="42"></a></div>
+      <div class="dropdown text-primary">
+        <button class="btn dropdown-toggle d-flex align-items-center"
                 id="bd-theme"
                 type="button"
                 aria-expanded="false"
@@ -273,26 +270,22 @@
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
           <li>
-            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
-              <i class="bi bi-sun-fill me-2 opacity-50"></i>
-              <i class="bi bi-check2 ms-auto d-none"></i>
+            <button type="button" class="dropdown-item" data-bs-theme-value="light" aria-pressed="false">
+              <i class="bi bi-sun-fill me-2 opacity-50"></i> Light
             </button>
           </li>
           <li>
-            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
-              <i class="bi bi-moon-stars-fill me-2 opacity-50"></i>
-              <i class="bi bi-check2 ms-auto d-none"></i>
+            <button type="button" class="dropdown-item" data-bs-theme-value="dark" aria-pressed="false">
+              <i class="bi bi-moon-stars-fill me-2 opacity-50"></i> Dark
             </button>
           </li>
           <li>
-            <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
-              <i class="bi bi-circle-half me-2 opacity-50"></i>
-              <i class="bi bi-check2 ms-auto d-none"></i>
+            <button type="button" class="dropdown-item active" data-bs-theme-value="auto" aria-pressed="true">
+              <i class="bi bi-circle-half me-2 opacity-50"></i> Auto
             </button>
           </li>
         </ul>
       </div>
-    </ul>
   </footer>
 </div>
 
