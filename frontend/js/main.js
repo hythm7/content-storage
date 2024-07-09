@@ -43,9 +43,15 @@ import * as bootstrap from 'bootstrap'
     }
 
     const themeSwitcherText = document.querySelector('#bd-theme-text')
-    const activeThemeIcon = document.querySelector('.theme-icon-active i')
+    const activeThemeIcon = document.querySelector('.theme-icon-active')
     const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
-    //const iOfActiveBtn = btnToActive.querySelector('i').getAttribute('href')
+
+    const iOfCurrentActiveClassList = activeThemeIcon.classList;
+    const iOfCurrentActiveClass     = Array.from(iOfCurrentActiveClassList).filter(word => word.startsWith("bi-"))[0];
+
+    const iOfToBeActiveclassList = btnToActive.querySelector('i').classList;
+    const iOfToBeActiveClass     = Array.from(iOfToBeActiveclassList).filter(word => word.startsWith("bi-"))[0];
+
 
     document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
       element.classList.remove('active')
@@ -54,7 +60,8 @@ import * as bootstrap from 'bootstrap'
 
     btnToActive.classList.add('active')
     btnToActive.setAttribute('aria-pressed', 'true')
-    //activeThemeIcon.setAttribute('href', iOfActiveBtn)
+    activeThemeIcon.classList.replace( iOfCurrentActiveClass, iOfToBeActiveClass );
+
     const themeSwitcherLabel = `${themeSwitcherText.textContent} (${btnToActive.dataset.bsThemeValue})`
     themeSwitcher.setAttribute('aria-label', themeSwitcherLabel)
 
