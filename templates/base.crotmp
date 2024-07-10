@@ -37,10 +37,10 @@
       </div>
       <?{ $user }>
       <div>
-        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#dropzone-modal" aria-expanded="false">Add</button>
+        <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#dropzone-modal" aria-expanded="false">Add</button>
       </div>
       <div class="dropdown">
-        <button class="btn btn-primary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="bi-person"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-lg-end">
@@ -51,10 +51,10 @@
       </?>
       <!>
       <div>
-        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#login-modal" aria-expanded="false"> Login </button>
+        <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#login-modal" aria-expanded="false"> Login </button>
       </div>
       <div>
-        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#register-modal" aria-expanded="false"> Register </button>
+        <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#register-modal" aria-expanded="false"> Register </button>
       </div>
       </!>
 
@@ -258,7 +258,7 @@
       <div><a href="/" class="nav-link px-2 text-body-secondary">Home</a></div>
       <div><a href="https://raku.org"> <img src="/images/logo/camelia-logo.png" alt="Logo" width="42" height="42"></a></div>
       <div class="dropdown text-primary">
-        <button class="btn dropdown-toggle d-flex align-items-center"
+        <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center"
                 id="bd-theme"
                 type="button"
                 aria-expanded="false"

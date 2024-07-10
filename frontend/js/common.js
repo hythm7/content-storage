@@ -125,6 +125,8 @@ const createDistributionTableRow = function (data) {
   name.dataset.bsToggle = 'modal';
   name.dataset.bsTarget = '#distribution-modal';
 
+  name.className  = "text-primary";
+
   created.className  = "text-center";
   download.className = "text-center";
 
@@ -151,8 +153,6 @@ const createBuildTableRow = function (data) {
   const row = document.createElement("tr")
 
   row.dataset.buildId = data.id;
-  row.dataset.bsToggle = 'modal';
-  row.dataset.bsTarget = '#build-modal';
 
 
   const build_status = document.createElement('td');
@@ -163,6 +163,11 @@ const createBuildTableRow = function (data) {
   const started      = document.createElement('td');
   const completed    = document.createElement('td');
 
+  identity.dataset.bsToggle = 'modal';
+  identity.dataset.bsTarget = '#build-modal';
+
+  identity.className = "text-primary";
+
   build_status.className = "text-center";
   meta.className         = "text-center";
   test.className         = "text-center";
@@ -170,6 +175,7 @@ const createBuildTableRow = function (data) {
   completed.className    = "text-center";
 
   build_status.innerHTML = build_status_to_HTML( data.status );
+
   user.innerText = data.user;
   identity.innerText = data.identity;
   meta.innerHTML = build_status_to_HTML( data.meta );

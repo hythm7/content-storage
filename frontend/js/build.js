@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
   build_modal.addEventListener('show.bs.modal', event => {
 
 
-    const buildRow = event.relatedTarget;
+    const buildRow = event.relatedTarget.parentNode;;
 
     const buildId = buildRow.getAttribute('data-build-id')
 

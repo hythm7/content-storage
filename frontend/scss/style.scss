@@ -35,7 +35,6 @@ $enable-shadows: true;
 
 // Customize some defaults
 
-$btn-white-space: nowrap;
 
 $primary: #86b7fe;
 
@@ -80,13 +79,17 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 @import "bootstrap/scss/reboot";
 
 
-$navbar-light-color: $camelia-white;
-$navbar-light-brand-color: $camelia-white;
+$navbar-light-color: $white;
+$navbar-light-brand-color: $white;
 //$navbar-light-hover-color: $camelia-blue;
 //$navbar-light-brand-hover-color: $camelia-blue;
 
-$table-hover-bg:    $primary;
-$table-hover-color: $camelia-white;
+//$table-hover-bg:    $primary;
+$table-hover-color: $primary;
+
+$btn-color: $white;
+
+$btn-white-space: nowrap;
 
 @import "bootstrap/scss/type";
 @import "bootstrap/scss/images";
