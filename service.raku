@@ -17,7 +17,7 @@ use content-storage-database;
 use content-storage-routes-api;
 use content-storage-routes-distribution;
 use content-storage-routes-build;
-use content-storage-routes-user;
+use content-storage-routes-auth;
 
 
 my $pg = DB::Pg.new: conninfo =>  %*ENV<DB_CONN_INFO>, converters => <DateTime>;
@@ -42,12 +42,12 @@ my sub routes( ) {
 
   route {
 
-    #after { redirect '/user/login', :see-other if .status == 401 };
+    #after { redirect '/auth/login', :see-other if .status == 401 };
 
-    include                 distribution-routes( :$db ),
-            build        => build-routes( :$api, :$db, :$event-supplier ),
-            user         => user-routes( :$db ),
-            <api v1>     => api-routes( :$openapi-schema, :$db, :$event-supplier );
+    include             distribution-routes( :$db ),
+            build    => build-routes( :$api, :$db, :$event-supplier ),
+            auth     => auth-routes( :$db ),
+            <api v1> => api-routes( :$openapi-schema, :$db, :$event-supplier );
 
     get -> ContentStorage::Session $session, 'server-sent-events' {
       content 'text/event-stream', $event-source-server.out-supply;

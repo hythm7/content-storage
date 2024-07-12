@@ -7,12 +7,12 @@ use content-storage-session;
 use content-storage-database;
 
 
-sub user-routes( ContentStorage::Database:D :$db! ) is export {
+sub auth-routes( ContentStorage::Database:D :$db! ) is export {
 
   route {
 
     get -> ContentStorage::Session $session, 'register' {
-      template 'register.crotmp', { :logged-in($session.user.defined), :!error };
+      template 'register.crotmp', { :logged-in( $session.user.defined ), :!error };
     }
 
     post -> ContentStorage::Session $session, 'register' {
@@ -27,7 +27,7 @@ sub user-routes( ContentStorage::Database:D :$db! ) is export {
 
           $db.insert-user(:$username, :password( argon2-hash( $password ) ) );
 
-          redirect :see-other, '/user/login';
+          redirect :see-other, '/auth/login';
         }
       }
     }

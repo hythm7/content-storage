@@ -39,7 +39,7 @@
     "content-storage-model-distribution": "lib/content-storage/model/distribution.rakumod",
     "content-storage-session": "lib/content-storage/session.rakumod",
     "content-storage-routes-api": "lib/content-storage/routes/api.rakumod",
-    "content-storage-routes-user": "lib/content-storage/routes/user.rakumod",
+    "content-storage-routes-auth": "lib/content-storage/routes/auth.rakumod",
     "content-storage-routes-build": "lib/content-storage/routes/build.rakumod",
     "content-storage-routes-distribution": "lib/content-storage/routes/distribution.rakumod"
   },

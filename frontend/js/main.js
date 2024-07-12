@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const body = new URLSearchParams({ 'username': username.value, 'password': password.value })
 
-    fetch('/api/v1/user/register', {
+    fetch('/api/v1/auth/register', {
       method: 'POST',
       body: body,
     })
@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const body = new URLSearchParams({ 'username': username.value, 'password': password.value })
 
-    fetch('/api/v1/user/login', {
+    fetch('/api/v1/auth/login', {
       method: 'POST',
       body: body,
     })
@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     event.preventDefault();
 
-    fetch( '/api/v1/user/logout' )
+    fetch( '/api/v1/auth/logout' )
     .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
     .then( data => {
 
