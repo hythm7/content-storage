@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const build_log = document.getElementById('build-log')
 
-
   const build_event_source = new EventSource('/server-sent-events');
 
   const table_pagination = document.getElementById( 'table-pagination' );
@@ -80,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     build_modal.setAttribute('data-build-id', buildId)
 
-    fetch( 'api/v1/build/' + buildId )
+    fetch( '/api/v1/build/' + buildId )
       .then(response => response.json())
       .then(data => {
 
@@ -128,6 +127,6 @@ document.addEventListener('DOMContentLoaded', function () {
     updateBuildTable( new URLSearchParams( event.target.getAttribute('data-query') ) )
   });
 
-  updateBuildTable( new URLSearchParams( { page: 1 } ) )
+  updateBuildTable( )
 
 });

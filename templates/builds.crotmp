@@ -1,33 +1,10 @@
 <:use 'templates/common.crotmp'>
 <:use 'templates/base.crotmp'>
 
-<|page( :title( 'Builds' ), :script('/js/build.bundle.js'), :user( .user ) )>
-
-  <div class="page-content">
-    <h2>Builds</h2>
-    <div>
-      <table id='build-table' class="table">
-        <thead>
-          <tr class="table-primary">
-            <th scope="col" class="text-center">Status</th>
-            <th scope="col">User</th>
-            <th scope="col">Identity</th>
-            <th scope="col" class="text-center">Meta</th>
-            <th scope="col" class="text-center">Test</th>
-            <th scope="col" class="text-center">Started</th>
-            <th scope="col" class="text-center">Completed</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="7">
-              <&table-pagination>
-            </td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  </div>
+<|page( :user( .user ), :title( .title ), :script('/js/build.bundle.js') )>
+<div class="page-content">
+  <h2><.title></h2>
+  <&build-table( :api( .api ) )>
+</div>
 </|>
+

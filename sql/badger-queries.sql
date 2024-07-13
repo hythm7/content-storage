@@ -175,16 +175,27 @@ WHERE "d"."name" ILIKE $name
 -- sub select-distribution-count(--> $)
 SELECT COUNT(*) FROM "distribution"
 
--- sub select-user-distribution(Str :$user, UInt :$offset!, UInt :$limit! --> @)
+-- sub select-user-distribution(:$user, UInt :$offset!, UInt :$limit! --> @)
 SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
 FROM "distribution" "d"
 WHERE "d"."user" = $user
 ORDER BY "d"."created" DESC
 LIMIT $limit OFFSET $offset
 
--- sub select-user-distribution-count(Str :$user! --> $)
+-- sub select-user-distribution-count(:$user! --> $)
 SELECT COUNT(*) FROM "distribution" "d"
 WHERE "d"."user" = $user
+
+-- sub select-user-build(:$user, UInt :$offset!, UInt :$limit! --> @)
+SELECT "b".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
+FROM "build" "b"
+WHERE "b"."user" = $user
+ORDER BY "b"."started" DESC
+LIMIT $limit OFFSET $offset
+
+-- sub select-user-build-count(:$user! --> $)
+SELECT COUNT(*) FROM "build" "b"
+WHERE "b"."user" = $user
 
 
 -- sub delete-dist(Str :$identity! --> +)

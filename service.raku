@@ -43,8 +43,6 @@ my sub routes( ) {
 
   route {
 
-    #after { redirect '/auth/login', :see-other if .status == 401 };
-
     include             distribution-routes( :$db ),
             build    => build-routes( :$api, :$db, :$event-supplier ),
             user     => user-routes( :$db ),

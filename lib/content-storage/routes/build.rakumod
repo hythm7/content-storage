@@ -14,9 +14,11 @@ sub build-routes( Cro::HTTP::Client:D :$api!, ContentStorage::Database:D :$db!, 
 
     get -> ContentStorage::Session $session {
 
-      my $user =  $session.user;
+      my $user  =  $session.user;
+      my $title = 'Builds';
+      my $api   = '/api/v1/build';
 
-      template 'builds.crotmp', { :$user };
+      template 'builds.crotmp', { :$user , :$title, :$api };
 
     }
 

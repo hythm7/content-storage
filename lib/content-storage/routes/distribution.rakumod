@@ -10,9 +10,12 @@ sub distribution-routes( ContentStorage::Database:D :$db! ) is export {
 
     get -> ContentStorage::Session $session {
 
-      my $user =  $session.user;
+      my $user  =  $session.user;
+      my $title = 'Distributions';
+      my $api   = '/api/v1/distribution';
 
-      template 'distributions.crotmp', { :$user };
+
+      template 'distributions.crotmp', { :$user , :$title, :$api };
     }
   }
 }

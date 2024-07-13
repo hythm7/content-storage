@@ -1,29 +1,9 @@
 <:use 'templates/common.crotmp'>
 <:use 'templates/base.crotmp'>
 
-<|page( :title( 'Distributions' ), :script('/js/distribution.bundle.js'), :user( .user ) )>
+<|page( :user( .user ), :title( .title ), :script('/js/distribution.bundle.js') )>
   <div class="page-content">
-    <h2>Distributions</h2>
-    <table id="distribution-table" class="table">
-      <thead>
-        <tr class="table-primary">
-          <th scope="col">Name</th>
-          <th scope="col">Version</th>
-          <th scope="col">auth</th>
-          <th scope="col">Api</th>
-          <th scope="col" class="text-center">Created</th>
-          <th scope="col" class="text-center">Download</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="6">
-            <&table-pagination>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+    <h2><.title></h2>
+    <&distribution-table( :api( .api ) )>
   </div>
 </|>

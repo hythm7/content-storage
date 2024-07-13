@@ -52,8 +52,6 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     operation 'readUserDistributions', -> ContentStorage::Session $session, Str $username, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
 
-      say 'user distribution';
-      # TODO: add the query to header for pagination
       my Int:D $total = $db.select-user-distribution: 'count', :$username;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
@@ -65,9 +63,28 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
       response.append-header: 'x-last',     $pager.last;
 
 
-      my @distribution = $db.select-user-distribution: :$name, offset => $pager.offset, limit => $pager.limit;
+      my @distribution = $db.select-user-distribution: :$username, :$name, offset => $pager.offset, limit => $pager.limit;
 
       content 'application/json', @distribution;
+
+    }
+
+    operation 'readUserBuilds', -> ContentStorage::Session $session, Str $username, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
+
+      my Int:D $total = $db.select-user-build: 'count', :$username;
+
+      my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
+
+      response.append-header: 'x-first',    $pager.first;
+      response.append-header: 'x-previous', $pager.previous;
+      response.append-header: 'x-current',  $pager.current;
+      response.append-header: 'x-next',     $pager.next;
+      response.append-header: 'x-last',     $pager.last;
+
+
+      my @build = $db.select-user-build: :$username, :$name, offset => $pager.offset, limit => $pager.limit;
+
+      content 'application/json', @build;
 
     }
 

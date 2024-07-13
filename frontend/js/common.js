@@ -24,6 +24,7 @@ export const build_status_to_HTML = function ( value ) {
 
 }
 
+
 const table_body = document.getElementsByTagName('tbody')[0];
 const table_head = document.getElementsByTagName('thead')[0];
 
@@ -42,13 +43,14 @@ export const searchBuild = function ( name ) {
 }
 
 
-export const updateDistributionTable = function (query) {
+export const updateDistributionTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
 
   if ( ! query.has('page') ) { return false }
 
-  fetch('/api/v1/distribution?' + query.toString(), {
-    method: 'GET',
-  })
+  const distribution_table = document.getElementById('distribution-table');
+  const api                = distribution_table.dataset.api;
+
+  fetch( api + '?' + query.toString() )
     .then( (response) => {
 
       updateTablePagination( query, response.headers );
@@ -75,13 +77,14 @@ export const updateDistributionTable = function (query) {
 
 }
 
-export const updateBuildTable = function (query) {
+export const updateBuildTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
 
   if ( ! query.has('page') ) { return false }
 
-  fetch('/api/v1/build?' + query.toString(), {
-    method: 'GET',
-  })
+  const build_table = document.getElementById('build-table');
+  const api         = build_table.dataset.api;
+
+  fetch( api + '?' + query.toString() )
     .then( (response) => {
 
       updateTablePagination( query, response.headers );

@@ -40,17 +40,32 @@ multi method select-user-distribution( Str:D :$username!, UInt :$offset!, UInt :
 
   my $user = select-userid-by-username $!pg, :$username;
 
-  nextwith  $!pg, :$user, :$offset, :$limit;
+  select-user-distribution $!pg, :$user, :$offset, :$limit;
 
 }
 
-multi method select-user-distribution( Str:D, :$user, UInt :$offset!, UInt :$limit! ) { select-user-distribution $!pg, :$user, :$offset, :$limit  }
 
 multi method select-user-distribution( 'count', :$username! ) {
 
   my $user = select-userid-by-username $!pg, :$username;
 
   select-user-distribution-count $!pg, :$user 
+}
+
+multi method select-user-build( Str:D :$username!, UInt :$offset!, UInt :$limit! ) {
+
+  my $user = select-userid-by-username $!pg, :$username;
+
+  select-user-build $!pg, :$user, :$offset, :$limit;
+
+}
+
+
+multi method select-user-build( 'count', :$username! ) {
+
+  my $user = select-userid-by-username $!pg, :$username;
+
+  select-user-build-count $!pg, :$user 
 }
 
 

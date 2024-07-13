@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     distribution_modal.setAttribute('data-distribution-id', distribution_id)
 
-    fetch( 'api/v1/distribution/' + distribution_id )
+    fetch( '/api/v1/distribution/' + distribution_id )
       .then(response => response.json())
       .then(data => {
 
@@ -83,6 +83,6 @@ document.addEventListener('DOMContentLoaded', function () {
     updateDistributionTable( new URLSearchParams( event.target.getAttribute('data-query') ) )
   });
 
-  updateDistributionTable( new URLSearchParams( { page: 1 } ) )
+  updateDistributionTable( )
 
 });

@@ -1,3 +1,52 @@
+<:sub distribution-table( :$api )>
+<table id="distribution-table" class="table" data-api="<$api>">
+  <thead>
+    <tr class="table-primary">
+      <th scope="col">Name</th>
+      <th scope="col">Version</th>
+      <th scope="col">auth</th>
+      <th scope="col">Api</th>
+      <th scope="col" class="text-center">Created</th>
+      <th scope="col" class="text-center">Download</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="6">
+        <&table-pagination>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+</:>
+
+<:sub build-table( :$api )>
+<table id='build-table' class="table" data-api="<$api>">
+  <thead>
+    <tr class="table-primary">
+      <th scope="col" class="text-center">Status</th>
+      <th scope="col">User</th>
+      <th scope="col">Identity</th>
+      <th scope="col" class="text-center">Meta</th>
+      <th scope="col" class="text-center">Test</th>
+      <th scope="col" class="text-center">Started</th>
+      <th scope="col" class="text-center">Completed</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="7">
+        <&table-pagination>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+</:>
+
 <:sub table-pagination>
   <nav aria-label="Page navigation">
     <ul id="table-pagination" class="pagination pagination-lg justify-content-center">
