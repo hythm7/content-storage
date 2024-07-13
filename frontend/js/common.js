@@ -46,7 +46,7 @@ export const updateDistributionTable = function (query) {
 
   if ( ! query.has('page') ) { return false }
 
-  fetch('api/v1/distribution?' + query.toString(), {
+  fetch('/api/v1/distribution?' + query.toString(), {
     method: 'GET',
   })
     .then( (response) => {
@@ -79,7 +79,7 @@ export const updateBuildTable = function (query) {
 
   if ( ! query.has('page') ) { return false }
 
-  fetch('api/v1/build?' + query.toString(), {
+  fetch('/api/v1/build?' + query.toString(), {
     method: 'GET',
   })
     .then( (response) => {

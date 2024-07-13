@@ -631,6 +631,75 @@
         }
       }
     },
+    "/user/{username}/distribution": {
+      "get": {
+        "tags": [
+          "user",
+          "distribution"
+        ],
+        "summary": "Get distributions by username",
+        "description": "Get distributions by username",
+        "operationId": "readUserDistributions",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "Username. ",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name to filter by",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Current page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "How many items to return at one time (max 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Distributions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
     "/auth": {
       "post": {
         "tags": [

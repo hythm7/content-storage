@@ -33,14 +33,6 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     }
 
-    operation 'readDistributionById', -> ContentStorage::Session $session, UUID:D $id  {
-
-      my %distribution = $db.select-distribution: :$id;
-
-      content 'application/json', %distribution;
-
-    }
-
     operation 'readBuild', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
       my Int:D $total = $db.select-build: 'count', :$name;
 
@@ -58,6 +50,37 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
       content 'application/json', @build;
     }
 
+    operation 'readUserDistributions', -> ContentStorage::Session $session, Str $username, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
+
+      say 'user distribution';
+      # TODO: add the query to header for pagination
+      my Int:D $total = $db.select-user-distribution: 'count', :$username;
+
+      my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
+
+      response.append-header: 'x-first',    $pager.first;
+      response.append-header: 'x-previous', $pager.previous;
+      response.append-header: 'x-current',  $pager.current;
+      response.append-header: 'x-next',     $pager.next;
+      response.append-header: 'x-last',     $pager.last;
+
+
+      my @distribution = $db.select-user-distribution: :$name, offset => $pager.offset, limit => $pager.limit;
+
+      content 'application/json', @distribution;
+
+    }
+
+
+    operation 'readDistributionById', -> ContentStorage::Session $session, UUID:D $id  {
+
+      my %distribution = $db.select-distribution: :$id;
+
+      content 'application/json', %distribution;
+
+    }
+
+
     operation 'readBuildById', -> ContentStorage::Session $session, UUID:D $id  {
 
       my %build = $db.select-build: :$id;
@@ -65,6 +88,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
       content 'application/json', %build;
 
     }
+
 
     operation 'readBuildLogById', -> ContentStorage::Session $session, UUID:D $id  {
 

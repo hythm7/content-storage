@@ -36,6 +36,24 @@ multi method select-distribution( 'count', Str:D :$name! ) { select-distribution
 multi method select-distribution( 'count' ) { select-distribution-count $!pg  }
 
 
+multi method select-user-distribution( Str:D :$username!, UInt :$offset!, UInt :$limit! ) {
+
+  my $user = select-userid-by-username $!pg, :$username;
+
+  nextwith  $!pg, :$user, :$offset, :$limit;
+
+}
+
+multi method select-user-distribution( Str:D, :$user, UInt :$offset!, UInt :$limit! ) { select-user-distribution $!pg, :$user, :$offset, :$limit  }
+
+multi method select-user-distribution( 'count', :$username! ) {
+
+  my $user = select-userid-by-username $!pg, :$username;
+
+  select-user-distribution-count $!pg, :$user 
+}
+
+
 method delete-dist(:$identity!) { delete-dist $!pg, :$identity }
 
 method insert-build( UUID:D :$user ) {

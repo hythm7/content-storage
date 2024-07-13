@@ -17,6 +17,7 @@ use content-storage-database;
 use content-storage-routes-api;
 use content-storage-routes-distribution;
 use content-storage-routes-build;
+use content-storage-routes-user;
 use content-storage-routes-auth;
 
 
@@ -46,6 +47,7 @@ my sub routes( ) {
 
     include             distribution-routes( :$db ),
             build    => build-routes( :$api, :$db, :$event-supplier ),
+            user     => user-routes( :$db ),
             auth     => auth-routes( :$db ),
             <api v1> => api-routes( :$openapi-schema, :$db, :$event-supplier );
 

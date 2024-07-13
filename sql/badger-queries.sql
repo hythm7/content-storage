@@ -1,3 +1,8 @@
+-- sub select-userid-by-username(:$username! --> $)
+SELECT "id"
+FROM   "user"
+WHERE  "username" = $username
+
 -- sub select-user-username-by-id(:$id! --> %)
 SELECT "id", "username"
 FROM   "user"
@@ -169,6 +174,17 @@ WHERE "d"."name" ILIKE $name
 
 -- sub select-distribution-count(--> $)
 SELECT COUNT(*) FROM "distribution"
+
+-- sub select-user-distribution(Str :$user, UInt :$offset!, UInt :$limit! --> @)
+SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
+FROM "distribution" "d"
+WHERE "d"."user" = $user
+ORDER BY "d"."created" DESC
+LIMIT $limit OFFSET $offset
+
+-- sub select-user-distribution-count(Str :$user! --> $)
+SELECT COUNT(*) FROM "distribution" "d"
+WHERE "d"."user" = $user
 
 
 -- sub delete-dist(Str :$identity! --> +)
