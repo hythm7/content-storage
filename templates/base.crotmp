@@ -45,6 +45,8 @@
         </button>
         <ul class="dropdown-menu dropdown-menu-lg-end">
           <li><a class="dropdown-item" href="#"><$user.username></a></li>
+          <li><a class="dropdown-item" href="/user/<$user.username>/distribution">My Distributions</a></li>
+          <li><a class="dropdown-item" href="/user/<$user.username>/build">My Builds</a></li>
           <li><button class="btn dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#logout-modal" aria-expanded="false"> Logout </button><li>
         </ul>
       </div>
