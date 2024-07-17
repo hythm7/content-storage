@@ -98,6 +98,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const login_alert_element    = document.getElementById("login-alert");
   const logout_alert_element   = document.getElementById("logout-alert");
 
+  const search_input = document.getElementById("search-input");
+  const search_clear = document.getElementById("search-clear");
+
   const register_form_element = document.getElementById('register-form');
   const login_form_element    = document.getElementById('login-form');
   const logout_form_element   = document.getElementById('logout-form');
@@ -117,6 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const drop_area = document.getElementById('drop-area');
   const drop_area_input = document.getElementById('drop-area-input');
 
+  search_clear.addEventListener('click', function (e) { search_input.value = '' });
 
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (event) {
     drop_area.addEventListener(event, function (e) {

@@ -29,15 +29,13 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item"> <a class="nav-link" href="/build">Builds</a> </li>
       </ul>
-      <div class="input-group">
-        <input id="search-input" class="form-control form-control-dark" type="text" placeholder="⌕" arla-label="Search">
-        <span class="input-group-text icon-link icon-link-hover" style="--bs-1con-link-transform: scale(1.2);" type="button" oncl1ck="">
-          <i class="bi-x"></i>
-        </span>
+      <div class="input-group px-4">
+        <input id="search-input" class="form-control" type="text" placeholder="⌕" arla-label="Search">
+        <button class="btn btn-outline-secondary" type="button" id="search-clear"><i class="bi-x"></i></button>
       </div>
       <?{ $user }>
-      <div>
-        <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#dropzone-modal" aria-expanded="false">Add</button>
+      <div class="px-2">
+        <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#dropzone-modal" aria-expanded="false">Add Distribution</button>
       </div>
       <div class="dropdown">
         <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -52,7 +50,7 @@
       </div>
       </?>
       <!>
-      <div>
+      <div class="px-2">
         <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#login-modal" aria-expanded="false"> Login </button>
       </div>
       <div>
@@ -256,8 +254,8 @@
 </div>
 
 <div class="container-fluid mt-5">
-  <footer class="py-3 border-top d-flex justify-content-between">
-      <div><a href="/" class="nav-link px-2 text-primary">Home</a></div>
+  <footer class="p-2 border-top d-flex justify-content-between">
+      <div><a href="/" class="nav-link text-secondary">Home</a></div>
       <div><a href="https://raku.org"> <img src="/images/logo/camelia-logo.png" alt="Logo" width="42" height="42"></a></div>
       <div class="dropdown text-primary">
         <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center"
