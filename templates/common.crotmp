@@ -1,7 +1,7 @@
 <:sub distribution-table( :$api )>
 <table id="distribution-table" class="table" data-api="<$api>">
-  <thead>
-    <tr class="table-primary">
+  <thead class="table-bordered border-primary">
+    <tr>
       <th scope="col">Name</th>
       <th scope="col">Version</th>
       <th scope="col">auth</th>
@@ -24,8 +24,8 @@
 
 <:sub build-table( :$api )>
 <table id='build-table' class="table" data-api="<$api>">
-  <thead>
-    <tr class="table-primary">
+  <thead class="table-bordered border-primary">
+    <tr>
       <th scope="col" class="text-center">Status</th>
       <th scope="col">User</th>
       <th scope="col">Identity</th>

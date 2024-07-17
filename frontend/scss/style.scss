@@ -58,19 +58,21 @@ $camelia-purple: #841bac;
 
 $custom-colors: (
 
-  "camelia-blue":   $camelia-blue,
-  "camelia-yellow": $camelia-yellow,
-  "camelia-pink":   $camelia-pink,
-  "camelia-green":  $camelia-green,
-  "camelia-white":  $camelia-white,
-  "camelia-black":  $camelia-black,
-  "camelia-purple": $camelia-purple,
+  "primary": $primary,
+  //"camelia-blue":   $camelia-blue,
+  //"camelia-yellow": $camelia-yellow,
+  //"camelia-pink":   $camelia-pink,
+  //"camelia-green":  $camelia-green,
+  //"camelia-white":  $camelia-white,
+  //"camelia-black":  $camelia-black,
+  //"camelia-purple": $camelia-purple,
 
 );
 
 // Merge the maps
 $theme-colors: map-merge($theme-colors, $custom-colors);
 
+$table-variants: map-merge($table-variants, $custom-colors);
 
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
@@ -85,7 +87,7 @@ $navbar-light-brand-color: $white;
 //$navbar-light-brand-hover-color: $camelia-blue;
 
 //$table-hover-bg:    $primary;
-$table-hover-color: $primary;
+//$table-hover-color: $primary;
 
 $btn-color: $white;
 
@@ -115,7 +117,7 @@ $btn-white-space: nowrap;
 // @import "bootstrap/scss/toasts";
 @import "bootstrap/scss/modal"; // Requires transitions
 // @import "bootstrap/scss/tooltip";
-@import "bootstrap/scss/popover";
+// @import "bootstrap/scss/popover";
 // @import "bootstrap/scss/carousel";
 @import "bootstrap/scss/spinners";
 @import "bootstrap/scss/offcanvas"; // Requires transitions
