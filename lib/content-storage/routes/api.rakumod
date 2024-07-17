@@ -52,7 +52,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     operation 'readUserDistributions', -> ContentStorage::Session $session, Str $username, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
 
-      my Int:D $total = $db.select-user-distribution: 'count', :$username;
+      my Int:D $total = $db.select-user-distribution: 'count', :$username, :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 
@@ -71,7 +71,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     operation 'readUserBuilds', -> ContentStorage::Session $session, Str $username, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
 
-      my Int:D $total = $db.select-user-build: 'count', :$username;
+      my Int:D $total = $db.select-user-build: 'count', :$username, :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 

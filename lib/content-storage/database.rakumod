@@ -36,6 +36,14 @@ multi method select-distribution( 'count', Str:D :$name! ) { select-distribution
 multi method select-distribution( 'count' ) { select-distribution-count $!pg  }
 
 
+multi method select-user-distribution( Str:D :$username!, Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
+
+  my $user = select-userid-by-username $!pg, :$username;
+
+  select-user-distribution-by-name $!pg, :$user, name => $name ~ '%', :$offset, :$limit;
+
+}
+
 multi method select-user-distribution( Str:D :$username!, UInt :$offset!, UInt :$limit! ) {
 
   my $user = select-userid-by-username $!pg, :$username;
@@ -45,12 +53,29 @@ multi method select-user-distribution( Str:D :$username!, UInt :$offset!, UInt :
 }
 
 
+multi method select-user-distribution( 'count', :$username!, Str:D :$name! ) {
+
+  my $user = select-userid-by-username $!pg, :$username;
+
+  select-user-distribution-by-name-count $!pg, :$user, name => $name ~ '%'; 
+
+}
+
 multi method select-user-distribution( 'count', :$username! ) {
 
   my $user = select-userid-by-username $!pg, :$username;
 
-  select-user-distribution-count $!pg, :$user 
+  select-user-distribution-count $!pg, :$user;
 }
+
+multi method select-user-build( Str:D :$username!, Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
+
+  my $user = select-userid-by-username $!pg, :$username;
+
+  select-user-build-by-name $!pg, :$user, name => $name ~ '%', :$offset, :$limit;
+
+}
+
 
 multi method select-user-build( Str:D :$username!, UInt :$offset!, UInt :$limit! ) {
 
@@ -60,12 +85,18 @@ multi method select-user-build( Str:D :$username!, UInt :$offset!, UInt :$limit!
 
 }
 
-
-multi method select-user-build( 'count', :$username! ) {
+multi method select-user-build( 'count', Str:D :$username! ) {
 
   my $user = select-userid-by-username $!pg, :$username;
 
   select-user-build-count $!pg, :$user 
+}
+
+multi method select-user-build( 'count', Str:D :$username!, Str:D :$name! ) {
+
+  my $user = select-userid-by-username $!pg, :$username;
+
+  select-user-build-by-name-count $!pg, :$user, name => $name ~ '%';
 }
 
 

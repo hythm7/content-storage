@@ -171,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .then(response => response.json()) // Assuming the server responds with JSON
     .then(data => {
-      console.log(data);
       dropzone_modal.hide();
       //document.location.href="/build"
       //data.forEach(addBuild);
