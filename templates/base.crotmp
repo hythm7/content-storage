@@ -38,14 +38,14 @@
         <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#dropzone-modal" aria-expanded="false">Add Distribution</button>
       </div>
       <div class="dropdown">
-        <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-user-id="<$user.id>">
           <i class="bi-person"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-lg-end">
-          <li><a class="dropdown-item" href="#"><$user.username></a></li>
+          <li><button class="btn dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#user-modal" aria-expanded="false"><$user.username></button><li>
           <li><a class="dropdown-item" href="/user/<$user.username>/distribution">My Distributions</a></li>
           <li><a class="dropdown-item" href="/user/<$user.username>/build">My Builds</a></li>
-          <li><button class="btn dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#logout-modal" aria-expanded="false"> Logout </button><li>
+          <li><button class="btn dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#logout-modal" aria-expanded="false">Logout</button><li>
         </ul>
       </div>
       </?>
@@ -148,6 +148,57 @@
   </div>
 </div>
 
+<!-- User Modal -->
+<div class="modal fade" id="user-modal" tabindex="-1" aria-labelledby="user-modal-label" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h1 class="modal-title fs-3">User</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="d-flex justify-content-between">
+          <nav>
+            <div class="nav nav-pills mb-3" id="user-pills-tab" role="tablist">
+              <button class="nav-link active" id="user-info-tab"  data-bs-toggle="pill" data-bs-target="#user-info"  type="button" role="tab" aria-controls="user-info"  aria-selected="false">Info</button>
+              <button class="nav-link" id="user-change-password-tab"  data-bs-toggle="pill" data-bs-target="#user-change-password"  type="button" role="tab" aria-controls="user-change-password"  aria-selected="false">Change Password</button>
+            </div>
+          </nav>
+          <div>
+            <span id="user-modal-badge" class="badge text-primary"><$user.username></span>
+          </div>
+        </div>
+        <div class="tab-content" id="user-pills-tab-content">
+          <div class="tab-pane fade show active" id="user-info"  role="tabpanel" aria-labelledby="user-info-tab" tabindex="0">
+            <label>Username: <$user.username></label>
+          </div>
+          <div class="tab-pane fade" id="user-change-password"  role="tabpanel" aria-labelledby="user-change-password-tab" tabindex="0">
+            <div id="user-alert" class="alert" role="alert"></div>
+            <form id="user-form">
+              <div class="form-group">
+                <label for="user-password">Password</label>
+                <input type="password" name="password" class="form-control" id="user-password" autocomplete="off" required>
+              </div>
+              <div class="form-group">
+                <label for="user-confirm-password">Confirm Password</label>
+                <input type="password" name="confirm-password" class="form-control" id="user-confirm-password" autocomplete="off" required>
+              </div>
+              <div style="padding-top: 10px">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- Dropzone Modal -->
 <div class="modal fade" id="dropzone-modal" tabindex="-1" aria-labelledby="dropzone-modal-label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -229,7 +280,7 @@
             <span id="distribution-modal-badge" class="badge text-primary"></span>
           </div>
         </div>
-        <div class="tab-content" id="build-pills-tab-content">
+        <div class="tab-content" id="distribution-pills-tab-content">
           <div class="tab-pane fade show active" id="distribution-readme"  role="tabpanel" aria-labelledby="build-readme-tab"       tabindex="0"></div>
           <div class="tab-pane fade"             id="distribution-changes" role="tabpanel" aria-labelledby="build-changes-tab"      tabindex="0"></div>
         </div>
