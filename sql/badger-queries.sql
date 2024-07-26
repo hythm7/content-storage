@@ -15,18 +15,18 @@ WHERE  "username" = $username
 
 
 -- sub select-user-by-id(:$id! --> %)
-SELECT "id", "username", "is-admin"
+SELECT "id", "username", "admin"
 FROM  "user"
 WHERE "id" = $id
 
 
 -- sub select-user-by-username(Str :$username! --> %)
-SELECT "id", "username", "is-admin"
+SELECT "id", "username", "admin"
 FROM  "user"
 WHERE "username" = $username
 
 -- sub select-user( --> @)
-SELECT "id", "username", "is-admin"
+SELECT "id", "username", "admin"
 FROM  "user"
 
 

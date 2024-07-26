@@ -7,4 +7,4 @@ unit class ContentStorage::Model::User;
 
 has UUID  $.id;
 has Str   $.username;
-has Bool  $.is-admin = False;
+has Bool  $.admin = False;

@@ -15,8 +15,8 @@ migration 'Setup', {
     add-column "id", type( 'UUID' ), :primary, :default( sql( 'gen_random_uuid()' ) );
 
     add-column "username", text(),    :!null, :unique;
-    add-column "password", text(),    :!null, :unique;
-    add-column "is-admin", boolean();
+    add-column "password", text(),    :!null;
+    add-column "admin",    boolean();
 
   }
 
@@ -78,5 +78,9 @@ migration 'Setup', {
     foreign-key :from<build>, :to<id>, :table<build>;
 
   }
+
+  execute
+          up => sql(q<INSERT INTO "user" ("username", "password", "admin") VALUES ('admin', '$argon2i$v=19$m=65536,t=2,p=2$zOReKe3NJiomMwqJkvrKEg$lI2kx+f7ZUEuj0hGRUXrYw', TRUE)>),
+          down => sql(q<'DELETE FROM "user" WHERE username = "admin">);
 
 }

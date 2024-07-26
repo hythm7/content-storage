@@ -10,11 +10,11 @@ class ContentStorage::Session is json does Cro::HTTP::Auth {
 
   method set-logged-in-user($!user --> Nil) { }
 
-  method is-admin(     --> Bool ) { $!user.is-admin }
-  method is-logged-in( --> Bool ) { $!user.defined }
+  method admin(     --> Bool ) { $!user.admin }
+  method logged-in( --> Bool ) { $!user.defined }
 
 }
 
 
-subset Admin    of ContentStorage::Session is export where .is-admin;
-subset LoggedIn of ContentStorage::Session is export where .is-logged-in;
+subset Admin    of ContentStorage::Session is export where .admin;
+subset LoggedIn of ContentStorage::Session is export where .logged-in;
