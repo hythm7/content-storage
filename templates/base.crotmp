@@ -31,7 +31,7 @@
       </ul>
       <div class="input-group px-4">
         <input id="search-input" class="form-control" type="text" placeholder="⌕" arla-label="Search">
-        <button class="btn btn-outline-secondary" type="button" id="search-clear"><i class="bi-x"></i></button>
+        <span  id="search-clear" class="input-group-text"><i class="bi-x"></i></span>
       </div>
       <?{ $user }>
       <div class="px-2">
