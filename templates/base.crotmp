@@ -42,7 +42,7 @@
           <i class="bi-person"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-lg-end">
-          <li><button class="btn dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#user-modal" aria-expanded="false"><$user.username></button><li>
+          <li><button class="btn dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#user-modal" data-bs-user="<$user.username>" aria-expanded="false"><$user.username></button><li>
           <li><a class="dropdown-item" href="/user/<$user.username>/distribution">My Distributions</a></li>
           <li><a class="dropdown-item" href="/user/<$user.username>/build">My Builds</a></li>
           <li><button class="btn dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#logout-modal" aria-expanded="false">Logout</button><li>
@@ -166,7 +166,7 @@
             </div>
           </nav>
           <div>
-          <?{ $user }><span id="user-modal-badge" class="badge text-primary"><$user.username></span></?>
+          <span id="user-modal-badge" class="badge text-primary"></span>
           </div>
         </div>
         <div class="tab-content" id="user-pills-tab-content">

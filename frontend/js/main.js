@@ -105,13 +105,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const login_form_element    = document.getElementById('login-form');
   const logout_form_element   = document.getElementById('logout-form');
 
+  const user_modal_element     = document.getElementById('user-modal');
   const register_modal_element = document.getElementById('register-modal');
   const login_modal_element    = document.getElementById('login-modal');
   const logout_modal_element   = document.getElementById('logout-modal');
 
+  const user_modal_badge = document.getElementById('user-modal-badge');
+
+  const user_modal     = new bootstrap.Modal( user_modal_element );
   const register_modal = new bootstrap.Modal( register_modal_element );
   const login_modal    = new bootstrap.Modal( login_modal_element );
   const logout_modal   = new bootstrap.Modal( logout_modal_element );
+
 
   const dropzone_modal_element = document.getElementById('dropzone-modal');
 
@@ -221,6 +226,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
   }
+
+  user_modal_element.addEventListener('show.bs.modal', event => {
+
+    const element = event.relatedTarget;
+    const user    = element.getAttribute('data-bs-user');
+
+    user_modal_badge.innerText = user;
+
+  })
+
 
   register_modal_element.addEventListener('show.bs.modal', event => {
     register_alert_element.classList.remove( 'alert-success' );
