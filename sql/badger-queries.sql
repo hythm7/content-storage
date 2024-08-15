@@ -36,6 +36,16 @@ INTO   "user" (  "username",  "password" )
 values       ( $username, $password )
 RETURNING "id"
 
+-- sub update-user-password-by-id(:$id!, Str :$password! --> +)
+UPDATE "user"
+SET    "password" = $password
+WHERE  "id"       = $id
+
+-- sub update-user-password-by-username(:$username!, Str :$password! --> +)
+UPDATE "user"
+SET    "password" = $password
+WHERE  "username" = $username
+
 
 -- sub insert-into-distribution(:$user!, Str :$name!, :$version!, :$auth!, :$api, :$identity!, Str :$description!, Str :$readme, Str :$changes,  :$provides!, :$tags!, :$meta!, :$build! --> +)
 INSERT
