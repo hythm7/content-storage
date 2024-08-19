@@ -631,6 +631,48 @@
         }
       }
     },
+    "/user/password": {
+      "put": {
+        "tags": [
+          "user",
+          "password"
+        ],
+        "summary": "Update user password",
+        "description": "",
+        "operationId": "updateUserPassword",
+        "requestBody": {
+          "description": "Update user password",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invalid username supplied"
+          }
+        }
+      }
+    },
     "/user/{username}/distribution": {
       "get": {
         "tags": [

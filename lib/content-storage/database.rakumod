@@ -28,11 +28,11 @@ multi method select-user-username( UUID:D :$id! ) { select-user-username-by-id $
 multi method select-user-password( Str:D :$username! ) { select-user-password-by-username $!pg, :$username }
 
 multi method update-user-password( UUID:D :$id!, Str:D :$password! ) {
-  update-user-password-by-id $!pg, :$id, :$password
+  update-user-password-by-id $!pg, :$id, :$password;
 }
 
-multi method update-user-password( UUID:D :$username!, Str:D :$password! ) {
-  update-user-password-by-username $!pg, :$username, :$password
+multi method update-user-password( Str:D :$username!, Str:D :$password! ) {
+  update-user-password-by-username $!pg, :$username, :$password;
 }
 
 multi method select-distribution( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {

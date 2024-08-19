@@ -138,24 +138,6 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
       }
     }
 
-    #operation 'searchBuild', -> ContentStorage::Session $session, Str:D :$name, Int:D :$page = 1, UInt :$limit = 2 {
-
-    #  my Int:D $total = $db.select-build-count.Int;
-
-    #  my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
-
-    #  response.append-header: 'x-first',    $pager.first;
-    #  response.append-header: 'x-previous', $pager.previous;
-    #  response.append-header: 'x-current',  $pager.current;
-    #  response.append-header: 'x-next',     $pager.next;
-    #  response.append-header: 'x-last',     $pager.last;
-
-
-    #  my @build = $db.search-build: :$name, offset => $pager.offset, limit => $pager.limit;
-
-    #  content 'application/json', @build;
-    #}
-
 
     operation 'loginUser', -> ContentStorage::Session $session {
 
@@ -212,12 +194,37 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     }
 
-    #operation 'userRead', -> Admin $session {
+    #operation 'userRead', -> Admin $session { }
+
     operation 'readUser', -> LoggedIn $session {
 
       my @user = $db.select-user;
 
       content 'application/json', @user ;
+
+    }
+
+    operation 'updateUserPassword', -> LoggedIn $session {
+
+      request-body -> ( :$username!, :$password! ) {
+        
+        # TODO check permission
+
+
+        if ( $username eq $session.user.username ) or $session.admin {
+
+          my %user = $db.select-user( :$username );
+
+          $db.update-user-password( :$username, password => argon2-hash( $password ) );
+
+          content 'application/json', %user;
+
+        } else {
+
+          not-found 'application/json', { message => "User $username not found!" };
+
+        }
+      }
     }
 
   }

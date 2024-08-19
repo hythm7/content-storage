@@ -173,8 +173,8 @@
           <div class="tab-pane fade show active" id="user-info"  role="tabpanel" aria-labelledby="user-info-tab" tabindex="0">
           </div>
           <div class="tab-pane fade" id="user-change-password"  role="tabpanel" aria-labelledby="user-change-password-tab" tabindex="0">
-            <div id="user-alert" class="alert" role="alert"></div>
-            <form id="user-form">
+            <div id="user-password-alert" class="alert" role="alert"></div>
+            <form id="user-password-form">
               <div class="form-group">
                 <label for="user-password">Password</label>
                 <input type="password" name="password" class="form-control" id="user-password" autocomplete="off" required>

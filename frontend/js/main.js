@@ -94,16 +94,18 @@ import * as bootstrap from 'bootstrap'
 
 document.addEventListener('DOMContentLoaded', function () {
 
-  const register_alert_element = document.getElementById("register-alert");
-  const login_alert_element    = document.getElementById("login-alert");
-  const logout_alert_element   = document.getElementById("logout-alert");
+  const user_password_alert_element = document.getElementById("user-password-alert");
+  const register_alert_element      = document.getElementById("register-alert");
+  const login_alert_element         = document.getElementById("login-alert");
+  const logout_alert_element        = document.getElementById("logout-alert");
 
   const search_input = document.getElementById("search-input");
   const search_clear = document.getElementById("search-clear");
 
-  const register_form_element = document.getElementById('register-form');
-  const login_form_element    = document.getElementById('login-form');
-  const logout_form_element   = document.getElementById('logout-form');
+  const user_password_form_element = document.getElementById('user-password-form');
+  const register_form_element      = document.getElementById('register-form');
+  const login_form_element         = document.getElementById('login-form');
+  const logout_form_element        = document.getElementById('logout-form');
 
   const user_modal_element     = document.getElementById('user-modal');
   const register_modal_element = document.getElementById('register-modal');
@@ -229,10 +231,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   user_modal_element.addEventListener('show.bs.modal', event => {
 
-    const element = event.relatedTarget;
-    const user    = element.getAttribute('data-bs-user');
+    user_modal_element.dataset.bsUser = event.relatedTarget.dataset.bsUser;
 
-    user_modal_badge.innerText = user;
+    user_password_alert_element.classList.remove( 'alert-success' );
+    user_password_alert_element.classList.remove( 'alert-danger'  );
+    user_password_alert_element.classList.add(    'alert-primary' );
+
+    user_modal_badge.innerText = user_modal_element.dataset.bsUser;
+
+    user_password_alert_element.innerHTML = 'Change password!'
 
   })
 
@@ -245,6 +252,68 @@ document.addEventListener('DOMContentLoaded', function () {
     register_alert_element.innerHTML = 'Please enter username and password'
 
   })
+
+  user_password_form_element.addEventListener("submit", (event) => {
+
+    event.preventDefault();
+
+    const username = user_modal_element.dataset.bsUser;
+
+    const password         = document.getElementById("user-password").value;
+    const confirm_password = document.getElementById("user-confirm-password").value;
+
+    if ( password != confirm_password ) {
+
+      user_password_alert_element.classList.add( 'alert-danger'  );
+
+      user_password_alert_element.innerHTML = 'Passwords do not match!';
+
+      return false;
+    }
+
+    const body = new URLSearchParams({ 'username': username, 'password': password })
+
+    fetch('/api/v1/user/password', {
+      method: 'PUT',
+      body: body,
+    })
+    .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+    .then( data => {
+
+      if ( data.ok ) {
+
+        user_password_alert_element.classList.remove( 'alert-primary' );
+        user_password_alert_element.classList.remove( 'alert-danger'  );
+        user_password_alert_element.classList.add(    'alert-success' );
+
+        user_password_alert_element.innerText = 'Success!';
+
+        setTimeout( function( ) {
+
+          user_modal.hide();
+          login_modal.show();
+
+        }, 777 );
+
+      } else {
+
+        user_password_alert_element.classList.remove( 'alert-primary' );
+        user_password_alert_element.classList.remove( 'alert-success' );
+        user_password_alert_element.classList.add(    'alert-danger'  );
+
+        user_password_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
+
+      }
+
+    } )
+    .catch(error => {
+
+      console.error('Error Processing:', error);
+      // Handle errors
+    } );
+
+  });
+
 
   register_form_element.addEventListener("submit", (event) => {
 
