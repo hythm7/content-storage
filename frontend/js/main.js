@@ -112,7 +112,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const login_modal_element    = document.getElementById('login-modal');
   const logout_modal_element   = document.getElementById('logout-modal');
 
-  const user_modal_badge = document.getElementById('user-modal-badge');
+  const user_modal_badge    = document.getElementById('user-modal-badge');
+
+  const user_info_username = document.getElementById('user-info-username');
 
   const user_modal     = new bootstrap.Modal( user_modal_element );
   const register_modal = new bootstrap.Modal( register_modal_element );
@@ -231,13 +233,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   user_modal_element.addEventListener('show.bs.modal', event => {
 
-    user_modal_element.dataset.bsUser = event.relatedTarget.dataset.bsUser;
+    const username = event.relatedTarget.dataset.bsUser;
+    user_modal_element.dataset.bsUser = username;
 
     user_password_alert_element.classList.remove( 'alert-success' );
     user_password_alert_element.classList.remove( 'alert-danger'  );
     user_password_alert_element.classList.add(    'alert-primary' );
 
-    user_modal_badge.innerText = user_modal_element.dataset.bsUser;
+    user_modal_badge.innerText = username;
+
+    user_info_username.innerText = username;
 
     user_password_alert_element.innerHTML = 'Change password!'
 

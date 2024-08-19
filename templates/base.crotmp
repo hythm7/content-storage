@@ -171,6 +171,10 @@
         </div>
         <div class="tab-content" id="user-pills-tab-content">
           <div class="tab-pane fade show active" id="user-info"  role="tabpanel" aria-labelledby="user-info-tab" tabindex="0">
+            <h1 class="display-6">
+              Username
+              <span id="user-info-username" class="badge text-body-secondary"></span>
+            </h3>
           </div>
           <div class="tab-pane fade" id="user-change-password"  role="tabpanel" aria-labelledby="user-change-password-tab" tabindex="0">
             <div id="user-password-alert" class="alert" role="alert"></div>
