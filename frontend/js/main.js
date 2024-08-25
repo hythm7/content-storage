@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const register_alert_element      = document.getElementById("register-alert");
   const login_alert_element         = document.getElementById("login-alert");
   const logout_alert_element        = document.getElementById("logout-alert");
+  const delete_alert_element        = document.getElementById("delete-alert");
 
   const search_input = document.getElementById("search-input");
   const search_clear = document.getElementById("search-clear");
@@ -106,13 +107,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const register_form_element      = document.getElementById('register-form');
   const login_form_element         = document.getElementById('login-form');
   const logout_form_element        = document.getElementById('logout-form');
+  const delete_form_element        = document.getElementById('delete-form');
 
   const user_modal_element     = document.getElementById('user-modal');
   const register_modal_element = document.getElementById('register-modal');
   const login_modal_element    = document.getElementById('login-modal');
   const logout_modal_element   = document.getElementById('logout-modal');
+  const delete_modal_element   = document.getElementById('delete-modal');
 
-  const user_modal_badge    = document.getElementById('user-modal-badge');
+  const user_modal_badge = document.getElementById('user-modal-badge');
+
+  const delete_modal_target_badge = document.getElementById('delete-modal-target-badge');
+  const delete_modal_name_badge   = document.getElementById('delete-modal-name-badge');
 
   const user_info_username = document.getElementById('user-info-username');
 
@@ -120,6 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const register_modal = new bootstrap.Modal( register_modal_element );
   const login_modal    = new bootstrap.Modal( login_modal_element );
   const logout_modal   = new bootstrap.Modal( logout_modal_element );
+  const delete_modal   = new bootstrap.Modal( delete_modal_element );
 
 
   const dropzone_modal_element = document.getElementById('dropzone-modal');
@@ -472,4 +479,63 @@ document.addEventListener('DOMContentLoaded', function () {
 
   });
 
+  delete_modal_element.addEventListener('show.bs.modal', event => {
+
+    const related_target = event.relatedTarget;
+
+    const delete_target = related_target.dataset.deleteTarget;
+    const delete_name   = related_target.dataset.deleteName;
+    const delete_id     = related_target.dataset.deleteId;
+
+    delete_modal_target_badge.innerText = delete_target;
+    delete_modal_name_badge.innerText   = delete_name;
+
+    delete_alert_element.innerHTML = 'Are you sure you want to delete!';
+
+    delete_alert_element.classList.remove( 'alert-success' );
+    delete_alert_element.classList.remove( 'alert-danger'  );
+    delete_alert_element.classList.add(    'alert-primary' );
+
+    delete_modal_element.dataset.deleteTarget = delete_target;
+    delete_modal_element.dataset.deleteName   = delete_name;
+    delete_modal_element.dataset.deleteId     = delete_id;
+
+  })
+
+  delete_form_element.addEventListener("submit", (event) => {
+
+    event.preventDefault();
+
+    fetch('/api/v1/' + delete_modal_element.dataset.deleteTarget + '/' + delete_modal_element.dataset.deleteId, {
+      method: 'DELETE'
+    })
+    .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+    .then( data => {
+
+      if ( data.ok ) {
+
+        delete_alert_element.classList.remove( 'alert-primary' );
+        delete_alert_element.classList.remove( 'alert-danger'  );
+        delete_alert_element.classList.add(    'alert-success' );
+
+        delete_alert_element.innerText = 'Success!';
+
+      } else {
+
+        delete_alert_element.classList.remove( 'alert-primary' );
+        delete_alert_element.classList.remove( 'alert-success' );
+        delete_alert_element.classList.add(    'alert-danger'  );
+
+        delete_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
+
+      }
+
+    } )
+    .catch(error => {
+
+      console.error('Error Processing:', error);
+      // Handle errors
+    } );
+
+  });
 });

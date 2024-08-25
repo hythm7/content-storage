@@ -12,13 +12,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const distribution_search_input = document.getElementById('search-input');
 
-  const distribution_modal       = document.getElementById('distribution-modal')
-  const distribution_modal_badge = document.getElementById('distribution-modal-badge')
+  const distribution_modal        = document.getElementById('distribution-modal')
+  const distribution_modal_badge  = document.getElementById('distribution-modal-badge')
 
   const distribution_readme  = document.getElementById('distribution-readme')
   const distribution_changes = document.getElementById('distribution-changes')
 
   const table_pagination = document.getElementById( 'table-pagination' );
+
+  const distribution_modal_delete = document.getElementById('distribution-modal-delete')
+
+  if ( distribution_modal_delete ) {
+
+        distribution_modal_delete.setAttribute('data-delete-target', 'distribution' );
+  }
 
   distribution_modal.addEventListener('show.bs.modal', event => {
 
@@ -35,6 +42,12 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(data => {
 
         distribution_modal_badge.innerText = data.identity;
+
+        if ( distribution_modal_delete ) {
+              distribution_modal_delete.setAttribute('data-delete-id', data.id )
+              distribution_modal_delete.setAttribute('data-delete-name', data.identity )
+        }
+
 
         const readme  = data.readme;
         const changes = data.changes;

@@ -76,6 +76,8 @@ multi method select-user-distribution( 'count', :$username! ) {
   select-user-distribution-count $!pg, :$user;
 }
 
+multi method delete-distribution( UUID:D :$id! ) { delete-distribution-by-id $!pg, :$id }
+
 multi method select-user-build( Str:D :$username!, Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
 
   my $user = select-userid-by-username $!pg, :$username;

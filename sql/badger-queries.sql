@@ -208,6 +208,11 @@ WHERE "d"."user" = $user
 SELECT COUNT(*) FROM "distribution" "d"
 WHERE "d"."user" = $user AND "d"."name" ILIKE $name
 
+-- sub delete-distribution-by-id(:$id! --> +)
+DELETE
+FROM "distribution" "d"
+WHERE  "d"."id" = $id
+
 -- sub select-user-build(:$user!, UInt :$offset!, UInt :$limit! --> @)
 SELECT "b".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
 FROM "build" "b"

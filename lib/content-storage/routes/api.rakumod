@@ -97,6 +97,24 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     }
 
+    operation 'deleteDistributionById', -> Admin $session, UUID:D $id  {
+
+      my %distribution = $db.select-distribution: :$id;
+
+      if %distribution {
+
+        $db.delete-distribution: :$id;
+
+        content 'application/json', %distribution;
+
+      } else {
+        not-found 'application/json', %distribution;
+      }
+
+
+    }
+
+
 
     operation 'readBuildById', -> ContentStorage::Session $session, UUID:D $id  {
 

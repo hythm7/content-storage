@@ -148,6 +148,34 @@
   </div>
 </div>
 
+<!-- Delete Modal -->
+<div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="delete-modal-label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h1 class="modal-title fs-3">Delete</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2 d-flex justify-content-end">
+          <span id="delete-modal-target-badge"  class="badge text-primary"></span>
+          <span id="delete-modal-name-badge"    class="badge text-danger"></span>
+        </div>
+        <div id="delete-alert" class="alert" role="alert"></div>
+        <form id="delete-form">
+          <div class="d-flex justify-content-center">
+            <input type="submit" value="Delete" class="btn btn-danger w-50" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- User Modal -->
 <div class="modal fade" id="user-modal" tabindex="-1" aria-labelledby="user-modal-label" aria-hidden="true">
   <div class="modal-dialog modal-xl">
@@ -280,7 +308,14 @@
             </div>
           </nav>
           <div>
-            <span id="distribution-modal-badge" class="badge text-primary"></span>
+            <span id="distribution-modal-badge"  class="badge text-primary"></span>
+            <?$user>
+            <?$user.admin>
+            <button id="distribution-modal-delete" type="button" data-bs-toggle="modal" data-bs-target="#delete-modal" class="btn text-danger" aria-label="Delete">
+              <i class="bi bi-trash2"></i>
+            </button>
+            </?>
+            </?>
           </div>
         </div>
         <div class="tab-content" id="distribution-pills-tab-content">
