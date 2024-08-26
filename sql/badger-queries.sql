@@ -236,9 +236,10 @@ WHERE "b"."user" = $user
 SELECT COUNT(*) FROM "build" "b"
 WHERE "b"."user" = $user AND "b"."name" ILIKE $name
 
-
--- sub delete-dist(Str :$identity! --> +)
-DELETE FROM "distribution" WHERE "identity" = $identity
+-- sub delete-build-by-id(:$id! --> +)
+DELETE
+FROM "build" "b"
+WHERE  "b"."id" = $id
 
 
 -- sub select(Str $name! --> @)

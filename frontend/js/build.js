@@ -18,6 +18,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const build_modal       = document.getElementById('build-modal')
   const build_modal_badge = document.getElementById('build-modal-badge')
 
+  const build_modal_delete = document.getElementById('build-modal-delete')
+
+  if ( build_modal_delete ) {
+    build_modal_delete.setAttribute('data-delete-target', 'build' );
+  }
+
   const build_log = document.getElementById('build-log')
 
   const build_event_source = new EventSource('/server-sent-events');
@@ -83,7 +89,16 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(response => response.json())
       .then(data => {
 
-        if ( data.identity ) { build_modal_badge.innerText = data.identity }
+        if ( data.identity ) {
+          build_modal_badge.innerText = data.identity
+        }
+
+        if ( build_modal_delete ) {
+
+          build_modal_delete.setAttribute('data-delete-id', data.id )
+          build_modal_delete.setAttribute('data-delete-name', data.identity )
+
+        }
 
         if ( data.status == build_status.RUNNING ) {
 

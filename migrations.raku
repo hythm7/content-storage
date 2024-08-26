@@ -75,8 +75,6 @@ migration 'Setup', {
 
     add-column "build", type( 'UUID' ), :!null;
 
-    foreign-key :from<build>, :to<id>, :table<build>;
-
   }
 
   execute

@@ -110,8 +110,6 @@ multi method select-user-build( 'count', Str:D :$username!, Str:D :$name! ) {
 }
 
 
-method delete-dist(:$identity!) { delete-dist $!pg, :$identity }
-
 method insert-build( UUID:D :$user ) {
 
   my $build-id = insert-into-build $!pg, :$user;
@@ -126,6 +124,8 @@ multi method select-build( UInt :$offset!, UInt :$limit! ) { select-build $!pg, 
 multi method select-build( UUID:D :$id! ) { select-build-by-id $!pg, :$id }
 multi method select-build( 'count', Str:D :$name! ) { select-build-by-name-count $!pg, name => $name ~ '%' }
 multi method select-build( 'count' ) { select-build-count $!pg  }
+
+multi method delete-build( UUID:D :$id! ) { delete-build-by-id $!pg, :$id }
 
 method update-build-status( UUID:D :$id!, Int:D :$status! ) {
   update-build-status $!pg, :$id, :$status;

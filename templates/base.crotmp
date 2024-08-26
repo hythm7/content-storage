@@ -276,7 +276,14 @@
               </div>
             </nav>
             <div>
-              <span id="build-modal-badge" class="badge text-primary"></span>
+            <span id="build-modal-badge"  class="badge text-primary"></span>
+            <?$user>
+            <?$user.admin>
+            <button id="build-modal-delete" type="button" data-bs-toggle="modal" data-bs-target="#delete-modal" class="btn text-danger" aria-label="Delete">
+              <i class="bi bi-trash2"></i>
+            </button>
+            </?>
+            </?>
             </div>
           </div>
           <div class="tab-content" id="build-pills-tab-content">

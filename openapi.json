@@ -380,14 +380,26 @@
             "description": "Build id to delete",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
         "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Build"
+                }
+              }
+            }
+          },
           "400": {
-            "description": "Invalid build value"
+            "description": "Invalid Build ID supplied"
+          },
+          "404": {
+            "description": "Build not found"
           }
         }
       }

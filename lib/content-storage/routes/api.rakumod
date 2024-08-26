@@ -124,6 +124,23 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     }
 
+    operation 'deleteBuildById', -> Admin $session, UUID:D $id  {
+
+      my %build = $db.select-build: :$id;
+
+      if %build {
+
+        $db.delete-build: :$id;
+
+        content 'application/json', %build;
+
+      } else {
+        not-found 'application/json', %build;
+      }
+
+
+    }
+
 
     operation 'readBuildLogById', -> ContentStorage::Session $session, UUID:D $id  {
 
