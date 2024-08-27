@@ -16,5 +16,5 @@ class ContentStorage::Session is json does Cro::HTTP::Auth {
 }
 
 
-subset Admin    of ContentStorage::Session is export where .admin;
 subset LoggedIn of ContentStorage::Session is export where .logged-in;
+subset Admin    of LoggedIn                is export where .admin;

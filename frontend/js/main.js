@@ -129,6 +129,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const delete_modal   = new bootstrap.Modal( delete_modal_element );
 
 
+  const user_modal_delete = document.getElementById('user-modal-delete');
+
   const dropzone_modal_element = document.getElementById('dropzone-modal');
 
   const dropzone_modal = new bootstrap.Modal( dropzone_modal_element );
@@ -240,18 +242,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
   user_modal_element.addEventListener('show.bs.modal', event => {
 
-    const username = event.relatedTarget.dataset.bsUser;
-    user_modal_element.dataset.bsUser = username;
+    const userid = event.relatedTarget.dataset.userId;
 
-    user_password_alert_element.classList.remove( 'alert-success' );
-    user_password_alert_element.classList.remove( 'alert-danger'  );
-    user_password_alert_element.classList.add(    'alert-primary' );
+    fetch( '/api/v1/user/' + userid )
+      .then(response => response.json())
+      .then(data => {
 
-    user_modal_badge.innerText = username;
+        const id        = data.id;
+        const username  = data.username;
+        const firstname = data.firstname;
+        const lastname  = data.lastname;
+        const email     = data.email;
 
-    user_info_username.innerText = username;
+        user_modal_element.dataset.userId = id;
 
-    user_password_alert_element.innerHTML = 'Change password!'
+        user_modal_badge.innerText = username;
+
+        if ( user_modal_delete ) {
+          user_modal_delete.setAttribute('data-delete-target', 'user' )
+          user_modal_delete.setAttribute('data-delete-id', id )
+          user_modal_delete.setAttribute('data-delete-name', username )
+        }
+
+        user_info_username.innerText = username;
+
+        user_password_alert_element.classList.remove( 'alert-success' );
+        user_password_alert_element.classList.remove( 'alert-danger'  );
+        user_password_alert_element.classList.add(    'alert-primary' );
+
+        user_password_alert_element.innerHTML = 'Change password!'
+
+      })
+      .catch(error => {
+        console.error('Error Processing:', error);
+      });
 
   })
 
@@ -331,10 +355,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
     event.preventDefault();
 
-    let username = document.getElementById("register-username");
-    let password = document.getElementById("register-password");
+    const username = document.getElementById("register-username").value;
+    const password = document.getElementById("register-password").value;
 
-    const body = new URLSearchParams({ 'username': username.value, 'password': password.value })
+    const firstname = document.getElementById("register-firstname").value;
+    const lastname  = document.getElementById("register-lastname").value;
+    const email     = document.getElementById("register-email").value;
+
+    console.log(firstname)
+    console.log(lastname)
+    console.log(email)
+
+    const body = new URLSearchParams({
+      'username':  username,
+      'password':  password,
+      'firstname': firstname,
+      'lastname':  lastname,
+      'email':     email
+    })
+
+    console.log(body)
 
     fetch('/api/v1/auth/register', {
       method: 'POST',
@@ -458,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         logout_alert_element.innerText = 'Success!';
 
-        setTimeout( function( ) { window.location.reload(); }, 777 );
+        setTimeout( function( ) { window.location.href = "/" }, 777 );
 
       } else {
 

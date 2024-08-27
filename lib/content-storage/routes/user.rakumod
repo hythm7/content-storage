@@ -8,6 +8,16 @@ sub user-routes( ContentStorage::Database:D :$db! ) is export {
 
   route {
 
+    get -> Admin $session {
+
+      my $user  =  $session.user;
+      my $title = 'Users';
+      my $api   = '/api/v1/user';
+
+
+      template 'users.crotmp', { :$user , :$title, :$api };
+    }
+
     get -> ContentStorage::Session $session, $username, 'distribution' {
 
       my $user  =  $session.user;

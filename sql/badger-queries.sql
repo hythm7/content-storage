@@ -1,3 +1,30 @@
+-- sub select-user(UInt :$offset!, UInt :$limit! --> @)
+SELECT "u"."id", "u"."username", "u"."firstname", "u"."lastname", "u"."email", "u"."admin", "u"."created"
+FROM "user" "u"
+ORDER BY "u"."created" DESC
+LIMIT $limit OFFSET $offset
+
+-- sub select-user-by-name(Str :$name!, UInt :$offset!, UInt :$limit! --> @)
+SELECT "u"."id", "u"."username", "u"."firstname", "u"."lastname", "u"."email", "u"."admin", "u"."created"
+FROM "user" "u"
+WHERE "u"."name" ILIKE $name
+ORDER BY "u"."created" DESC
+LIMIT $limit OFFSET $offset
+
+
+-- sub select-user-by-id(:$id! --> %)
+SELECT "u"."id", "u"."username", "u"."firstname", "u"."lastname", "u"."email", "u"."admin", "u"."created"
+FROM "user" "u"
+WHERE  "u"."id" = $id
+
+-- sub select-user-by-name-count(Str :$name! --> $)
+SELECT COUNT(*) FROM "user" "u"
+WHERE "u"."name" ILIKE $name
+
+-- sub select-user-count(--> $)
+SELECT COUNT(*) FROM "user"
+
+
 -- sub select-userid-by-username(:$username! --> $)
 SELECT "id"
 FROM   "user"
@@ -13,27 +40,16 @@ SELECT "id", "password"
 FROM   "user"
 WHERE  "username" = $username
 
-
--- sub select-user-by-id(:$id! --> %)
-SELECT "id", "username", "admin"
-FROM  "user"
-WHERE "id" = $id
-
-
 -- sub select-user-by-username(Str :$username! --> %)
-SELECT "id", "username", "admin"
-FROM  "user"
-WHERE "username" = $username
-
--- sub select-user( --> @)
-SELECT "id", "username", "admin"
-FROM  "user"
+SELECT "u"."id", "u"."username", "u"."firstname", "u"."lastname", "u"."email", "u"."admin", "u"."created"
+FROM "user" "u"
+WHERE "u"."username" = $username
 
 
--- sub insert-into-user(Str :$username!, Str :$password! --> %)
+-- sub insert-into-user(Str :$username!, Str :$password!, Str :$firstname!, Str :$lastname!, Str :$email! --> %)
 INSERT
-INTO   "user" (  "username",  "password" )
-values       ( $username, $password )
+INTO   "user" (  "username",  "password", "firstname", "lastname", "email" )
+values        ( $username,    $password,  $firstname,  $lastname,  $email  )
 RETURNING "id"
 
 -- sub update-user-password-by-id(:$id!, Str :$password! --> +)
@@ -240,6 +256,13 @@ WHERE "b"."user" = $user AND "b"."name" ILIKE $name
 DELETE
 FROM "build" "b"
 WHERE  "b"."id" = $id
+
+
+-- sub delete-user-by-id(:$id! --> +)
+DELETE
+FROM "user" "u"
+WHERE  "u"."id" = $id
+
 
 
 -- sub select(Str $name! --> @)

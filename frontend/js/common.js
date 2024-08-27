@@ -42,6 +42,12 @@ export const searchBuild = function ( name ) {
 
 }
 
+export const searchUser = function ( name ) {
+
+  updateUserTable( new URLSearchParams( { name: name, page: 1 } ) )
+
+}
+
 
 export const updateDistributionTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
 
@@ -111,6 +117,41 @@ export const updateBuildTable = function ( query = new URLSearchParams( { page: 
 
 
 }
+
+export const updateUserTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
+
+  if ( ! query.has('page') ) { return false }
+
+  const user_table = document.getElementById('user-table');
+  const api        = user_table.dataset.api;
+
+  fetch( api + '?' + query.toString() )
+    .then( (response) => {
+
+      updateTablePagination( query, response.headers );
+
+      return response.json();
+
+    } )
+    .then(data => {
+
+      table_body.innerHTML = '';
+
+      data.forEach( function( obj ) {
+
+        const row = createUserTableRow( obj );
+
+        table_body.appendChild( row )
+
+      } );
+
+    })
+    .catch(error => {
+      console.error('Error Processing:', error);
+    });
+
+}
+
 
 const createDistributionTableRow = function (data) {
 
@@ -221,6 +262,44 @@ export const updateBuildTableRow = function (id, data) {
 
 }
 
+const createUserTableRow = function (data) {
+
+  const row = document.createElement("tr")
+
+
+  const username  = document.createElement('td');
+  const firstname = document.createElement('td');
+  const lastname  = document.createElement('td');
+  const email     = document.createElement('td');
+  const admin     = document.createElement('td');
+  const created   = document.createElement('td');
+
+  username.dataset.userId = data.id;
+  username.dataset.bsToggle = 'modal';
+  username.dataset.bsTarget = '#user-modal';
+
+  username.className = "text-primary";
+  admin.className    = "text-center";
+  created.className  = "text-center";
+
+  username.innerText  = data.username;
+  firstname.innerText = data.firstname;
+  lastname.innerText  = data.lastname;
+  email.innerText     = data.email;
+  created.innerText   = data.created;
+
+  if ( data.admin ) { admin.innerHTML = iconCheckHTML }
+
+  row.appendChild( username );
+  row.appendChild( firstname );
+  row.appendChild( lastname );
+  row.appendChild( email );
+  row.appendChild( admin );
+  row.appendChild( created );
+
+  return row;
+
+}
 
 
 const updateTablePagination = function ( query, headers ) {

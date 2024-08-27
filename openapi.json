@@ -45,7 +45,7 @@
         "summary": "List distributions",
         "operationId": "readDistribution",
         "tags": [
-          "build"
+          "distribution"
         ],
         "parameters": [
           {
@@ -438,13 +438,32 @@
       }
     },
     "/user": {
-      "get": {    
-        "summary": "List all users",
+      "get": {
+        "summary": "List users",
         "operationId": "readUser",
         "tags": [
           "user"
         ],
         "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name to filter by",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Current page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
           {
             "name": "limit",
             "in": "query",
@@ -486,9 +505,85 @@
             }
           }
         }   
-      }   
+      }
     },
-    "/user/{username}": {
+    "/user/{userId}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get user by user id",
+        "description": "",
+        "operationId": "readUserById",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The id that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid id supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Deletes a user",
+        "description": "delete a user",
+        "operationId": "deleteUserById",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User id to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/user/{userName}": {
       "get": {
         "tags": [
           "user"
@@ -498,7 +593,7 @@
         "operationId": "getUserByName",
         "parameters": [
           {
-            "name": "username",
+            "name": "userName",
             "in": "path",
             "description": "The name that needs to be fetched. Use user1 for testing. ",
             "required": true,
@@ -1083,15 +1178,15 @@
             "format": "int64",
             "example": 10
           },
-          "username": {
+          "userName": {
             "type": "string",
             "example": "theUser"
           },
-          "firstName": {
+          "firstname": {
             "type": "string",
             "example": "John"
           },
-          "lastName": {
+          "lastname": {
             "type": "string",
             "example": "James"
           },

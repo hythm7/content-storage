@@ -28,12 +28,13 @@
     <div class="collapse navbar-collapse" id="navbarToggler">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item"> <a class="nav-link" href="/build">Builds</a> </li>
+        <?$user><?$user.admin><li class="nav-item"> <a class="nav-link" href="/user">Users</a></li></?></?>
       </ul>
       <div class="input-group px-4">
         <input id="search-input" class="form-control" type="text" placeholder="⌕" arla-label="Search">
         <span  id="search-clear" class="input-group-text"><i class="bi-x"></i></span>
       </div>
-      <?{ $user }>
+      <?$user>
       <div class="px-2">
         <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#dropzone-modal" aria-expanded="false">Add Distribution</button>
       </div>
@@ -42,9 +43,11 @@
           <i class="bi-person"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-lg-end">
-          <li><button class="btn dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#user-modal" data-bs-user="<$user.username>" aria-expanded="false"><$user.username></button><li>
+          <li><button class="btn dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#user-modal" data-user-id="<$user.id>" aria-expanded="false"><$user.username></button><li>
+          <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="/user/<$user.username>/distribution">My Distributions</a></li>
           <li><a class="dropdown-item" href="/user/<$user.username>/build">My Builds</a></li>
+          <li><hr class="dropdown-divider"></li>
           <li><button class="btn dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#logout-modal" aria-expanded="false">Logout</button><li>
         </ul>
       </div>
@@ -108,8 +111,16 @@
             <div class="form-group">
               <label for="register-username">Username</label>
               <input type="text" name="username" class="form-control" id="register-username" autocomplete="on" required>
-            </div>
-            <div class="form-group">
+
+              <label for="register-firstname">First name</label>
+              <input type="text" name="firstname" class="form-control" id="register-firstname" autocomplete="on">
+
+              <label for="register-lastname">Last name</label>
+              <input type="text" name="lastname" class="form-control" id="register-lastname" autocomplete="on">
+
+              <label for="register-email">Email</label>
+              <input type="email" name="email" class="form-control" id="register-email" autocomplete="on">
+
               <label for="register-password">Password</label>
               <input type="password" name="password" class="form-control" id="register-password" autocomplete="on" required>
             </div>
@@ -194,7 +205,14 @@
             </div>
           </nav>
           <div>
-          <span id="user-modal-badge" class="badge text-primary"></span>
+            <span id="user-modal-badge"  class="badge text-primary"></span>
+            <?$user>
+            <?$user.admin>
+            <button id="user-modal-delete" type="button" data-bs-toggle="modal" data-bs-target="#delete-modal" class="btn text-danger" aria-label="Delete">
+              <i class="bi bi-trash2"></i>
+            </button>
+            </?>
+            </?>
           </div>
         </div>
         <div class="tab-content" id="user-pills-tab-content">

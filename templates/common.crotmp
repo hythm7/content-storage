@@ -47,6 +47,31 @@
 </table>
 </:>
 
+<:sub user-table( :$api )>
+<table id="user-table" class="table" data-api="<$api>">
+  <thead class="table-bordered border-primary">
+    <tr>
+      <th scope="col">Username</th>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Email</th>
+      <th scope="col" class="text-center">Admin</th>
+      <th scope="col" class="text-center">Created</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="6">
+        <&table-pagination>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+</:>
+
+
 <:sub table-pagination>
   <nav aria-label="Page navigation">
     <ul id="table-pagination" class="pagination pagination-lg justify-content-center">

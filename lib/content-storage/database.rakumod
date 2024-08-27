@@ -11,15 +11,14 @@ unit class ContentStorage::Database;
 
 has $.pg;
 
-method insert-user( Str:D :$username!,  Str:D :$password! ) {
+method insert-user( Str:D :$username!,  Str:D :$password!, Str :$firstname!, Str :$lastname!, Str :$email!) {
 
-  insert-into-user $!pg, :$username, :$password;
+  insert-into-user $!pg, :$username, :$password, :$firstname, :$lastname, :$email;
 
 }
 
 multi method select-user( UUID:D :$id! ) { select-user-by-id $!pg, :$id }
 
-multi method select-user( Str:D :$username! ) { select-user-by-username $!pg, :$username }
 
 multi method select-user( --> Seq:D ) { select-user $!pg }
 
@@ -34,6 +33,20 @@ multi method update-user-password( UUID:D :$id!, Str:D :$password! ) {
 multi method update-user-password( Str:D :$username!, Str:D :$password! ) {
   update-user-password-by-username $!pg, :$username, :$password;
 }
+
+multi method select-user( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
+  select-user-by-name $!pg, name => $name ~ '%', :$offset, :$limit
+}
+multi method select-user( UInt :$offset!, UInt :$limit! ) { select-user $!pg, :$offset, :$limit  }
+multi method select-user( UUID:D :$id! ) { select-user-by-id $!pg, :$id }
+multi method select-user( 'count', Str:D :$name! ) { select-user-by-name-count $!pg, name => $name ~ '%' }
+multi method select-user( 'count' ) { select-user-count $!pg  }
+
+multi method select-user( Str:D :$id!       ) { select-user-by-id       $!pg, :$id       }
+multi method select-user( Str:D :$username! ) { select-user-by-username $!pg, :$username }
+
+multi method delete-user( UUID:D :$id! ) { delete-user-by-id $!pg, :$id }
+
 
 multi method select-distribution( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
   select-distribution-by-name $!pg, name => $name ~ '%', :$offset, :$limit

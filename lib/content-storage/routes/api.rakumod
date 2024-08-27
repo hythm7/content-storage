@@ -50,6 +50,25 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
       content 'application/json', @build;
     }
 
+    operation 'readUser', -> Admin $session, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
+      my Int:D $total = $db.select-user: 'count', :$name;
+
+      my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
+
+      response.append-header: 'x-first',    $pager.first;
+      response.append-header: 'x-previous', $pager.previous;
+      response.append-header: 'x-current',  $pager.current;
+      response.append-header: 'x-next',     $pager.next;
+      response.append-header: 'x-last',     $pager.last;
+
+
+      my @user = $db.select-user: :$name, offset => $pager.offset, limit => $pager.limit;
+
+      content 'application/json', @user;
+
+    }
+
+
     operation 'readUserDistributions', -> ContentStorage::Session $session, Str $username, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
 
       my Int:D $total = $db.select-user-distribution: 'count', :$username, :$name;
@@ -141,6 +160,23 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     }
 
+    operation 'deleteUserById', -> Admin $session, UUID:D $id  {
+
+      my %user = $db.select-user: :$id;
+
+      if %user {
+
+        $db.delete-user: :$id;
+
+        content 'application/json', %user;
+
+      } else {
+        not-found 'application/json', %user;
+      }
+
+
+    }
+
 
     operation 'readBuildLogById', -> ContentStorage::Session $session, UUID:D $id  {
 
@@ -152,6 +188,26 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
         not-found 'application/json', %build;
       }
 
+    }
+
+
+    operation 'readUserById', -> LoggedIn $session, UUID:D $id  {
+
+      my %user = $db.select-user: :$id;
+
+      content 'application/json', %user;
+
+      if ( $id eq $session.user.id ) or $session.admin {
+
+        my %user = $db.select-user( :$id );
+
+        content 'application/json', %user;
+
+      } else {
+
+        forbidden 'application/json', { message => "Not autorized!" };
+
+      }
     }
 
 
@@ -203,7 +259,13 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     operation 'registerUser', -> ContentStorage::Session $session {
 
-      request-body -> ( :$username!, :$password! ) {
+      request-body -> ( :$username!, :$firstname!, :$lastname!, :$email!, :$password! ) {
+
+        dd $username;
+        dd $firstname;
+        dd $lastname;
+        dd $email;
+        dd $password;
         
         if $db.select-user( :$username ) {
 
@@ -211,7 +273,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
         } else {
 
-          my %user = $db.insert-user( :$username, password => argon2-hash( $password ) );
+          my %user = $db.insert-user( :$username, :$firstname, :$lastname, :$email, password => argon2-hash( $password ) );
 
           content 'application/json', %user;
 
@@ -226,16 +288,6 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
       $session.set-logged-in-user( Nil );
 
       content 'application/json', { id => $user.id, username => $user.username };
-
-    }
-
-    #operation 'userRead', -> Admin $session { }
-
-    operation 'readUser', -> LoggedIn $session {
-
-      my @user = $db.select-user;
-
-      content 'application/json', @user ;
 
     }
 

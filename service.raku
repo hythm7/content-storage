@@ -18,7 +18,6 @@ use content-storage-routes-api;
 use content-storage-routes-distribution;
 use content-storage-routes-build;
 use content-storage-routes-user;
-use content-storage-routes-auth;
 
 
 my $pg = DB::Pg.new: conninfo =>  %*ENV<DB_CONN_INFO>, converters => <DateTime>;
@@ -46,7 +45,6 @@ my sub routes( ) {
     include             distribution-routes( :$db ),
             build    => build-routes( :$api, :$db, :$event-supplier ),
             user     => user-routes( :$db ),
-            auth     => auth-routes( :$db ),
             <api v1> => api-routes( :$openapi-schema, :$db, :$event-supplier );
 
     get -> ContentStorage::Session $session, 'server-sent-events' {
