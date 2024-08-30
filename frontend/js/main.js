@@ -95,6 +95,7 @@ import * as bootstrap from 'bootstrap'
 document.addEventListener('DOMContentLoaded', function () {
 
   const user_password_alert_element = document.getElementById("user-password-alert");
+  const user_admin_alert_element    = document.getElementById("user-admin-alert");
   const register_alert_element      = document.getElementById("register-alert");
   const login_alert_element         = document.getElementById("login-alert");
   const logout_alert_element        = document.getElementById("logout-alert");
@@ -104,6 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const search_clear = document.getElementById("search-clear");
 
   const user_password_form_element = document.getElementById('user-password-form');
+  const user_admin_form_element    = document.getElementById('user-admin-form');
   const register_form_element      = document.getElementById('register-form');
   const login_form_element         = document.getElementById('login-form');
   const logout_form_element        = document.getElementById('logout-form');
@@ -120,7 +122,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const delete_modal_target_badge = document.getElementById('delete-modal-target-badge');
   const delete_modal_name_badge   = document.getElementById('delete-modal-name-badge');
 
-  const user_info_username = document.getElementById('user-info-username');
+  const user_info_username  = document.getElementById('user-info-username');
+  const user_info_firstname = document.getElementById('user-info-firstname');
+  const user_info_lastname  = document.getElementById('user-info-lastname');
+  const user_info_email     = document.getElementById('user-info-email');
+
+  const user_admin = document.getElementById('user-admin');
 
   const user_modal     = new bootstrap.Modal( user_modal_element );
   const register_modal = new bootstrap.Modal( register_modal_element );
@@ -253,10 +260,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const firstname = data.firstname;
         const lastname  = data.lastname;
         const email     = data.email;
+        const admin     = data.admin;
 
         user_modal_element.dataset.userId = id;
 
-        user_modal_badge.innerText = username;
+        if ( admin ) {
+          user_modal_badge.innerHTML = username + ' <i class="bi-person-gear text-success"></i>';
+        } else {
+          user_modal_badge.innerText = username;
+        }
 
         if ( user_modal_delete ) {
           user_modal_delete.setAttribute('data-delete-target', 'user' )
@@ -264,7 +276,13 @@ document.addEventListener('DOMContentLoaded', function () {
           user_modal_delete.setAttribute('data-delete-name', username )
         }
 
-        user_info_username.innerText = username;
+        user_info_username.value  = username;
+        user_info_firstname.value = firstname;
+        user_info_lastname.value  = lastname;
+        user_info_email.value     = email;
+
+
+        user_admin.checked = admin;
 
         user_password_alert_element.classList.remove( 'alert-success' );
         user_password_alert_element.classList.remove( 'alert-danger'  );
@@ -293,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     event.preventDefault();
 
-    const username = user_modal_element.dataset.bsUser;
+    const userid = user_modal_element.dataset.userId;
 
     const password         = document.getElementById("user-password").value;
     const confirm_password = document.getElementById("user-confirm-password").value;
@@ -307,9 +325,9 @@ document.addEventListener('DOMContentLoaded', function () {
       return false;
     }
 
-    const body = new URLSearchParams({ 'username': username, 'password': password })
+    const body = new URLSearchParams({ 'password': password })
 
-    fetch('/api/v1/user/password', {
+    fetch('/api/v1/user/' + userid + '/password', {
       method: 'PUT',
       body: body,
     })
@@ -338,6 +356,57 @@ document.addEventListener('DOMContentLoaded', function () {
         user_password_alert_element.classList.add(    'alert-danger'  );
 
         user_password_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
+
+      }
+
+    } )
+    .catch(error => {
+
+      console.error('Error Processing:', error);
+      // Handle errors
+    } );
+
+  });
+
+
+  user_admin_form_element.addEventListener("submit", (event) => {
+
+    event.preventDefault();
+
+    const userid = user_modal_element.dataset.userId;
+
+    const admin  = user_admin.checked;
+
+    const body = new URLSearchParams({ 'admin': Number( admin ) })
+
+    fetch('/api/v1/user/' + userid + '/admin', {
+      method: 'PUT',
+      body: body,
+    })
+    .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+    .then( data => {
+
+      if ( data.ok ) {
+
+        user_admin_alert_element.classList.remove( 'alert-primary' );
+        user_admin_alert_element.classList.remove( 'alert-danger'  );
+        user_admin_alert_element.classList.add(    'alert-success' );
+
+        user_admin_alert_element.innerText = 'Success!';
+
+        setTimeout( function( ) {
+
+          user_modal.hide();
+
+        }, 777 );
+
+      } else {
+
+        user_admin_alert_element.classList.remove( 'alert-primary' );
+        user_admin_alert_element.classList.remove( 'alert-success' );
+        user_admin_alert_element.classList.add(    'alert-danger'  );
+
+        user_admin_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
 
       }
 

@@ -62,6 +62,11 @@ UPDATE "user"
 SET    "password" = $password
 WHERE  "username" = $username
 
+-- sub update-user-admin-by-id(:$id!, :$admin! --> +)
+UPDATE "user"
+SET    "admin" = $admin
+WHERE  "id"    = $id
+
 
 -- sub insert-into-distribution(:$user!, Str :$name!, :$version!, :$auth!, :$api, :$identity!, Str :$description!, Str :$readme, Str :$changes,  :$provides!, :$tags!, :$meta!, :$build! --> +)
 INSERT

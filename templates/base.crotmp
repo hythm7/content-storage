@@ -200,8 +200,13 @@
         <div class="d-flex justify-content-between">
           <nav>
             <div class="nav nav-pills mb-3" id="user-pills-tab" role="tablist">
-              <button class="nav-link active" id="user-info-tab"  data-bs-toggle="pill" data-bs-target="#user-info"  type="button" role="tab" aria-controls="user-info"  aria-selected="false">Info</button>
-              <button class="nav-link" id="user-change-password-tab"  data-bs-toggle="pill" data-bs-target="#user-change-password"  type="button" role="tab" aria-controls="user-change-password"  aria-selected="false">Change Password</button>
+              <button class="nav-link active" id="user-info-tab"  data-bs-toggle="pill" data-bs-target="#user-info-content"  type="button" role="tab" aria-controls="user-info-content"  aria-selected="false">Info</button>
+              <button class="nav-link" id="user-password-tab"  data-bs-toggle="pill" data-bs-target="#user-password-content"  type="button" role="tab" aria-controls="user-password-content"  aria-selected="false">Password</button>
+            <?$user>
+            <?$user.admin>
+              <button class="nav-link" id="user-admin-tab"  data-bs-toggle="pill" data-bs-target="#user-admin-content"  type="button" role="tab" aria-controls="user-admin-content"  aria-selected="false">Admin</button>
+            </?>
+            </?>
             </div>
           </nav>
           <div>
@@ -216,13 +221,25 @@
           </div>
         </div>
         <div class="tab-content" id="user-pills-tab-content">
-          <div class="tab-pane fade show active" id="user-info"  role="tabpanel" aria-labelledby="user-info-tab" tabindex="0">
-            <h1 class="display-6">
-              Username
-              <span id="user-info-username" class="badge text-body-secondary"></span>
-            </h3>
+          <div class="tab-pane fade show active" id="user-info-content"  role="tabpanel" aria-labelledby="user-info-tab" tabindex="0">
+            <div class="form-floating mb-3">
+              <input type="text" readonly class="form-control-plaintext" id="user-info-username">
+              <label for="user-info-username">Username</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="text" readonly class="form-control-plaintext" id="user-info-firstname">
+              <label for="user-info-firstname">First name</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="text" readonly class="form-control-plaintext" id="user-info-lastname">
+              <label for="user-info-lastname">Last name</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="email" readonly class="form-control-plaintext" id="user-info-email">
+              <label for="user-info-email">Email</label>
+            </div>
           </div>
-          <div class="tab-pane fade" id="user-change-password"  role="tabpanel" aria-labelledby="user-change-password-tab" tabindex="0">
+          <div class="tab-pane fade" id="user-password-content"  role="tabpanel" aria-labelledby="user-password-tab" tabindex="0">
             <div id="user-password-alert" class="alert" role="alert"></div>
             <form id="user-password-form">
               <div class="form-group">
@@ -232,6 +249,18 @@
               <div class="form-group">
                 <label for="user-confirm-password">Confirm Password</label>
                 <input type="password" name="confirm-password" class="form-control" id="user-confirm-password" autocomplete="off" required>
+              </div>
+              <div style="padding-top: 10px">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+              </div>
+            </form>
+          </div>
+          <div class="tab-pane fade" id="user-admin-content"  role="tabpanel" aria-labelledby="user-admin-tab" tabindex="0">
+            <div id="user-admin-alert" class="alert" role="alert"></div>
+            <form id="user-admin-form">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="user-admin">
+                <label class="form-check-label" for="user-admin">Admin</label>
               </div>
               <div style="padding-top: 10px">
                 <input type="submit" value="Submit" class="btn btn-primary" />

@@ -688,7 +688,7 @@
         }
       }
     },
-    "/user/password": {
+    "/user/{userId}/password": {
       "put": {
         "tags": [
           "user",
@@ -697,6 +697,17 @@
         "summary": "Update user password",
         "description": "",
         "operationId": "updateUserPassword",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The id that needs to be updated.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "description": "Update user password",
           "content": {
@@ -714,7 +725,7 @@
           "required": true
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "successful operation",
             "content": {
               "application/json": {
@@ -725,7 +736,60 @@
             }
           },
           "404": {
-            "description": "Invalid username supplied"
+            "description": "Invalid userid supplied"
+          }
+        }
+      }
+    },
+    "/user/{userId}/admin": {
+      "put": {
+        "tags": [
+          "user",
+          "admin"
+        ],
+        "summary": "Update user admin",
+        "description": "",
+        "operationId": "updateUserAdmin",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The id that needs to be updated.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update user admin",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invalid userid supplied"
           }
         }
       }

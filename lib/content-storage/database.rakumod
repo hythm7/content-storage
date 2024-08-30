@@ -34,6 +34,10 @@ multi method update-user-password( Str:D :$username!, Str:D :$password! ) {
   update-user-password-by-username $!pg, :$username, :$password;
 }
 
+multi method update-user-admin( UUID:D :$id!, Bool:D :$admin! ) {
+  update-user-admin-by-id $!pg, :$id, :$admin;
+}
+
 multi method select-user( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
   select-user-by-name $!pg, name => $name ~ '%', :$offset, :$limit
 }

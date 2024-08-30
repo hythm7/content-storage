@@ -69,7 +69,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
     }
 
 
-    operation 'readUserDistributions', -> ContentStorage::Session $session, Str $username, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
+    operation 'readUserDistributions', -> ContentStorage::Session $session, Str:D $username, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
 
       my Int:D $total = $db.select-user-distribution: 'count', :$username, :$name;
 
@@ -88,7 +88,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     }
 
-    operation 'readUserBuilds', -> ContentStorage::Session $session, Str $username, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
+    operation 'readUserBuilds', -> ContentStorage::Session $session, Str:D $username, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
 
       my Int:D $total = $db.select-user-build: 'count', :$username, :$name;
 
@@ -261,12 +261,6 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
       request-body -> ( :$username!, :$firstname!, :$lastname!, :$email!, :$password! ) {
 
-        dd $username;
-        dd $firstname;
-        dd $lastname;
-        dd $email;
-        dd $password;
-        
         if $db.select-user( :$username ) {
 
           conflict 'application/json', { message => "User $username is already registered" };
@@ -291,24 +285,49 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     }
 
-    operation 'updateUserPassword', -> LoggedIn $session {
+    operation 'updateUserPassword', -> LoggedIn $session, UUID:D $id {
 
-      request-body -> ( :$username!, :$password! ) {
+      my %user = $db.select-user( :$id );
+
+      return not-found 'application/json', { message => "User $id not found!" } unless %user;
+
+      request-body -> ( :$password! ) {
         
-        # TODO check permission
+        if ( $id eq $session.user.id ) or $session.admin {
 
+          my %user = $db.select-user( :$id );
 
-        if ( $username eq $session.user.username ) or $session.admin {
-
-          my %user = $db.select-user( :$username );
-
-          $db.update-user-password( :$username, password => argon2-hash( $password ) );
+          $db.update-user-password( :$id, password => argon2-hash( $password ) );
 
           content 'application/json', %user;
 
         } else {
 
-          not-found 'application/json', { message => "User $username not found!" };
+          forbidden 'application/json', { 'Not authorized!' };
+
+        }
+      }
+    }
+
+    operation 'updateUserAdmin', -> LoggedIn $session, UUID:D $id {
+
+      my %user = $db.select-user( :$id );
+
+      return not-found 'application/json', { message => "User $id not found!" } unless %user;
+
+      request-body -> ( Bool(Int()):$admin! ) {
+
+        if $session.admin {
+
+          my %user = $db.select-user( :$id );
+
+          $db.update-user-admin( :$id, :$admin );
+
+          content 'application/json', %user;
+
+        } else {
+
+          forbidden 'application/json', { 'Not authorized!' };
 
         }
       }
