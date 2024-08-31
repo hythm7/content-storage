@@ -265,7 +265,8 @@ document.addEventListener('DOMContentLoaded', function () {
         user_modal_element.dataset.userId = id;
 
         if ( admin ) {
-          user_modal_badge.innerHTML = username + ' <i class="bi-person-gear text-success"></i>';
+          const admin_icon = '<i class="bi-person-gear ms-1 text-success"></i>';
+          user_modal_badge.innerHTML = username + admin_icon;
         } else {
           user_modal_badge.innerText = username;
         }
