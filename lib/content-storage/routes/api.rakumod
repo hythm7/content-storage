@@ -195,17 +195,15 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
       my %user = $db.select-user: :$id;
 
-      content 'application/json', %user;
+      say $id;
 
-      if ( $id eq $session.user.id ) or $session.admin {
-
-        my %user = $db.select-user( :$id );
+      if ( %user and  ( ( $id eq $session.user.id ) or $session.admin ) ) {
 
         content 'application/json', %user;
 
       } else {
 
-        forbidden 'application/json', { message => "Not autorized!" };
+        not-found 'application/json', { message => "User $id not found!" };
 
       }
     }
@@ -289,13 +287,10 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
       my %user = $db.select-user( :$id );
 
-      return not-found 'application/json', { message => "User $id not found!" } unless %user;
 
       request-body -> ( :$password! ) {
         
-        if ( $id eq $session.user.id ) or $session.admin {
-
-          my %user = $db.select-user( :$id );
+        if ( %user and  ( ( $id eq $session.user.id ) or $session.admin ) ) {
 
           $db.update-user-password( :$id, password => argon2-hash( $password ) );
 
@@ -303,7 +298,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
         } else {
 
-          forbidden 'application/json', { 'Not authorized!' };
+          not-found 'application/json', { message => "User $id not found!" };
 
         }
       }
@@ -313,13 +308,11 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
       my %user = $db.select-user( :$id );
 
-      return not-found 'application/json', { message => "User $id not found!" } unless %user;
+      not-found 'application/json', { message => "User $id not found!" } unless %user;
 
       request-body -> ( Bool(Int()):$admin! ) {
 
-        if $session.admin {
-
-          my %user = $db.select-user( :$id );
+        if %user and $session.admin {
 
           $db.update-user-admin( :$id, :$admin );
 
@@ -327,7 +320,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
         } else {
 
-          forbidden 'application/json', { 'Not authorized!' };
+          not-found 'application/json', { message => "User $id not found!" };
 
         }
       }

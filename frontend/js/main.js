@@ -94,6 +94,9 @@ import * as bootstrap from 'bootstrap'
 
 document.addEventListener('DOMContentLoaded', function () {
 
+  const user_modal_alert_element    = document.getElementById("user-modal-alert");
+
+  const user_info_alert_element     = document.getElementById("user-info-alert");
   const user_password_alert_element = document.getElementById("user-password-alert");
   const user_admin_alert_element    = document.getElementById("user-admin-alert");
   const register_alert_element      = document.getElementById("register-alert");
@@ -122,7 +125,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const delete_modal_target_badge = document.getElementById('delete-modal-target-badge');
   const delete_modal_name_badge   = document.getElementById('delete-modal-name-badge');
 
-  const user_info_username  = document.getElementById('user-info-username');
   const user_info_firstname = document.getElementById('user-info-firstname');
   const user_info_lastname  = document.getElementById('user-info-lastname');
   const user_info_email     = document.getElementById('user-info-email');
@@ -251,8 +253,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const userid = event.relatedTarget.dataset.userId;
 
+    user_modal_alert_element.classList.add( 'd-none'        );
+    user_modal_alert_element.classList.add( 'alert-primary' );
+
+    user_info_alert_element.classList.add(    'alert-primary' );
+
+    user_password_alert_element.classList.remove( 'alert-success' );
+    user_password_alert_element.classList.remove( 'alert-danger'  );
+    user_password_alert_element.classList.add(    'alert-primary' );
+
+    user_admin_alert_element.classList.remove( 'alert-success' );
+    user_admin_alert_element.classList.remove( 'alert-danger'  );
+    user_admin_alert_element.classList.add(    'alert-primary' );
+
+    user_info_alert_element.innerHTML     = 'User info!'
+    user_password_alert_element.innerHTML = 'Change password!'
+    user_admin_alert_element.innerHTML    = 'Make admin!'
+
     fetch( '/api/v1/user/' + userid )
-      .then(response => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.message || 'Something went wrong');
+          });
+        }
+        return response.json();
+      })
       .then(data => {
 
         const id        = data.id;
@@ -277,23 +303,21 @@ document.addEventListener('DOMContentLoaded', function () {
           user_modal_delete.setAttribute('data-delete-name', username )
         }
 
-        user_info_username.value  = username;
         user_info_firstname.value = firstname;
         user_info_lastname.value  = lastname;
         user_info_email.value     = email;
 
-
         user_admin.checked = admin;
 
-        user_password_alert_element.classList.remove( 'alert-success' );
-        user_password_alert_element.classList.remove( 'alert-danger'  );
-        user_password_alert_element.classList.add(    'alert-primary' );
-
-        user_password_alert_element.innerHTML = 'Change password!'
-
-      })
+      } )
       .catch(error => {
-        console.error('Error Processing:', error);
+        console.error(error);
+        user_modal_alert_element.classList.remove( 'alert-primary' );
+        user_modal_alert_element.classList.add(    'alert-danger'  );
+
+        user_modal_alert_element.innerText = error.message;
+
+        user_modal_alert_element.classList.remove( 'd-none'        );
       });
 
   })
@@ -343,12 +367,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         user_password_alert_element.innerText = 'Success!';
 
-        setTimeout( function( ) {
+        //setTimeout( function( ) {
 
-          user_modal.hide();
-          login_modal.show();
+        //  user_modal.hide();
+        //  login_modal.show();
 
-        }, 777 );
+        //}, 777 );
 
       } else {
 
@@ -395,11 +419,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         user_admin_alert_element.innerText = 'Success!';
 
-        setTimeout( function( ) {
+        //setTimeout( function( ) {
 
-          user_modal.hide();
+        //  user_modal.hide();
 
-        }, 777 );
+        //}, 777 );
 
       } else {
 
