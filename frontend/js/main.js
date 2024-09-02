@@ -129,6 +129,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const user_info_lastname  = document.getElementById('user-info-lastname');
   const user_info_email     = document.getElementById('user-info-email');
 
+  const user_password         = document.getElementById("user-password");
+  const user_confirm_password = document.getElementById("user-confirm-password");
+
   const user_admin = document.getElementById('user-admin');
 
   const user_modal     = new bootstrap.Modal( user_modal_element );
@@ -169,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-// Handle dropped files
+  // Handle dropped files
   drop_area.addEventListener('drop', function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -200,18 +203,18 @@ document.addEventListener('DOMContentLoaded', function () {
       method: 'POST',
       body: formData
     })
-    .then(response => response.json()) // Assuming the server responds with JSON
-    .then(data => {
-      dropzone_modal.hide();
-      //document.location.href="/build"
-      //data.forEach(addBuild);
-      //window.location.reload();
-      // Handle the server response as needed
-    })
-    .catch(error => {
-      console.error('Error Processing:', error);
-      // Handle errors
-    });
+      .then(response => response.json()) // Assuming the server responds with JSON
+      .then(data => {
+        dropzone_modal.hide();
+        //document.location.href="/build"
+        //data.forEach(addBuild);
+        //window.location.reload();
+        // Handle the server response as needed
+      })
+      .catch(error => {
+        console.error('Error Processing:', error);
+        // Handle errors
+      });
   });
 
   drop_area_input.addEventListener('change', function (event) {
@@ -236,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let file_progress_div = '<div class="progress-bar overflow-visible text-dark" style="width: 0%">' + file.name + '</div>';
         let file_progress = '<div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="' + max + '">'
         file_progress += file_progress_div + '</div>';
-        
+
         progress.innerHTML += file_progress;
 
       });
@@ -269,6 +272,9 @@ document.addEventListener('DOMContentLoaded', function () {
     user_info_alert_element.innerHTML     = 'User info!'
     user_password_alert_element.innerHTML = 'Change password!'
     user_admin_alert_element.innerHTML    = 'Make admin!'
+
+    user_password.value         = '';
+    user_confirm_password.value = '';
 
     fetch( '/api/v1/user/' + userid )
       .then((response) => {
@@ -338,14 +344,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const userid = user_modal_element.dataset.userId;
 
-    const password         = document.getElementById("user-password").value;
-    const confirm_password = document.getElementById("user-confirm-password").value;
+    const password         = user_password.value;
+    const confirm_password = user_confirm_password.value;
 
     if ( password != confirm_password ) {
 
       user_password_alert_element.classList.add( 'alert-danger'  );
 
-      user_password_alert_element.innerHTML = 'Passwords do not match!';
+      user_password_alert_element.innerHTML = '<i class="bi bi-x-circle"> Passwords do not match!';
 
       return false;
     }
@@ -356,10 +362,16 @@ document.addEventListener('DOMContentLoaded', function () {
       method: 'PUT',
       body: body,
     })
-    .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
-    .then( data => {
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.message || 'Something went wrong');
+          });
+        }
+        return response.json();
+      })
+      .then( data => {
 
-      if ( data.ok ) {
 
         user_password_alert_element.classList.remove( 'alert-primary' );
         user_password_alert_element.classList.remove( 'alert-danger'  );
@@ -367,29 +379,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         user_password_alert_element.innerText = 'Success!';
 
-        //setTimeout( function( ) {
-
-        //  user_modal.hide();
-        //  login_modal.show();
-
-        //}, 777 );
-
-      } else {
+      } )
+      .catch(error => {
+        console.error(error);
 
         user_password_alert_element.classList.remove( 'alert-primary' );
         user_password_alert_element.classList.remove( 'alert-success' );
         user_password_alert_element.classList.add(    'alert-danger'  );
 
-        user_password_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
-
-      }
-
-    } )
-    .catch(error => {
-
-      console.error('Error Processing:', error);
-      // Handle errors
-    } );
+        user_password_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + error.message;
+      });
 
   });
 
@@ -408,10 +407,15 @@ document.addEventListener('DOMContentLoaded', function () {
       method: 'PUT',
       body: body,
     })
-    .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
-    .then( data => {
-
-      if ( data.ok ) {
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.message || 'Something went wrong');
+          });
+        }
+        return response.json();
+      })
+      .then( data => {
 
         user_admin_alert_element.classList.remove( 'alert-primary' );
         user_admin_alert_element.classList.remove( 'alert-danger'  );
@@ -419,28 +423,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         user_admin_alert_element.innerText = 'Success!';
 
-        //setTimeout( function( ) {
-
-        //  user_modal.hide();
-
-        //}, 777 );
-
-      } else {
+      } )
+      .catch(error => {
 
         user_admin_alert_element.classList.remove( 'alert-primary' );
         user_admin_alert_element.classList.remove( 'alert-success' );
         user_admin_alert_element.classList.add(    'alert-danger'  );
 
-        user_admin_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
-
-      }
-
-    } )
-    .catch(error => {
-
-      console.error('Error Processing:', error);
-      // Handle errors
-    } );
+        user_admin_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + error.message;
+      } );
 
   });
 
@@ -456,10 +447,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const lastname  = document.getElementById("register-lastname").value;
     const email     = document.getElementById("register-email").value;
 
-    console.log(firstname)
-    console.log(lastname)
-    console.log(email)
-
     const body = new URLSearchParams({
       'username':  username,
       'password':  password,
@@ -468,46 +455,44 @@ document.addEventListener('DOMContentLoaded', function () {
       'email':     email
     })
 
-    console.log(body)
-
     fetch('/api/v1/auth/register', {
       method: 'POST',
       body: body,
     })
-    .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
-    .then( data => {
+      .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+      .then( data => {
 
-      if ( data.ok ) {
+        if ( data.ok ) {
 
-        register_alert_element.classList.remove( 'alert-primary' );
-        register_alert_element.classList.remove( 'alert-danger'  );
-        register_alert_element.classList.add(    'alert-success' );
+          register_alert_element.classList.remove( 'alert-primary' );
+          register_alert_element.classList.remove( 'alert-danger'  );
+          register_alert_element.classList.add(    'alert-success' );
 
-        register_alert_element.innerText = 'Success!';
+          register_alert_element.innerText = 'Success!';
 
-        setTimeout( function( ) {
+          setTimeout( function( ) {
 
-          register_modal.hide();
-          login_modal.show();
+            register_modal.hide();
+            login_modal.show();
 
-        }, 777 );
+          }, 777 );
 
-      } else {
+        } else {
 
-        register_alert_element.classList.remove( 'alert-primary' );
-        register_alert_element.classList.remove( 'alert-success' );
-        register_alert_element.classList.add(    'alert-danger'  );
+          register_alert_element.classList.remove( 'alert-primary' );
+          register_alert_element.classList.remove( 'alert-success' );
+          register_alert_element.classList.add(    'alert-danger'  );
 
-        register_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
+          register_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
 
-      }
+        }
 
-    } )
-    .catch(error => {
+      } )
+      .catch(error => {
 
-      console.error('Error Processing:', error);
-      // Handle errors
-    } );
+        console.error('Error Processing:', error);
+        // Handle errors
+      } );
 
   });
 
@@ -535,35 +520,35 @@ document.addEventListener('DOMContentLoaded', function () {
       method: 'POST',
       body: body,
     })
-    .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
-    .then( data => {
+      .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+      .then( data => {
 
-      if ( data.ok ) {
+        if ( data.ok ) {
 
-        login_alert_element.classList.remove( 'alert-primary' );
-        login_alert_element.classList.remove( 'alert-danger'  );
-        login_alert_element.classList.add(    'alert-success' );
+          login_alert_element.classList.remove( 'alert-primary' );
+          login_alert_element.classList.remove( 'alert-danger'  );
+          login_alert_element.classList.add(    'alert-success' );
 
-        login_alert_element.innerText = 'Success!';
+          login_alert_element.innerText = 'Success!';
 
-        setTimeout( function( ) { window.location.reload(); }, 777 );
+          setTimeout( function( ) { window.location.reload(); }, 777 );
 
-      } else {
+        } else {
 
-        login_alert_element.classList.remove( 'alert-primary' );
-        login_alert_element.classList.remove( 'alert-success' );
-        login_alert_element.classList.add(    'alert-danger'  );
+          login_alert_element.classList.remove( 'alert-primary' );
+          login_alert_element.classList.remove( 'alert-success' );
+          login_alert_element.classList.add(    'alert-danger'  );
 
-        login_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
+          login_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
 
-      }
+        }
 
-    } )
-    .catch(error => {
+      } )
+      .catch(error => {
 
-      console.error('Error Processing:', error);
-      // Handle errors
-    } );
+        console.error('Error Processing:', error);
+        // Handle errors
+      } );
 
   });
 
@@ -581,35 +566,35 @@ document.addEventListener('DOMContentLoaded', function () {
     event.preventDefault();
 
     fetch( '/api/v1/auth/logout' )
-    .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
-    .then( data => {
+      .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+      .then( data => {
 
-      if ( data.ok ) {
+        if ( data.ok ) {
 
-        logout_alert_element.classList.remove( 'alert-primary' );
-        logout_alert_element.classList.remove( 'alert-danger'  );
-        logout_alert_element.classList.add(    'alert-success' );
+          logout_alert_element.classList.remove( 'alert-primary' );
+          logout_alert_element.classList.remove( 'alert-danger'  );
+          logout_alert_element.classList.add(    'alert-success' );
 
-        logout_alert_element.innerText = 'Success!';
+          logout_alert_element.innerText = 'Success!';
 
-        setTimeout( function( ) { window.location.href = "/" }, 777 );
+          setTimeout( function( ) { window.location.href = "/" }, 777 );
 
-      } else {
+        } else {
 
-        logout_alert_element.classList.remove( 'alert-primary' );
-        logout_alert_element.classList.remove( 'alert-success' );
-        logout_alert_element.classList.add(    'alert-danger'  );
+          logout_alert_element.classList.remove( 'alert-primary' );
+          logout_alert_element.classList.remove( 'alert-success' );
+          logout_alert_element.classList.add(    'alert-danger'  );
 
-        logout_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
+          logout_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
 
-      }
+        }
 
-    } )
-    .catch(error => {
+      } )
+      .catch(error => {
 
-      console.error('Error Processing:', error);
-      // Handle errors
-    } );
+        console.error('Error Processing:', error);
+        // Handle errors
+      } );
 
   });
 
@@ -643,33 +628,39 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch('/api/v1/' + delete_modal_element.dataset.deleteTarget + '/' + delete_modal_element.dataset.deleteId, {
       method: 'DELETE'
     })
-    .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
-    .then( data => {
+      .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+      .then( data => {
 
-      if ( data.ok ) {
+        if ( data.ok ) {
 
-        delete_alert_element.classList.remove( 'alert-primary' );
-        delete_alert_element.classList.remove( 'alert-danger'  );
-        delete_alert_element.classList.add(    'alert-success' );
+          delete_alert_element.classList.remove( 'alert-primary' );
+          delete_alert_element.classList.remove( 'alert-danger'  );
+          delete_alert_element.classList.add(    'alert-success' );
 
-        delete_alert_element.innerText = 'Success!';
+          delete_alert_element.innerText = 'Success!';
 
-      } else {
+          setTimeout( function( ) {
 
-        delete_alert_element.classList.remove( 'alert-primary' );
-        delete_alert_element.classList.remove( 'alert-success' );
-        delete_alert_element.classList.add(    'alert-danger'  );
+            delete_modal.hide();
 
-        delete_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
+          }, 777 );
 
-      }
+        } else {
 
-    } )
-    .catch(error => {
+          delete_alert_element.classList.remove( 'alert-primary' );
+          delete_alert_element.classList.remove( 'alert-success' );
+          delete_alert_element.classList.add(    'alert-danger'  );
 
-      console.error('Error Processing:', error);
-      // Handle errors
-    } );
+          delete_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
+
+        }
+
+      } )
+      .catch(error => {
+
+        console.error('Error Processing:', error);
+        // Handle errors
+      } );
 
   });
 });
