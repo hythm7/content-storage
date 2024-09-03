@@ -178,7 +178,7 @@ const createDistributionTableRow = function (data) {
   version.innerText  = data.version;
   auth.innerText     = data.auth;
   api.innerText      = data.api;
-  created.innerText  = data.created;
+  created.innerText  = formatDate( data.created );
   download.innerHTML = iconDownloadHTML;
 
   row.appendChild( name );
@@ -224,8 +224,8 @@ const createBuildTableRow = function (data) {
   identity.innerText = data.identity;
   meta.innerHTML = build_status_to_HTML( data.meta );
   test.innerHTML = build_status_to_HTML( data.test );
-  started.innerText = data.started;
-  completed.innerText = data.completed;
+  started.innerText   = formatDate( data.started   );
+  completed.innerText = formatDate( data.completed );
 
   row.appendChild( build_status );
   row.appendChild( user );
@@ -286,7 +286,7 @@ const createUserTableRow = function (data) {
   firstname.innerText = data.firstname;
   lastname.innerText  = data.lastname;
   email.innerText     = data.email;
-  created.innerText   = data.created;
+  created.innerText   = formatDate( data.created );
 
   if ( data.admin ) { admin.innerHTML = iconCheckHTML }
 
@@ -357,6 +357,15 @@ const updateTablePagination = function ( query, headers ) {
 
     elementLastPage.classList.remove( "disabled" );
   }   
+
+}
+
+const formatDate = (dateString) => {
+
+  const date = dateString.split('T')[0];
+  const time = dateString.split('T')[1].split('.')[0];
+
+  return date + ' ' + time;
 
 }
 

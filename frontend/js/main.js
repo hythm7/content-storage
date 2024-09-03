@@ -459,39 +459,38 @@ document.addEventListener('DOMContentLoaded', function () {
       method: 'POST',
       body: body,
     })
-      .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.message || 'Something went wrong');
+          });
+        }
+        return response.json();
+      })
       .then( data => {
 
-        if ( data.ok ) {
+        register_alert_element.classList.remove( 'alert-primary' );
+        register_alert_element.classList.remove( 'alert-danger'  );
+        register_alert_element.classList.add(    'alert-success' );
 
-          register_alert_element.classList.remove( 'alert-primary' );
-          register_alert_element.classList.remove( 'alert-danger'  );
-          register_alert_element.classList.add(    'alert-success' );
+        register_alert_element.innerText = 'Success!';
 
-          register_alert_element.innerText = 'Success!';
+        setTimeout( function( ) {
 
-          setTimeout( function( ) {
+          register_modal.hide();
+          login_modal.show();
 
-            register_modal.hide();
-            login_modal.show();
-
-          }, 777 );
-
-        } else {
-
-          register_alert_element.classList.remove( 'alert-primary' );
-          register_alert_element.classList.remove( 'alert-success' );
-          register_alert_element.classList.add(    'alert-danger'  );
-
-          register_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
-
-        }
+        }, 777 );
 
       } )
       .catch(error => {
 
         console.error('Error Processing:', error);
-        // Handle errors
+        register_alert_element.classList.remove( 'alert-primary' );
+        register_alert_element.classList.remove( 'alert-success' );
+        register_alert_element.classList.add(    'alert-danger'  );
+
+        register_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + error.message;
       } );
 
   });
@@ -520,34 +519,36 @@ document.addEventListener('DOMContentLoaded', function () {
       method: 'POST',
       body: body,
     })
-      .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.message || 'Something went wrong');
+          });
+        }
+        return response.json();
+      })
       .then( data => {
 
-        if ( data.ok ) {
+        login_alert_element.classList.remove( 'alert-primary' );
+        login_alert_element.classList.remove( 'alert-danger'  );
+        login_alert_element.classList.add(    'alert-success' );
 
-          login_alert_element.classList.remove( 'alert-primary' );
-          login_alert_element.classList.remove( 'alert-danger'  );
-          login_alert_element.classList.add(    'alert-success' );
+        login_alert_element.innerText = 'Success!';
 
-          login_alert_element.innerText = 'Success!';
+        setTimeout( function( ) { window.location.reload(); }, 777 );
 
-          setTimeout( function( ) { window.location.reload(); }, 777 );
 
-        } else {
 
-          login_alert_element.classList.remove( 'alert-primary' );
-          login_alert_element.classList.remove( 'alert-success' );
-          login_alert_element.classList.add(    'alert-danger'  );
-
-          login_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
-
-        }
 
       } )
       .catch(error => {
 
         console.error('Error Processing:', error);
-        // Handle errors
+        login_alert_element.classList.remove( 'alert-primary' );
+        login_alert_element.classList.remove( 'alert-success' );
+        login_alert_element.classList.add(    'alert-danger'  );
+
+        login_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + error.message;
       } );
 
   });
@@ -566,34 +567,36 @@ document.addEventListener('DOMContentLoaded', function () {
     event.preventDefault();
 
     fetch( '/api/v1/auth/logout' )
-      .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.message || 'Something went wrong');
+          });
+        }
+        return response.json();
+      })
       .then( data => {
 
-        if ( data.ok ) {
+        logout_alert_element.classList.remove( 'alert-primary' );
+        logout_alert_element.classList.remove( 'alert-danger'  );
+        logout_alert_element.classList.add(    'alert-success' );
 
-          logout_alert_element.classList.remove( 'alert-primary' );
-          logout_alert_element.classList.remove( 'alert-danger'  );
-          logout_alert_element.classList.add(    'alert-success' );
+        logout_alert_element.innerText = 'Success!';
 
-          logout_alert_element.innerText = 'Success!';
+        setTimeout( function( ) { window.location.href = "/" }, 777 );
 
-          setTimeout( function( ) { window.location.href = "/" }, 777 );
 
-        } else {
 
-          logout_alert_element.classList.remove( 'alert-primary' );
-          logout_alert_element.classList.remove( 'alert-success' );
-          logout_alert_element.classList.add(    'alert-danger'  );
-
-          logout_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
-
-        }
 
       } )
       .catch(error => {
 
         console.error('Error Processing:', error);
-        // Handle errors
+        logout_alert_element.classList.remove( 'alert-primary' );
+        logout_alert_element.classList.remove( 'alert-success' );
+        logout_alert_element.classList.add(    'alert-danger'  );
+
+        logout_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + error.message;
       } );
 
   });
@@ -619,7 +622,7 @@ document.addEventListener('DOMContentLoaded', function () {
     delete_modal_element.dataset.deleteName   = delete_name;
     delete_modal_element.dataset.deleteId     = delete_id;
 
-  })
+  });
 
   delete_form_element.addEventListener("submit", (event) => {
 
@@ -628,39 +631,39 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch('/api/v1/' + delete_modal_element.dataset.deleteTarget + '/' + delete_modal_element.dataset.deleteId, {
       method: 'DELETE'
     })
-      .then( response => response.json().then( data => ( { ok: response.ok, body: data } ) ) )
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.message || 'Something went wrong');
+          });
+        }
+        return response.json();
+      })
       .then( data => {
 
-        if ( data.ok ) {
+        delete_alert_element.classList.remove( 'alert-primary' );
+        delete_alert_element.classList.remove( 'alert-danger'  );
+        delete_alert_element.classList.add(    'alert-success' );
 
-          delete_alert_element.classList.remove( 'alert-primary' );
-          delete_alert_element.classList.remove( 'alert-danger'  );
-          delete_alert_element.classList.add(    'alert-success' );
+        delete_alert_element.innerText = 'Success!';
 
-          delete_alert_element.innerText = 'Success!';
+        setTimeout( function( ) {
 
-          setTimeout( function( ) {
+          delete_modal.hide();
 
-            delete_modal.hide();
-
-          }, 777 );
-
-        } else {
-
-          delete_alert_element.classList.remove( 'alert-primary' );
-          delete_alert_element.classList.remove( 'alert-success' );
-          delete_alert_element.classList.add(    'alert-danger'  );
-
-          delete_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + data.body.message;
-
-        }
+        }, 777 );
 
       } )
       .catch(error => {
 
         console.error('Error Processing:', error);
-        // Handle errors
+        delete_alert_element.classList.remove( 'alert-primary' );
+        delete_alert_element.classList.remove( 'alert-success' );
+        delete_alert_element.classList.add(    'alert-danger'  );
+
+        delete_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + error.message;
       } );
 
   });
+
 });
