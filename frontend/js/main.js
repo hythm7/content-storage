@@ -107,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const search_input = document.getElementById("search-input");
   const search_clear = document.getElementById("search-clear");
 
+  const user_info_form_element     = document.getElementById('user-info-form');
   const user_password_form_element = document.getElementById('user-password-form');
   const user_admin_form_element    = document.getElementById('user-admin-form');
   const register_form_element      = document.getElementById('register-form');
@@ -337,6 +338,53 @@ document.addEventListener('DOMContentLoaded', function () {
     register_alert_element.innerHTML = 'Please enter username and password'
 
   })
+
+  user_info_form_element.addEventListener("submit", (event) => {
+
+    event.preventDefault();
+
+    const userid = user_modal_element.dataset.userId;
+
+    const firstname = user_info_firstname.value;
+    const lastname  = user_info_lastname.value;
+    const email     = user_info_email.value;
+
+    const body = new URLSearchParams({ 'firstname': firstname, 'lastname': lastname, 'email': email })
+
+    fetch('/api/v1/user/' + userid + '/info', {
+      method: 'PUT',
+      body: body,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.message || 'Something went wrong');
+          });
+        }
+        return response.json();
+      })
+      .then( data => {
+
+
+        user_info_alert_element.classList.remove( 'alert-primary' );
+        user_info_alert_element.classList.remove( 'alert-danger'  );
+        user_info_alert_element.classList.add(    'alert-success' );
+
+        user_info_alert_element.innerText = 'Success!';
+
+      } )
+      .catch(error => {
+        console.error(error);
+
+        user_info_alert_element.classList.remove( 'alert-primary' );
+        user_info_alert_element.classList.remove( 'alert-success' );
+        user_info_alert_element.classList.add(    'alert-danger'  );
+
+        user_info_alert_element.innerHTML = '<i class="bi bi-x-circle"> ' + error.message;
+      });
+
+  });
+
 
   user_password_form_element.addEventListener("submit", (event) => {
 

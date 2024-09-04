@@ -13,7 +13,7 @@ use content-storage-model-build;
 sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
 
   # TODO: Handle errors
-  openapi $openapi-schema, :ignore-unimplemented, :!validate-responses, {
+  openapi $openapi-schema, :!validate-responses, {
 
     operation 'readDistribution', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
       my Int:D $total = $db.select-distribution: 'count', :$name;
@@ -283,10 +283,31 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     }
 
+    operation 'updateUserInfo', -> LoggedIn $session, UUID:D $id {
+
+
+      request-body -> ( :$firstname, :$lastname, :$email ) {
+        
+        if $id eq $session.user.id {
+
+          $db.update-user-info( :$id, :$firstname, :$lastname, :$email );
+
+          my %user = $db.select-user( :$id );
+
+          content 'application/json', %user;
+
+        } else {
+
+          not-found 'application/json', { message => "User $id not found!" };
+
+        }
+      }
+    }
+
+
     operation 'updateUserPassword', -> LoggedIn $session, UUID:D $id {
 
       my %user = $db.select-user( :$id );
-
 
       request-body -> ( :$password! ) {
         
@@ -306,15 +327,14 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     operation 'updateUserAdmin', -> LoggedIn $session, UUID:D $id {
 
-      my %user = $db.select-user( :$id );
-
-      not-found 'application/json', { message => "User $id not found!" } unless %user;
 
       request-body -> ( Bool(Int()):$admin! ) {
 
-        if %user and $session.admin {
+        if $db.select-user( :$id ) and $session.admin {
 
           $db.update-user-admin( :$id, :$admin );
+
+          my %user = $db.select-user( :$id );
 
           content 'application/json', %user;
 

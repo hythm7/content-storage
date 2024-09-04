@@ -224,18 +224,23 @@
         <div class="tab-content" id="user-pills-tab-content">
           <div class="tab-pane fade show active" id="user-info-content"  role="tabpanel" aria-labelledby="user-info-tab" tabindex="0">
             <div id="user-info-alert" class="alert" role="alert"></div>
-            <div class="form-floating mb-3">
-              <input type="text" readonly class="form-control-plaintext" id="user-info-firstname">
+            <form id="user-info-form">
+            <div class="form-group">
               <label for="user-info-firstname">First name</label>
+              <input type="text" class="form-control" id="user-info-firstname">
             </div>
-            <div class="form-floating mb-3">
-              <input type="text" readonly class="form-control-plaintext" id="user-info-lastname">
+            <div class="form-group">
               <label for="user-info-lastname">Last name</label>
+              <input type="text" class="form-control" id="user-info-lastname">
             </div>
-            <div class="form-floating mb-3">
-              <input type="email" readonly class="form-control-plaintext" id="user-info-email">
+            <div class="form-group">
               <label for="user-info-email">Email</label>
+              <input type="email" class="form-control" id="user-info-email">
             </div>
+              <div style="padding-top: 10px">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+              </div>
+           </form>
           </div>
           <div class="tab-pane fade" id="user-password-content"  role="tabpanel" aria-labelledby="user-password-tab" tabindex="0">
             <div id="user-password-alert" class="alert" role="alert"></div>

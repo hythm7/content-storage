@@ -52,6 +52,14 @@ INTO   "user" (  "username",  "password", "firstname", "lastname", "email" )
 values        ( $username,    $password,  $firstname,  $lastname,  $email  )
 RETURNING "id"
 
+-- sub update-user-info-by-id(:$id!, Str :$firstname!, Str :$lastname!, Str :$email! --> +)
+UPDATE "user"
+SET    "firstname" = $firstname,
+       "lastname"  = $lastname,
+       "email"     = $email
+WHERE  "id"        = $id
+
+
 -- sub update-user-password-by-id(:$id!, Str :$password! --> +)
 UPDATE "user"
 SET    "password" = $password

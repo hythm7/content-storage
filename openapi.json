@@ -108,48 +108,6 @@
             }
           }
         }   
-      },
-      "post": {
-        "tags": [
-          "distribution"
-        ],
-        "summary": "Add a new distribution to the storage",
-        "description": "Add a new distribution to the storage",
-        "operationId": "addDistribution",
-        "requestBody": {
-          "description": "Create a new distribution in the storage",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Distribution"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/Distribution"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Distribution"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input"
-          },
-          "422": {
-            "description": "Validation exception"
-          }
-        }
       }
     },
     "/distribution/{distributionId}": {
@@ -583,56 +541,20 @@
         }
       }
     },
-    "/user/{userName}": {
-      "get": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Get user by user name",
-        "description": "",
-        "operationId": "getUserByName",
-        "parameters": [
-          {
-            "name": "userName",
-            "in": "path",
-            "description": "The name that needs to be fetched. Use user1 for testing. ",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid username supplied"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      },
+    "/user/{userId}/info": {
       "put": {
         "tags": [
-          "user"
+          "user",
+          "info"
         ],
-        "summary": "Update user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "updateUser",
+        "summary": "Update user info",
+        "description": "",
+        "operationId": "updateUserInfo",
         "parameters": [
           {
-            "name": "username",
+            "name": "userId",
             "in": "path",
-            "description": "name that need to be deleted",
+            "description": "The id that needs to be updated.",
             "required": true,
             "schema": {
               "type": "string"
@@ -640,7 +562,7 @@
           }
         ],
         "requestBody": {
-          "description": "Update an existent user in the store",
+          "description": "Update user info",
           "content": {
             "application/json": {
               "schema": {
@@ -652,38 +574,22 @@
                 "$ref": "#/components/schemas/User"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
-          "default": {
-            "description": "successful operation"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Delete user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "deleteUser",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "The name that needs to be deleted",
-            "required": true,
-            "schema": {
-              "type": "string"
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Invalid username supplied"
           },
           "404": {
-            "description": "User not found"
+            "description": "Invalid userid supplied"
           }
         }
       }
@@ -932,43 +838,6 @@
         }
       }
     },
-    "/auth": {
-      "post": {
-        "tags": [
-          "auth"
-        ],
-        "summary": "Create user",
-        "description": "Register user.",
-        "operationId": "userCreate",
-        "requestBody": {
-          "description": "Created user object",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            }
-          }
-        },
-        "responses": {
-          "default": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/auth/login": {
       "post": {
         "tags": [
@@ -1073,70 +942,6 @@
           },
           "400": {
             "description": "Invalid username/password supplied"
-          }
-        }
-      }
-    },
-    "/search/build": {
-      "get": {
-        "tags": [
-          "search",
-          "build"
-        ],
-        "summary": "Search Build ",
-        "description": "Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
-        "operationId": "searchBuild",
-        "parameters": [
-          {
-            "name": "name",
-            "in": "query",
-            "description": "Name to filter by",
-            "required": true,
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Current page",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "How many items to return at one time (max 100)",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Build"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid build name"
           }
         }
       }

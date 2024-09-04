@@ -26,6 +26,10 @@ multi method select-user-username( UUID:D :$id! ) { select-user-username-by-id $
 
 multi method select-user-password( Str:D :$username! ) { select-user-password-by-username $!pg, :$username }
 
+multi method update-user-info( UUID:D :$id!, Str:D :$firstname!, Str:D :$lastname!, Str:D :$email! ) {
+  update-user-info-by-id $!pg, :$id, :$firstname, :$lastname, :$email;
+}
+
 multi method update-user-password( UUID:D :$id!, Str:D :$password! ) {
   update-user-password-by-id $!pg, :$id, :$password;
 }
