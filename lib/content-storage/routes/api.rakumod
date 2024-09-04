@@ -13,7 +13,7 @@ use content-storage-model-build;
 sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
 
   # TODO: Handle errors
-  openapi $openapi-schema, :!validate-responses, {
+  openapi $openapi-schema, :validate-responses, {
 
     operation 'readDistribution', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
       my Int:D $total = $db.select-distribution: 'count', :$name;
@@ -178,24 +178,9 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
     }
 
 
-    operation 'readBuildLogById', -> ContentStorage::Session $session, UUID:D $id  {
-
-      my %build =  $db.select-build-log: :$id;
-
-      if %build {
-        content 'application/json', %build;
-      } else {
-        not-found 'application/json', %build;
-      }
-
-    }
-
-
     operation 'readUserById', -> LoggedIn $session, UUID:D $id  {
 
       my %user = $db.select-user: :$id;
-
-      say $id;
 
       if ( %user and  ( ( $id eq $session.user.id ) or $session.admin ) ) {
 
@@ -298,7 +283,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
         } else {
 
-          not-found 'application/json', { message => "User $id not found!" };
+          forbidden 'application/json', { message => "Not authorized!" };
 
         }
       }

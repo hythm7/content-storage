@@ -278,7 +278,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
+                  "$ref": "#/components/schemas/Build"
                 }
               }
             }
@@ -358,39 +358,6 @@
           },
           "404": {
             "description": "Build not found"
-          }
-        }
-      }
-    },
-    "/build/{buildId}/log": {
-      "get": {
-        "tags": [
-          "build"
-        ],
-        "summary": "build log",
-        "description": "",
-        "operationId": "readBuildLogById",
-        "parameters": [
-          {
-            "name": "buildId",
-            "in": "path",
-            "description": "ID of build to return",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
-                }
-              }
-            }
           }
         }
       }
@@ -583,13 +550,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                "$ref": "#/components/schemas/User"
                 }
               }
             }
           },
-          "404": {
-            "description": "Invalid userid supplied"
+          "403": {
+            "description": "Not authorized!"
           }
         }
       }
@@ -636,7 +603,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                "$ref": "#/components/schemas/User"
                 }
               }
             }
@@ -689,7 +656,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                "$ref": "#/components/schemas/User"
                 }
               }
             }
@@ -868,12 +835,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                "$ref": "#/components/schemas/User"
                 }
               }
             }
           },
-          "400": {
+          "403": {
             "description": "Invalid username/password supplied"
           }
         }
@@ -909,7 +876,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                "$ref": "#/components/schemas/User"
                 }
               }
             }
@@ -935,7 +902,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                "$ref": "#/components/schemas/User"
                 }
               }
             }
@@ -954,7 +921,8 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": 42
+            "format": "uuid",
+            "example": "28e3d63e-1abd-4e5e-89c0-757266ef7868"
           },
           "user": {
             "type": "string",
@@ -978,6 +946,7 @@
           },
           "api": {
             "type": "string",
+            "nullable": true,
             "example": "1"
           },
           "created": {
@@ -991,11 +960,12 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": 42
+            "format": "uuid",
+            "example": "28e3d63e-1abd-4e5e-89c0-757266ef7868"
           },
           "status": {
-            "type": "string",
-            "example": "RUNNING"
+            "type": "integer",
+            "example": 0
           },
           "user": {
             "type": "string",
@@ -1006,8 +976,8 @@
             "example": "filename"
           },
           "meta": {
-            "type": "string",
-            "example": "SUCCESS"
+            "type": "integer",
+            "example": 0
           },
           "name": {
             "type": "string",
@@ -1023,11 +993,12 @@
           },
           "api": {
             "type": "string",
+            "nullable": true,
             "example": "1"
           },
           "test": {
-            "type": "string",
-            "example": "SUCCESS"
+            "type": "integer",
+            "example": 0
           },
           "started": {
             "type": "string",
@@ -1043,9 +1014,9 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 10
+            "type": "string",
+            "format": "uuid",
+            "example": "28e3d63e-1abd-4e5e-89c0-757266ef7868"
           },
           "userName": {
             "type": "string",
@@ -1053,25 +1024,22 @@
           },
           "firstname": {
             "type": "string",
+            "nullable": true,
             "example": "John"
           },
           "lastname": {
             "type": "string",
+            "nullable": true,
             "example": "James"
           },
           "email": {
             "type": "string",
+            "nullable": true,
             "example": "john@email.com"
           },
           "password": {
             "type": "string",
             "example": "12345"
-          },
-          "userStatus": {
-            "type": "integer",
-            "description": "User Status",
-            "format": "int32",
-            "example": 1
           }
         }
       },
