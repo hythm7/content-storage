@@ -260,6 +260,8 @@ document.addEventListener('DOMContentLoaded', function () {
     user_modal_alert_element.classList.add( 'd-none'        );
     user_modal_alert_element.classList.add( 'alert-primary' );
 
+    user_info_alert_element.classList.remove( 'alert-success' );
+    user_info_alert_element.classList.remove( 'alert-danger'  );
     user_info_alert_element.classList.add(    'alert-primary' );
 
     user_password_alert_element.classList.remove( 'alert-success' );
@@ -322,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function () {
         user_modal_alert_element.classList.remove( 'alert-primary' );
         user_modal_alert_element.classList.add(    'alert-danger'  );
 
-        user_modal_alert_element.innerText = error.message;
+        user_modal_alert_element.innerText = '<i class="bi bi-x-circle"> ' + error.message;
 
         user_modal_alert_element.classList.remove( 'd-none'        );
       });
