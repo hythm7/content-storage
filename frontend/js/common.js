@@ -362,10 +362,11 @@ const updateTablePagination = function ( query, headers ) {
 
 const formatDate = (dateString) => {
 
-  const date = dateString.split('T')[0];
-  const time = dateString.split('T')[1].split('.')[0];
+  if ( dateString ) {
+    const date = dateString.split('T')[0];
+    const time = dateString.split('T')[1].split('.')[0];
 
-  return date + ' ' + time;
-
+    return date + ' ' + time;
+  }
 }
 
