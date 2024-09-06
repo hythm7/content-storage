@@ -140,11 +140,15 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
-          "404": {
-            "description": "Distribution not found"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -177,11 +181,15 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
-          "404": {
-            "description": "Distribution not found"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -259,15 +267,15 @@
         "tags": [
           "build"
         ],
-        "summary": "Add Distribution",
-        "description": "This can only be done by the logged in user.",
+        "summary": "Build distribution",
+        "description": "Build a distribution, This can only be done by the logged in user.",
         "operationId": "buildDistribution",
         "requestBody": {
           "description": "Created build object",
           "content": {
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Build"
+                "$ref": "#/components/schemas/BuildDistribution"
               }
             }
           }
@@ -316,11 +324,15 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
-          "404": {
-            "description": "Build not found"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -353,11 +365,15 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid Build ID supplied"
-          },
-          "404": {
-            "description": "Build not found"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -462,11 +478,15 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid id supplied"
-          },
-          "404": {
-            "description": "User not found"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -499,11 +519,15 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
-          "404": {
-            "description": "User not found"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -555,8 +579,15 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized!"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -608,8 +639,15 @@
               }
             }
           },
-          "404": {
-            "description": "Invalid userid supplied"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -661,8 +699,15 @@
               }
             }
           },
-          "404": {
-            "description": "Invalid userid supplied"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -727,11 +772,15 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid username supplied"
-          },
-          "404": {
-            "description": "User not found"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -796,11 +845,15 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid username supplied"
-          },
-          "404": {
-            "description": "User not found"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -840,8 +893,15 @@
               }
             }
           },
-          "403": {
-            "description": "Invalid username/password supplied"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -881,8 +941,15 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid username/password supplied"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -907,8 +974,15 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid username/password supplied"
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -918,6 +992,16 @@
     "schemas": {
       "Distribution": {
         "type": "object",
+        "required": [
+          "id",
+          "user",
+          "meta",
+          "name",
+          "version",
+          "auth",
+          "api",
+          "created"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -951,12 +1035,16 @@
           },
           "created": {
             "type": "string",
+            "formate": "date",
             "example": "2024-05-19 10:46:51"
           }
         }
       },
       "Build": {
         "type": "object",
+        "required": [
+          "id"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -965,30 +1053,37 @@
           },
           "status": {
             "type": "integer",
+            "nullable": true,
             "example": 0
           },
           "user": {
             "type": "string",
+            "nullable": true,
             "example": "john"
           },
           "filename": {
             "type": "string",
+            "nullable": true,
             "example": "filename"
           },
           "meta": {
             "type": "integer",
+            "nullable": true,
             "example": 0
           },
           "name": {
             "type": "string",
+            "nullable": true,
             "example": "Name"
           },
           "version": {
             "type": "string",
+            "nullable": true,
             "example": "0.0.1"
           },
           "auth": {
             "type": "string",
+            "nullable": true,
             "example": "raku:username"
           },
           "api": {
@@ -998,14 +1093,19 @@
           },
           "test": {
             "type": "integer",
+            "nullable": true,
             "example": 0
           },
           "started": {
             "type": "string",
+            "formate": "date",
+            "nullable": true,
             "example": "2024-05-19 10:46:51"
           },
           "completed": {
             "type": "string",
+            "formate": "date",
+            "nullable": true,
             "example": "2024-05-19 10:46:51"
           }
         }
@@ -1040,6 +1140,11 @@
           "password": {
             "type": "string",
             "example": "12345"
+          },
+          "created": {
+            "type": "string",
+            "formate": "date",
+            "example": "2024-05-19 10:46:51"
           }
         }
       },
@@ -1061,18 +1166,15 @@
           "$ref": "#/components/schemas/User"
         }
       },
-      "ApiResponse": {
+      "BuildDistribution": {
         "type": "object",
+        "required": [
+          "file"
+        ],
         "properties": {
-          "code": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "type": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
+          "file": {
+            "type": "string",
+            "format": "binary"
           }
         }
       },
@@ -1099,19 +1201,6 @@
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/Build"
-            }
-          }
-        }
-      },
-      "UserArray": {
-        "description": "List of user object",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/User"
-              }
             }
           }
         }

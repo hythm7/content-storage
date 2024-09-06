@@ -127,7 +127,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
         content 'application/json', %distribution;
 
       } else {
-        not-found 'application/json', %distribution;
+        not-found 'application/json', %( :404code, message => "Distribution ID <$id> not found!" );
       }
 
 
@@ -154,7 +154,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
         content 'application/json', %build;
 
       } else {
-        not-found 'application/json', %build;
+        not-found 'application/json', %( :404code, message => "Build ID <$id> not found!" );
       }
 
 
@@ -171,7 +171,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
         content 'application/json', %user;
 
       } else {
-        not-found 'application/json', %user;
+        not-found 'application/json', %( :404code, message => "User ID <$id> not found!" );
       }
 
 
@@ -188,7 +188,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
       } else {
 
-        not-found 'application/json', { message => "User $id not found!" };
+        not-found 'application/json', %( :404code, message => "User ID <$id> not found!" );
 
       }
     }
@@ -232,10 +232,10 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
             content 'application/json', %user;
 
           } else {
-            forbidden 'application/json', { message => 'Incorrect password.' };
+            forbidden 'application/json', %( :403code, message => "Incorrect password for user ｢$username｣" );
           }
         } else {
-            forbidden 'application/json', { message => 'Incorrect username or password.' };
+            forbidden 'application/json', %( :403code, message => "Incorrect username or password" );
         }
       }
     }
@@ -246,7 +246,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
         if $db.select-user( :$username ) {
 
-          conflict 'application/json', { message => "User $username is already registered" };
+          conflict 'application/json', %( :409code, message => "User $username is already registered" );
 
         } else {
 
@@ -283,8 +283,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
         } else {
 
-          forbidden 'application/json', { message => "Not authorized!" };
-
+          forbidden 'application/json', %( :403code, message => "Not authorized to modify user <$id> info!" );
         }
       }
     }
@@ -304,7 +303,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
         } else {
 
-          not-found 'application/json', { message => "User $id not found!" };
+          not-found 'application/json', %( :404code, message => "User ID <$id> not found!" );
 
         }
       }
@@ -325,7 +324,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
         } else {
 
-          not-found 'application/json', { message => "User $id not found!" };
+          not-found 'application/json', %( :404code, message => "User ID <$id> not found!" );
 
         }
       }
