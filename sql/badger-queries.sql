@@ -7,7 +7,7 @@ LIMIT $limit OFFSET $offset
 -- sub select-user-by-name(Str :$name!, UInt :$offset!, UInt :$limit! --> @)
 SELECT "u"."id", "u"."username", "u"."firstname", "u"."lastname", "u"."email", "u"."admin", "u"."created"
 FROM "user" "u"
-WHERE "u"."name" ILIKE $name
+WHERE "u"."username" ILIKE $name
 ORDER BY "u"."created" DESC
 LIMIT $limit OFFSET $offset
 
@@ -19,7 +19,7 @@ WHERE  "u"."id" = $id
 
 -- sub select-user-by-name-count(Str :$name! --> $)
 SELECT COUNT(*) FROM "user" "u"
-WHERE "u"."name" ILIKE $name
+WHERE "u"."username" ILIKE $name
 
 -- sub select-user-count(--> $)
 SELECT COUNT(*) FROM "user"
