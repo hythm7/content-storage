@@ -56,6 +56,8 @@ multi method select-user( Str:D :$username! ) { select-user-by-username $!pg, :$
 multi method delete-user( UUID:D :$id! ) { delete-user-by-id $!pg, :$id }
 
 
+multi method select-distribution( Str:D :$identity! ) { select-distribution-by-identity $!pg, :$identity; }
+
 multi method select-distribution( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
   select-distribution-by-name $!pg, name => $name ~ '%', :$offset, :$limit
 }

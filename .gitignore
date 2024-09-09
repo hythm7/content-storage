@@ -1,3 +1,4 @@
 .precomp/
 /content-storage-*
 node_modules/
+archive/

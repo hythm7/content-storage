@@ -15,4 +15,5 @@
 "ignore":
   - "frontend/"
   - "node_modules/"
+  - "archive/"
 ...

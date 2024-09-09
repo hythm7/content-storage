@@ -12,6 +12,7 @@
     "File::Temp",
     "Concurrent::File::Find",
     "JSON::Fast",
+    "Digest::SHA1::Native",
     "Libarchive",
     "JSON::Class:auth<zef:vrurg>",
     "Log::Dispatch",

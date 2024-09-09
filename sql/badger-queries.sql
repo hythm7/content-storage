@@ -30,8 +30,8 @@ SELECT "id"
 FROM   "user"
 WHERE  "username" = $username
 
--- sub select-user-username-by-id(:$id! --> %)
-SELECT "id", "username"
+-- sub select-user-username-by-id(:$id! --> $)
+SELECT "username"
 FROM   "user"
 WHERE  "id" = $id
 
@@ -206,6 +206,12 @@ LIMIT $limit OFFSET $offset
 SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
 FROM "distribution" "d"
 WHERE  "d"."id" = $id
+
+-- sub select-distribution-by-identity(:$identity! --> %)
+SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
+FROM "distribution" "d"
+WHERE  "d"."identity" = $identity
+
 
 -- sub select-distribution-by-name-count(Str :$name! --> $)
 SELECT COUNT(*) FROM "distribution" "d"
