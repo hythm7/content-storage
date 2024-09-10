@@ -22,10 +22,9 @@
     "Cro::WebApp",
     "Cro::OpenAPI::RoutesFromDefinition",
     "Crypt::Argon2",
-    "EventSource::Server",
-    "Pakku"
+    "EventSource::Server"
   ],
-  "description": "Recommendation Manager for Raku distributions",
+  "description": "Content Storage for Raku Distributions",
   "license": "Artistic-2.0",
   "name": "content-storage",
   "perl": "6.d",

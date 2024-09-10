@@ -30,11 +30,6 @@ my $event-supplier = Supplier.new;
 
 my $event-source-server = EventSource::Server.new: supply => $event-supplier.Supply; 
 
-my $api-uri = "http://%*ENV<CONTENT_STORAGE_HOST>:%*ENV<CONTENT_STORAGE_PORT>/api/v1/";
-
-my $api = Cro::HTTP::Client.new( base-uri => $api-uri, content-type => 'application/json' );
-
-
 
 my sub routes( ) {
 
@@ -43,9 +38,9 @@ my sub routes( ) {
   route {
 
     include             distribution-routes( :$db ),
-            build    => build-routes( :$api, :$db, :$event-supplier ),
-            user     => user-routes( :$db ),
-            <api v1> => api-routes( :$openapi-schema, :$db, :$event-supplier );
+            build    => build-routes(        :$db ),
+            user     => user-routes(         :$db ),
+            <api v1> => api-routes(          :$db, :$openapi-schema, :$event-supplier );
 
     get -> ContentStorage::Session $session, 'server-sent-events' {
       content 'text/event-stream', $event-source-server.out-supply;
