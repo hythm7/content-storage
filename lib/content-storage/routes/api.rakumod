@@ -10,12 +10,17 @@ use content-storage-database;
 use content-storage-build;
 use content-storage-model-build;
 
-sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, Supplier:D :$event-supplier! ) is export {
+sub api-routes(
+  IO::Path:D                 :$openapi-schema!,
+  ContentStorage::Database:D :$db!,
+  Supplier:D                 :$event-supplier!,
+  UInt:D                     :$api-page-limit!,
+) is export {
 
   # TODO: Handle errors
   openapi $openapi-schema, :validate-responses, {
 
-    operation 'readDistribution', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
+    operation 'readDistribution', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $api-page-limit {
       my Int:D $total = $db.select-distribution: 'count', :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
@@ -33,7 +38,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     }
 
-    operation 'readBuild', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
+    operation 'readBuild', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $api-page-limit {
       my Int:D $total = $db.select-build: 'count', :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
@@ -50,7 +55,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
       content 'application/json', @build;
     }
 
-    operation 'readUser', -> Admin $session, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
+    operation 'readUser', -> Admin $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $api-page-limit {
       my Int:D $total = $db.select-user: 'count', :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
@@ -69,7 +74,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
     }
 
 
-    operation 'readUserDistributions', -> ContentStorage::Session $session, Str:D $username, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
+    operation 'readUserDistributions', -> ContentStorage::Session $session, Str:D $username, Str :$name, UInt:D :$page = 1, UInt :$limit = $api-page-limit {
 
       my Int:D $total = $db.select-user-distribution: 'count', :$username, :$name;
 
@@ -88,7 +93,7 @@ sub api-routes( IO::Path:D :$openapi-schema!, ContentStorage::Database:D :$db!, 
 
     }
 
-    operation 'readUserBuilds', -> ContentStorage::Session $session, Str:D $username, Str :$name, UInt:D :$page = 1, UInt :$limit = 2 {
+    operation 'readUserBuilds', -> ContentStorage::Session $session, Str:D $username, Str :$name, UInt:D :$page = 1, UInt :$limit = $api-page-limit {
 
       my Int:D $total = $db.select-user-build: 'count', :$username, :$name;
 

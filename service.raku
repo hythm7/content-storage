@@ -20,7 +20,7 @@ use content-storage-routes-build;
 use content-storage-routes-user;
 
 
-my $pg = DB::Pg.new: conninfo =>  %*ENV<DB_CONN_INFO>, converters => <DateTime>;
+my $pg = DB::Pg.new: conninfo =>  %*ENV<CONTENT_STORAGE_DB_CONN_INFO> || die("Missing CONTENT_STORAGE_DB_CONN_INFO in environment"), converters => <DateTime>;
 
 my $db = ContentStorage::Database.new: :$pg;
 
@@ -30,6 +30,7 @@ my $event-supplier = Supplier.new;
 
 my $event-source-server = EventSource::Server.new: supply => $event-supplier.Supply; 
 
+my UInt:D() $api-page-limit = %*ENV<CONTENT_STORAGE_API_PAGE_LIMIT> // 10;
 
 my sub routes( ) {
 
@@ -40,7 +41,7 @@ my sub routes( ) {
     include             distribution-routes( :$db ),
             build    => build-routes(        :$db ),
             user     => user-routes(         :$db ),
-            <api v1> => api-routes(          :$db, :$openapi-schema, :$event-supplier );
+            <api v1> => api-routes(          :$db, :$openapi-schema, :$event-supplier, :$api-page-limit );
 
     get -> ContentStorage::Session $session, 'server-sent-events' {
       content 'text/event-stream', $event-source-server.out-supply;

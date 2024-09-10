@@ -7,7 +7,7 @@ store;
 
 service 'postgres', :tag<14.4>, -> (:$conninfo, *%) {
 
-  env 'DB_CONN_INFO', $conninfo;
+  env 'CONTENT_STORAGE_DB_CONN_INFO', $conninfo;
 
 }
 
