@@ -4,6 +4,7 @@ use Cro::HTTP::Router;
 use Cro::OpenAPI::RoutesFromDefinition;
 
 use content-storage;
+use content-storage-config;
 use content-storage-pager;
 use content-storage-session;
 use content-storage-database;
@@ -14,13 +15,14 @@ sub api-routes(
   IO::Path:D                 :$openapi-schema!,
   ContentStorage::Database:D :$db!,
   Supplier:D                 :$event-supplier!,
-  UInt:D                     :$api-page-limit!,
 ) is export {
 
+  my $page-limit = config.get( 'api.page-limit' );
   # TODO: Handle errors
   openapi $openapi-schema, :validate-responses, {
 
-    operation 'readDistribution', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $api-page-limit {
+    operation 'readDistribution', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
+
       my Int:D $total = $db.select-distribution: 'count', :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
@@ -38,7 +40,7 @@ sub api-routes(
 
     }
 
-    operation 'readBuild', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $api-page-limit {
+    operation 'readBuild', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
       my Int:D $total = $db.select-build: 'count', :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
@@ -55,7 +57,7 @@ sub api-routes(
       content 'application/json', @build;
     }
 
-    operation 'readUser', -> Admin $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $api-page-limit {
+    operation 'readUser', -> Admin $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
       my Int:D $total = $db.select-user: 'count', :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
@@ -74,7 +76,7 @@ sub api-routes(
     }
 
 
-    operation 'readUserDistributions', -> ContentStorage::Session $session, Str:D $username, Str :$name, UInt:D :$page = 1, UInt :$limit = $api-page-limit {
+    operation 'readUserDistributions', -> ContentStorage::Session $session, Str:D $username, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
 
       my Int:D $total = $db.select-user-distribution: 'count', :$username, :$name;
 
@@ -93,7 +95,7 @@ sub api-routes(
 
     }
 
-    operation 'readUserBuilds', -> ContentStorage::Session $session, Str:D $username, Str :$name, UInt:D :$page = 1, UInt :$limit = $api-page-limit {
+    operation 'readUserBuilds', -> ContentStorage::Session $session, Str:D $username, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
 
       my Int:D $total = $db.select-user-build: 'count', :$username, :$name;
 

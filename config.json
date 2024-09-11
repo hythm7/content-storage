@@ -1,0 +1,13 @@
+{
+  "host": "localhost",
+  "port": 20000,
+  "storage": {
+    "id": "pakku"
+  },
+  "api": {
+    "page-limit": 10
+  },
+  "build": {
+    "test-command":  "echo testing"
+  }
+}

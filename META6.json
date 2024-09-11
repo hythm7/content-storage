@@ -8,6 +8,7 @@
   "depends": [
     "DB::Pg",
     "Badger",
+    "Config",
     "DB::Migration::Declare::Applicator",
     "File::Temp",
     "Concurrent::File::Find",
@@ -31,6 +32,7 @@
   "api": "1",
   "provides": {
     "content-storage": "lib/content-storage.rakumod",
+    "content-storage-config": "lib/content-storage/config.rakumod",
     "content-storage-pager": "lib/content-storage/pager.rakumod",
     "content-storage-build": "lib/content-storage/build.rakumod",
     "content-storage-database": "lib/content-storage/database.rakumod",

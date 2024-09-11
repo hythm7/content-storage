@@ -1,3 +1,5 @@
+use JSON::Fast;
+
 use DB::Migration::Declare::Applicator;
 use DB::Migration::Declare::Database::Postgres;
 use DB::Pg;
@@ -12,6 +14,7 @@ use Cro::WebApp::Template;
 use EventSource::Server;
 
 use content-storage;
+use content-storage-config;
 use content-storage-session;
 use content-storage-database;
 use content-storage-routes-api;
@@ -19,6 +22,13 @@ use content-storage-routes-distribution;
 use content-storage-routes-build;
 use content-storage-routes-user;
 
+
+my Str:D  $host = config.get( 'host' );
+my UInt:D $port = config.get( 'port' );
+
+my UInt:D $api-page-limit = config.get( 'api.page-limit' );
+
+my Str:D $build-test-command = config.get( 'build.test-command' );
 
 my $pg = DB::Pg.new: conninfo =>  %*ENV<CONTENT_STORAGE_DB_CONN_INFO> || die("Missing CONTENT_STORAGE_DB_CONN_INFO in environment"), converters => <DateTime>;
 
@@ -30,7 +40,6 @@ my $event-supplier = Supplier.new;
 
 my $event-source-server = EventSource::Server.new: supply => $event-supplier.Supply; 
 
-my UInt:D() $api-page-limit = %*ENV<CONTENT_STORAGE_API_PAGE_LIMIT> // 10;
 
 my sub routes( ) {
 
@@ -41,7 +50,7 @@ my sub routes( ) {
     include             distribution-routes( :$db ),
             build    => build-routes(        :$db ),
             user     => user-routes(         :$db ),
-            <api v1> => api-routes(          :$db, :$openapi-schema, :$event-supplier, :$api-page-limit );
+            <api v1> => api-routes(          :$db, :$openapi-schema, :$event-supplier );
 
     get -> ContentStorage::Session $session, 'server-sent-events' {
       content 'text/event-stream', $event-source-server.out-supply;
@@ -89,10 +98,8 @@ class SessionStore does Cro::HTTP::Session::Pg[ContentStorage::Session] {
 
 my Cro::Service $http = Cro::HTTP::Server.new(
   http => <1.1>,
-  host => %*ENV<CONTENT_STORAGE_HOST> ||
-  die("Missing CONTENT_STORAGE_HOST in environment"),
-  port => %*ENV<CONTENT_STORAGE_PORT> ||
-  die("Missing CONTENT_STORAGE_PORT in environment"),
+  :$host,
+  :$port,
   application => routes( ),
   before => [
     SessionStore.new(
@@ -108,7 +115,7 @@ my Cro::Service $http = Cro::HTTP::Server.new(
 
   $http.start;
 
-  say "Listening at http://%*ENV<CONTENT_STORAGE_HOST>:%*ENV<CONTENT_STORAGE_PORT>";
+  say "Listening at http://$host:$port";
 
   react {
     whenever signal(SIGINT) {
