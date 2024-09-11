@@ -1,5 +1,3 @@
-use JSON::Fast;
-
 use DB::Migration::Declare::Applicator;
 use DB::Migration::Declare::Database::Postgres;
 use DB::Pg;
