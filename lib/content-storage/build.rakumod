@@ -11,6 +11,7 @@ use Log::Dispatch::Destination;
 use Log::Dispatch::File;
 
 use content-storage;
+use content-storage-config;
 use content-storage-database;
 
 enum Status  <SUCCESS ERROR RUNNING UNKNOWN>;
@@ -170,8 +171,9 @@ class ContentStorage::Build {
         return False;
       }
 
-      my $storage-name = 'zef';
+      #my $storage-name = config.get( 'storage.name' );
       #my $username = $!db.select-user-username: id => $!user;
+      my $storage-name = 'zef';
       my $username = 'jonathanstowe';
 
       my $valid-auth = "$storage-name:$username";
@@ -187,6 +189,16 @@ class ContentStorage::Build {
         server-message build => %( meta => +ERROR );
 
         return False;
+      }
+
+
+      if $!db.select-distribution( :$identity ) {
+
+        $build-log-source.log: :error, "meta: ｢$identity｣ distribution already exists!";
+        $build-log-source.log: :error, "meta: failed!";
+
+        return False;
+
       }
 
 
@@ -262,9 +274,7 @@ class ContentStorage::Build {
       
       my $meta-file = $distribution-directory.add: 'META6.json';
 
-      my $meta-content = $meta-file.slurp;
-
-      my %meta = from-json $meta-content;
+      my %meta = from-json $meta-file.slurp;
 
       my Str:D $name    = %meta<name>;
       my Str:D $version = %meta<version>;
@@ -276,20 +286,11 @@ class ContentStorage::Build {
       my $name-sha     = sha1-hex $name;
       my $identity-sha = sha1-hex $identity;
 
-      if $!db.select-distribution( :$identity ) {
-
-        $build-log-source.log: :error, "store: ｢$identity｣ distribution already exists!";
-        $build-log-source.log: :error, "store: failed!";
-
-        return False;
-
-      }
-
       my IO::Path:D $store-archive-directory = 'archive'.IO;
 
       my $distribution-archive-directory = $store-archive-directory.add( $name-sha );
 
-      my $distribution-archive = $distribution-archive-directory.add( $identity-sha ).extension( 'zstd' );
+      my $distribution-archive = $distribution-archive-directory.add( $identity-sha );
 
       if $distribution-archive.e {
 
@@ -300,20 +301,50 @@ class ContentStorage::Build {
 
       }
 
+      my Any   $description = %meta<description>;
+
+      my @provides = |%meta<provides>.map( *.key ) if %meta<provides>;
+      my @tags     = |%meta<tags>                  if %meta<tags>;
 
       my $readme-file  = $distribution-directory.add: 'README.md';
       my $changes-file = $distribution-directory.add: 'Changes';
 
-      my Str $readme  = $readme-file.slurp   if $readme-file.e;
+      my Str $readme  = $readme-file.slurp  if $readme-file.e;
       my Str $changes = $changes-file.slurp if $changes-file.e;
 
       $build-log-source.log: "store: ｢$identity｣";
 
-      $!db.insert-distribution: :$!user, build => $!id, meta => $meta-content, :$readme, :$changes;
-
       $distribution-archive-directory.mkdir;
 
       $source-archive.copy( $distribution-archive, :createonly );
+
+      my $archive = $distribution-archive.Str;
+      my $created = DateTime( now );
+
+      my %content-storage = %( :$identity, :$archive, :$created );
+
+      %meta.push: :%content-storage;
+
+      my $meta = to-json %meta;
+
+
+      $!db.insert-distribution(
+        build => $!id,
+        :$!user,
+        :$identity,
+        :$name,
+        :$version,
+        :$auth,
+        :$api,
+        :$meta,
+        :$description,
+        :@provides,
+        :@tags,
+        :$readme,
+        :$changes,
+        :$archive,
+        :$created,
+    );
 
       $build-log-source.log: "store: success!";
 

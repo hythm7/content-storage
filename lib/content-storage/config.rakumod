@@ -9,7 +9,7 @@ sub config is export {
     host => Str,
     port => UInt,
     storage => {
-      id => Str,
+      name => Str,
     },
     api => {
       page-limit => UInt,

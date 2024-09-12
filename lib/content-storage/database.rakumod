@@ -1,5 +1,3 @@
-use JSON::Fast;
-
 use content-storage;
 use content-storage-model-user;
 use content-storage-model-distribution;
@@ -176,24 +174,24 @@ method select-build-completed( UUID:D :$id! ) { select-build-completed $!pg, :$i
 
 method select-build-log( UUID:D :$id! ) { select-build-log-by-id $!pg, :$id }
 
-method insert-distribution( UUID:D :$user!, UUID:D :$build!, Str:D :$meta!, Str :$readme, Str :$changes!  ) {
+method insert-distribution(
+  UUID:D   :$build!,
+  UUID:D   :$user!,
+  Str      :$identity!,
+  Str      :$name!,
+  Str      :$version!,
+  Str      :$auth!,
+  Str      :$api!,
+  Str      :$meta!,
+  Any      :$description!,
+           :@provides!,
+           :@tags!,
+  Str      :$readme!,
+  Str      :$changes!,
+  Str      :$archive!,
+  DateTime :$created!,
+) {
 
-  my %meta = from-json $meta;
-
-  my Str:D $name    = %meta<name>;
-  my Str:D $version = %meta<version>;
-  my Str:D $auth    = %meta<auth>;
-  my Any   $api     = %meta<api>;
-
-  my Any   $description = %meta<description>;
-
-  my $identity = identity :$name, :$version, :$auth, :$api;
-
-  my $dependencies = %meta<depends>;
-
-  my @provides = |%meta<provides>.map( *.key ) if %meta<provides>;
-  my @tags     = |%meta<tags>                  if %meta<tags>;
-  
-  insert-into-distribution $!pg, :$user, :$name, :$version, :$auth, :$api, :$identity, :$meta, :$description, :$readme, :$changes, :@provides, :@tags, :$build;
+  insert-into-distribution $!pg, :$user, :$name, :$version, :$auth, :$api, :$identity, :$meta, :$description, :$readme, :$changes, :@provides, :@tags, :$build, :$created;
 
 }

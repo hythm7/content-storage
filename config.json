@@ -2,7 +2,7 @@
   "host": "localhost",
   "port": 20000,
   "storage": {
-    "id": "pakku"
+    "name": "my-storage"
   },
   "api": {
     "page-limit": 10

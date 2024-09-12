@@ -45,9 +45,9 @@ migration 'Setup', {
     add-column "readme",      text();
     add-column "changes",     text();
 
-    add-column "created", timestamp(), :default(now), :!null;
+    add-column "created", timestamp(),  :!null;
 
-    add-column "user", type( 'UUID' ), :!null;
+    add-column "user", type( 'UUID' ),  :!null;
 
     add-column "build", type( 'UUID' ), :!null;
 
