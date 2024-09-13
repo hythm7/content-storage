@@ -20,13 +20,38 @@ class BuildLogSource does Log::Dispatch::Source { }
 
 class ServerSentEventsDestination does Log::Dispatch::Destination {
 
+  #TODO: try to consolidate logs, append line to $string;
+  use Terminal::ANSI::OO 'ansi';
+
   has Str      $!type           is built;
   has Supplier $!event-supplier is built is required;
+  has Bool:D   $.color = True;
+
+  ## shamefully copied from Log::Dispatch::TTY
+  #constant %L2C =
+  #  DEBUG => ansi.yellow,
+  #  INFO => '',
+  #  NOTICE => ansi.yellow,
+  #  WARNING => ansi.bright-magenta,
+  #  ERROR => ansi.red,
+  #  CRITICAL => ansi.red,
+  #  ALERT => ansi.bg-red ~ ansi.black,
+  #  EMERGENCY => ansi.bg-red ~ ansi.black;
 
   method report( Log::Dispatch::Msg:D $message ) {
 
-    $message.fmt-lines.map( -> $line {
+    #  my $prefix = "";
+    #  my $suffix = "";
 
+    #  sleep .4;
+
+    #with $message.level.key {
+    #  $prefix = %L2C{$_};
+    #  $suffix = ansi.text-reset;
+    #}
+
+    $message.fmt-lines.map( -> $line {
+      #my $event = EventSource::Server::Event.new( :$!type, data => $prefix ~ $line ~ $suffix );
       my $event = EventSource::Server::Event.new( :$!type, data => $line );
 
       $!event-supplier.emit( $event );
@@ -180,10 +205,9 @@ class ContentStorage::Build {
 
       unless $auth ~~ $valid-auth {
 
-        $build-log-source.log: :error, "meta: invalid-auth $auth please use $valid-auth";
-
         $!db.update-build-meta: :$!id,   meta => +ERROR;
 
+        $build-log-source.log: :error, "meta: invalid-auth $auth please use $valid-auth";
         $build-log-source.log: 'meta: failed!';
 
         server-message build => %( meta => +ERROR );
@@ -194,8 +218,12 @@ class ContentStorage::Build {
 
       if $!db.select-distribution( :$identity ) {
 
+        $!db.update-build-meta: :$!id,   meta => +ERROR;
+
         $build-log-source.log: :error, "meta: ｢$identity｣ distribution already exists!";
         $build-log-source.log: :error, "meta: failed!";
+
+        server-message build => %( meta => +ERROR );
 
         return False;
 
