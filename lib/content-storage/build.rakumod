@@ -191,8 +191,8 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       #my $storage-name = config.get( 'storage.name' );
       #my $username = $!db.select-user-username: id => $!user;
-      my $storage-name = 'zef';
-      my $username = 'jonathanstowe';
+      my $storage-name = $auth.split( ':' ).head;
+      my $username     = $auth.split( ':' ).tail;
 
       my $valid-auth = "$storage-name:$username";
 
@@ -241,10 +241,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       server-message build => %( test => +RUNNING );
 
-
-      #my @test-command = <<pakku nobar nospinner verbose all force add noprecompile notest contained to $test-directory $distribution-directory>>;
       my @test-command = config.get( 'build.test.command' ).split: / \s+ /;
-
 
       my $proc = Proc::Async.new: @test-command;
 

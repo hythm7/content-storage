@@ -14,7 +14,7 @@
       "color": true
     },
     "test": {
-      "command":  "pakku nobar nospinner add to /tmp/delme ."
+      "command":  "pakku nobar nospinner verbose all add to /tmp/delme ."
     }
   }
 }

@@ -181,7 +181,7 @@ method insert-distribution(
   Str      :$name!,
   Str      :$version!,
   Str      :$auth!,
-  Str      :$api!,
+  Any      :$api!,
   Str      :$meta!,
   Any      :$description!,
            :@provides!,
