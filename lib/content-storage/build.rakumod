@@ -117,6 +117,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       default {
 
+        .say;
         self.log: :error, .message;
 
         fail-build;
@@ -154,16 +155,16 @@ class ContentStorage::Build does Log::Dispatch::Source {
       my %meta = from-json $meta-file.slurp;
 
       my Str:D $name    = %meta<name>;
-      my Str:D $version = %meta<version>;
-      my Str:D $auth    = %meta<auth>;
+      my Any   $version = %meta<version>;
+      my Any   $auth    = %meta<auth>;
       my Any   $api     = %meta<api>;
 
       my $identity = identity :$name, :$version, :$auth, :$api;
 
       $!db.update-build-name:    :$!id, :$name;
-      $!db.update-build-version: :$!id, :$version;
-      $!db.update-build-auth:    :$!id, :$auth;
-      $!db.update-build-api:     :$!id, :$api if $api;
+      $!db.update-build-version: :$!id, :$version if $version;
+      $!db.update-build-auth:    :$!id, :$auth    if $auth;
+      $!db.update-build-api:     :$!id, :$api     if $api;
 
       $!db.update-build-identity: :$!id, :$identity;
 
@@ -178,16 +179,28 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       unless $version {
 
-        self.log: :error, "meta: version not found!";
-
         $!db.update-build-meta: :$!id,   meta => +ERROR;
 
-        self.log: 'meta: failed!';
+        self.log: :error, "meta: version not found!";
+        self.log: :error, 'meta: failed!';
 
         server-message build => %( meta => +ERROR );
 
         return False;
       }
+
+      unless $auth {
+
+        $!db.update-build-meta: :$!id,   meta => +ERROR;
+
+        self.log: :error, "meta: auth not found!";
+        self.log: :error, 'meta: failed!';
+
+        server-message build => %( meta => +ERROR );
+
+        return False;
+      }
+
 
       #my $storage-name = config.get( 'storage.name' );
       #my $username = $!db.select-user-username: id => $!user;
@@ -285,8 +298,6 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
 
     my sub store-distribution ( --> Bool:D ) {
-
-      # TODO: Make sure no archives exist
 
       self.log: "store: start!";
       

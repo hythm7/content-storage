@@ -1,8 +1,8 @@
 unit module ContentStorage;
 
-sub identity ( Str:D :$name!, Str:D :$version!, Str:D :$auth!, Any :$api! --> Str:D ) is export {
+sub identity ( Str:D :$name!, Any :$version!, Any :$auth!, Any :$api! --> Str:D ) is export {
 
-  "$auth:{ $name.subst( '::', '-', :g ) }:$version:{ $api if $api }";
+  "$auth:$name:$version:$api";
       
 }
 
