@@ -21,12 +21,12 @@ use content-storage-routes-build;
 use content-storage-routes-user;
 
 
-my Str:D  $host = config.get( 'host' );
-my UInt:D $port = config.get( 'port' );
+my Str:D  $host = config.get( 'storage.host' );
+my UInt:D $port = config.get( 'storage.port' );
 
-my UInt:D $api-page-limit = config.get( 'api.page-limit' );
+my UInt:D $api-page-limit = config.get( 'api.page.limit' );
 
-my Str:D $build-test-command = config.get( 'build.test-command' );
+my Str:D $build-test-command = config.get( 'build.test.command' );
 
 my $pg = DB::Pg.new: conninfo =>  %*ENV<CONTENT_STORAGE_DB_CONN_INFO> || die("Missing CONTENT_STORAGE_DB_CONN_INFO in environment"), converters => <DateTime>;
 

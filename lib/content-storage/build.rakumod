@@ -8,7 +8,7 @@ use EventSource::Server;
 use Log::Dispatch;
 use Log::Dispatch::Source;
 use Log::Dispatch::Destination;
-use Log::Dispatch::File;
+use Log::Dispatch::TTY;
 
 use content-storage;
 use content-storage-config;
@@ -16,43 +16,30 @@ use content-storage-database;
 
 enum Status  <SUCCESS ERROR RUNNING UNKNOWN>;
 
-class BuildLogSource does Log::Dispatch::Source { }
 
 class ServerSentEventsDestination does Log::Dispatch::Destination {
 
-  #TODO: try to consolidate logs, append line to $string;
   use Terminal::ANSI::OO 'ansi';
 
   has Str      $!type           is built;
   has Supplier $!event-supplier is built is required;
-  has Bool:D   $.color = True;
+  has Bool:D   $!color = config.get( 'build.log.color' );
 
-  ## shamefully copied from Log::Dispatch::TTY
-  #constant %L2C =
-  #  DEBUG => ansi.yellow,
-  #  INFO => '',
-  #  NOTICE => ansi.yellow,
-  #  WARNING => ansi.bright-magenta,
-  #  ERROR => ansi.red,
-  #  CRITICAL => ansi.red,
-  #  ALERT => ansi.bg-red ~ ansi.black,
-  #  EMERGENCY => ansi.bg-red ~ ansi.black;
 
   method report( Log::Dispatch::Msg:D $message ) {
 
-    #  my $prefix = "";
-    #  my $suffix = "";
+      my $prefix = "";
+      my $suffix = "";
 
-    #  sleep .4;
-
-    #with $message.level.key {
-    #  $prefix = %L2C{$_};
-    #  $suffix = ansi.text-reset;
-    #}
+    if $!color {
+      with $message.level.key {
+        $prefix = %Log::Dispatch::TTY::L2C{$_};
+        $suffix = ansi.text-reset;
+      }
+    }
 
     $message.fmt-lines.map( -> $line {
-      #my $event = EventSource::Server::Event.new( :$!type, data => $prefix ~ $line ~ $suffix );
-      my $event = EventSource::Server::Event.new( :$!type, data => $line );
+      my $event = EventSource::Server::Event.new( :$!type, data => $prefix ~ $line ~ $suffix );
 
       $!event-supplier.emit( $event );
 
@@ -62,7 +49,14 @@ class ServerSentEventsDestination does Log::Dispatch::Destination {
 
 }
 
-class ContentStorage::Build {
+class ContentStorage::Build does Log::Dispatch::Source {
+
+
+  has IO::Path $!work-directory;
+
+  has Log::Dispatch $!logger;
+
+  has IO::Path $!log-file;
 
   has            $!archive        is required;
   has            $!db             is required;
@@ -75,31 +69,38 @@ class ContentStorage::Build {
 
   submethod BUILD( ContentStorage::Database:D :$!db!, Supplier:D :$!event-supplier!, UUID:D :$!user!, :$!archive! ) {
 
+
+    $!work-directory = tempdir.IO;
+
     $!id = $!db.insert-build: :$!user;
 
+    $!log-file = $!work-directory.add( $!id ).extension( 'log' );
+
+    $!logger = Log::Dispatch.new;
+
+    $!logger.add: self;
+    $!logger.add: Log::Dispatch::TTY,          max-level => LOG-LEVEL::DEBUG, :console, tty => $!log-file.open( :create, :rw ), color => config.get( 'build.log.color' );
+    $!logger.add: ServerSentEventsDestination, max-level => LOG-LEVEL::DEBUG, :$!event-supplier, type => $!id.Str;
   }
 
 
   method build ( ) {
 
-    my $work-directory = tempdir.IO;
+    LEAVE $!logger.shutdown;
 
-    my $source-archive = $work-directory.add: 'source-archive.tar.gz';
+    my $source-archive = $!work-directory.add: 'source-archive.tar.gz';
 
-    my $distribution-directory = $work-directory.add( 'distribution' );
+    my $distribution-directory = $!work-directory.add( 'distribution' );
 
+    #my $ = $distribution-directory.dirname.IO.add( $!id ~ '.log' );
 
-    my $log-file = $distribution-directory.dirname.IO.add( $!id ~ '.log' );
+    #my $logger = Log::Dispatch.new;
 
-    my $build-log-source = BuildLogSource.new;
+    #$logger.add: $build-log-source;
+    #$logger.add: Log::Dispatch::File,         max-level => LOG-LEVEL::DEBUG,   file => $log-file;
+    #$logger.add: ServerSentEventsDestination, max-level => LOG-LEVEL::DEBUG, :$!event-supplier, type => $!id.Str;
 
-    my $logger = Log::Dispatch.new;
-
-    $logger.add: $build-log-source;
-    $logger.add: Log::Dispatch::File,         max-level => LOG-LEVEL::DEBUG,   file => $log-file;
-    $logger.add: ServerSentEventsDestination, max-level => LOG-LEVEL::DEBUG, :$!event-supplier, type => $!id.Str;
-
-    $build-log-source.log: 'build: start!';
+    self.log: 'build: start!';
 
     $source-archive.spurt( $!archive, :close );
 
@@ -124,7 +125,7 @@ class ContentStorage::Build {
 
       default {
 
-        $build-log-source.log: :error, .message;
+        self.log: :error, .message;
 
         fail-build;
       }
@@ -132,7 +133,7 @@ class ContentStorage::Build {
 
     my sub extract-archive ( ) {
 
-      $build-log-source.log: "extract: ｢$source-archive｣";
+      self.log: "extract: ｢$source-archive｣";
 
       .extract for archive-read( $source-archive, destpath => ~$distribution-directory );
 
@@ -142,13 +143,13 @@ class ContentStorage::Build {
 
     my sub check-meta ( --> Bool:D ) {
 
-      $build-log-source.log: 'meta: checking!';
+      self.log: 'meta: checking!';
 
       my $meta-file = $distribution-directory.add: 'META6.json';
 
       unless $meta-file.e {
 
-        $build-log-source.log: :error, "meta: ｢$meta-file｣ not found!";
+        self.log: :error, "meta: ｢$meta-file｣ not found!";
 
         $!db.update-build-meta:   :$!id, meta   => +ERROR;
 
@@ -174,22 +175,22 @@ class ContentStorage::Build {
 
       $!db.update-build-identity: :$!id, :$identity;
 
-      $build-log-source.log: "meta: name     ｢$name｣";
-      $build-log-source.log: "meta: version  ｢$version｣";
-      $build-log-source.log: "meta: auth     ｢$auth｣";
-      $build-log-source.log: "meta: api      ｢$api｣";
-      $build-log-source.log: "meta: identity ｢$identity｣";
+      self.log: "meta: name     ｢$name｣";
+      self.log: "meta: version  ｢$version｣";
+      self.log: "meta: auth     ｢$auth｣";
+      self.log: "meta: api      ｢$api｣";
+      self.log: "meta: identity ｢$identity｣";
 
 
       server-message build => %( :$identity );
 
       unless $version {
 
-        $build-log-source.log: :error, "meta: version not found!";
+        self.log: :error, "meta: version not found!";
 
         $!db.update-build-meta: :$!id,   meta => +ERROR;
 
-        $build-log-source.log: 'meta: failed!';
+        self.log: 'meta: failed!';
 
         server-message build => %( meta => +ERROR );
 
@@ -207,8 +208,8 @@ class ContentStorage::Build {
 
         $!db.update-build-meta: :$!id,   meta => +ERROR;
 
-        $build-log-source.log: :error, "meta: invalid-auth $auth please use $valid-auth";
-        $build-log-source.log: 'meta: failed!';
+        self.log: :error, "meta: invalid-auth $auth please use $valid-auth";
+        self.log: 'meta: failed!';
 
         server-message build => %( meta => +ERROR );
 
@@ -220,8 +221,8 @@ class ContentStorage::Build {
 
         $!db.update-build-meta: :$!id,   meta => +ERROR;
 
-        $build-log-source.log: :error, "meta: ｢$identity｣ distribution already exists!";
-        $build-log-source.log: :error, "meta: failed!";
+        self.log: :error, "meta: ｢$identity｣ distribution already exists!";
+        self.log: :error, "meta: failed!";
 
         server-message build => %( meta => +ERROR );
 
@@ -232,7 +233,7 @@ class ContentStorage::Build {
 
       $!db.update-build-meta: :$!id,   meta => +SUCCESS;
 
-      $build-log-source.log: 'meta: success!';
+      self.log: 'meta: success!';
 
       server-message build => %( meta => +SUCCESS );
 
@@ -242,7 +243,7 @@ class ContentStorage::Build {
     
     my sub test-distribution ( --> Bool:D ) {
 
-      $build-log-source.log: "test: start!";
+      self.log: "test: start!";
 
       $!db.update-build-test: :$!id, test => +RUNNING;
 
@@ -255,14 +256,14 @@ class ContentStorage::Build {
 
       my $proc = Proc::Async.new: @test-command;
 
-      $build-log-source.log: "test: command  ｢$proc.command()｣";
+      self.log: "test: command  ｢$proc.command()｣";
 
       my $exitcode;
 
       react {
 
-        whenever $proc.stdout { $build-log-source.log: $^out.chop }
-        whenever $proc.stderr { $build-log-source.log: $^err.chop }
+        whenever $proc.stdout { self.log: $^out.chop }
+        whenever $proc.stderr { self.log: $^err.chop }
 
         whenever $proc.start( :%*ENV ) {
           $exitcode = .exitcode;
@@ -277,7 +278,7 @@ class ContentStorage::Build {
 
         server-message build => %( test => +ERROR );
 
-        $build-log-source.log: "test: failed!";
+        self.log: "test: failed!";
 
         return False;
 
@@ -287,7 +288,7 @@ class ContentStorage::Build {
 
       server-message build => %( test => +SUCCESS );
 
-      $build-log-source.log: "test: success!";
+      self.log: "test: success!";
 
       return True;
 
@@ -298,7 +299,7 @@ class ContentStorage::Build {
 
       # TODO: Make sure no archives exist
 
-      $build-log-source.log: "store: start!";
+      self.log: "store: start!";
       
       my $meta-file = $distribution-directory.add: 'META6.json';
 
@@ -322,8 +323,8 @@ class ContentStorage::Build {
 
       if $distribution-archive.e {
 
-        $build-log-source.log: :error, "store: ｢$distribution-archive｣ archive already exists, please contact adminstrator!";
-        $build-log-source.log: :error, "store: failed!";
+        self.log: :error, "store: ｢$distribution-archive｣ archive already exists, please contact adminstrator!";
+        self.log: :error, "store: failed!";
 
         return False;
 
@@ -340,7 +341,7 @@ class ContentStorage::Build {
       my Str $readme  = $readme-file.slurp  if $readme-file.e;
       my Str $changes = $changes-file.slurp if $changes-file.e;
 
-      $build-log-source.log: "store: ｢$identity｣";
+      self.log: "store: ｢$identity｣";
 
       $distribution-archive-directory.mkdir;
 
@@ -374,7 +375,7 @@ class ContentStorage::Build {
         :$created,
     );
 
-      $build-log-source.log: "store: success!";
+      self.log: "store: success!";
 
       return True;
 
@@ -385,7 +386,7 @@ class ContentStorage::Build {
 
       $!db.update-build-status: :$!id, status => +SUCCESS;
 
-      $!db.update-build-log: :$!id, log => $log-file.slurp;
+      $!db.update-build-log: :$!id, log => $!log-file.slurp: :close ;
 
       $!db.update-build-completed: :$!id;
 
@@ -397,13 +398,13 @@ class ContentStorage::Build {
 
     my sub fail-build ( ) {
 
-      $build-log-source.log: :error, 'build: failed!';
+      self.log: :error, 'build: failed!';
 
       $!db.update-build-status: :$!id, status => +ERROR;
 
       $!db.update-build-completed: :$!id;
 
-      $!db.update-build-log: :$!id, log => $log-file.slurp;
+      $!db.update-build-log: :$!id, log => $!log-file.slurp :close;
 
       my $completed = $!db.select-build-completed: :$!id;
 

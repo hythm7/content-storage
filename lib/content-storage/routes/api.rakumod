@@ -17,7 +17,7 @@ sub api-routes(
   Supplier:D                 :$event-supplier!,
 ) is export {
 
-  my $page-limit = config.get( 'api.page-limit' );
+  my $page-limit = config.get( 'api.page.limit' );
   # TODO: Handle errors
   openapi $openapi-schema, :validate-responses, {
 

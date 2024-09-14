@@ -1,13 +1,20 @@
 {
-  "host": "localhost",
-  "port": 20000,
   "storage": {
-    "name": "my-storage"
+    "name": "my-storage",
+    "host": "localhost",
+    "port": 20000
   },
   "api": {
-    "page-limit": 10
+    "page": {
+      "limit": 10
+    }
   },
   "build": {
-    "test-command":  "echo testing"
+    "log": {
+      "color": true
+    },
+    "test": {
+      "command":  "echo testing"
+    }
   }
 }

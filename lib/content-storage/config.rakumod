@@ -6,16 +6,23 @@ unit module ContentStorage::Config;
 sub config is export {
 
   Config.new(
-    host => Str,
-    port => UInt,
     storage => {
       name => Str,
+      host => Str,
+      port => UInt,
     },
     api => {
-      page-limit => UInt,
+      page => {
+        limit => UInt,
+      },
     },
     build => {
-      test-command => Str,
+      log => {
+        color => Bool,
+      },
+      test => {
+        command => Str,
+      },
     },
   ).read: from-json slurp 'config.json';
 
