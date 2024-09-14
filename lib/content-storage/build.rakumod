@@ -92,14 +92,6 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
     my $distribution-directory = $!work-directory.add( 'distribution' );
 
-    #my $ = $distribution-directory.dirname.IO.add( $!id ~ '.log' );
-
-    #my $logger = Log::Dispatch.new;
-
-    #$logger.add: $build-log-source;
-    #$logger.add: Log::Dispatch::File,         max-level => LOG-LEVEL::DEBUG,   file => $log-file;
-    #$logger.add: ServerSentEventsDestination, max-level => LOG-LEVEL::DEBUG, :$!event-supplier, type => $!id.Str;
-
     self.log: 'build: start!';
 
     $source-archive.spurt( $!archive, :close );
@@ -249,14 +241,14 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       server-message build => %( test => +RUNNING );
 
-      my $test-directory = $distribution-directory.add( 'test' );
 
-      my @test-command = <<pakku nobar nospinner verbose all force add noprecompile notest contained to $test-directory $distribution-directory>>;
+      #my @test-command = <<pakku nobar nospinner verbose all force add noprecompile notest contained to $test-directory $distribution-directory>>;
+      my @test-command = config.get( 'build.test.command' ).split: / \s+ /;
 
 
       my $proc = Proc::Async.new: @test-command;
 
-      self.log: "test: command  ｢$proc.command()｣";
+      self.log: :debug, "test: command  ｢$proc.command()｣";
 
       my $exitcode;
 
@@ -265,7 +257,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
         whenever $proc.stdout { self.log: $^out.chop }
         whenever $proc.stderr { self.log: $^err.chop }
 
-        whenever $proc.start( :%*ENV ) {
+        whenever $proc.start( cwd => $distribution-directory, :%*ENV ) {
           $exitcode = .exitcode;
           done;
         }

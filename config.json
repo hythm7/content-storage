@@ -14,7 +14,7 @@
       "color": true
     },
     "test": {
-      "command":  "echo testing"
+      "command":  "pakku nobar nospinner add to /tmp/delme ."
     }
   }
 }
