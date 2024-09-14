@@ -224,8 +224,12 @@ const createBuildTableRow = function (data) {
   identity.innerText = data.identity;
   meta.innerHTML = build_status_to_HTML( data.meta );
   test.innerHTML = build_status_to_HTML( data.test );
-  started.innerText   = formatDate( data.started   );
-  completed.innerText = formatDate( data.completed );
+  if ( data.started ) {
+    started.innerText   = formatDate( data.started   );
+  }
+  if ( data.completed ) {
+    completed.innerText = formatDate( data.completed );
+  }
 
   row.appendChild( build_status );
   row.appendChild( user );
@@ -253,8 +257,10 @@ export const updateBuildTableRow = function (id, data) {
 
       const value = data[key];
 
-      if      ( typeof value === 'string' ) { td.innerText = value                 }
-      else if ( typeof value === 'number' ) { td.innerHTML = build_status_to_HTML( value ) }
+      if      ( typeof value === 'number'    ) { td.innerHTML = build_status_to_HTML( value ) }
+      else if (        key    == 'started'   ) { td.innerText = formatDate( value )           }
+      else if (        key    == 'completed' ) { td.innerText = formatDate( value )           }
+      else if ( typeof value === 'string'    ) { td.innerText = value                         }
       else { console.error( 'Invalid ' + value ) }
 
     } );
@@ -362,11 +368,9 @@ const updateTablePagination = function ( query, headers ) {
 
 const formatDate = (dateString) => {
 
-  if ( dateString ) {
     const date = dateString.split('T')[0];
     const time = dateString.split('T')[1].split('.')[0];
 
     return date + ' ' + time;
-  }
 }
 
