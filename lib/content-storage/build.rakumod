@@ -280,7 +280,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
         server-message build => %( test => +ERROR );
 
-        self.log: "test: failed!";
+        self.log: :error, "test: failed!";
 
         return False;
 
