@@ -565,10 +565,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let timeout;
 
-  //build_event_source.onerror = (err) => {
-  //  console.error("EventSource failed:", err);
-  //}
-
 
   build_event_source.addEventListener('message',  (event) => {
 
@@ -591,8 +587,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   }
 
-
-
+  //build_event_source.onerror = (err) => {
+  //  console.error("EventSource failed:", err);
+  //}
 
   search_clear.addEventListener('click', function (e) { search_input.value = '' });
 
