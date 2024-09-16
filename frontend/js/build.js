@@ -11,15 +11,6 @@ import { AnsiUp } from 'ansi_up';
 
 document.addEventListener('DOMContentLoaded', function () {
 
-  let timeout;
-
-  const build_search_input = document.getElementById('search-input');
-
-  const build_modal       = document.getElementById('build-modal')
-  const build_modal_badge = document.getElementById('build-modal-badge')
-
-  const build_modal_delete = document.getElementById('build-modal-delete')
-
   if ( build_modal_delete ) {
     build_modal_delete.setAttribute('data-delete-target', 'build' );
   }
@@ -73,17 +64,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   }
 
-  build_modal.addEventListener('show.bs.modal', event => {
+  build_modal_element.addEventListener('show.bs.modal', event => {
 
 
     const buildRow = event.relatedTarget.parentNode;;
 
     const buildId = buildRow.getAttribute('data-build-id')
 
-    const build_modal_body = build_modal.querySelector('.modal-body')
+    const build_modal_body = build_modal_element.querySelector('.modal-body')
 
 
-    build_modal.setAttribute('data-build-id', buildId)
+    build_modal_element.setAttribute('data-build-id', buildId)
 
     fetch( '/api/v1/build/' + buildId )
       .then(response => response.json())
@@ -126,9 +117,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   });
 
-  build_modal.addEventListener('hidden.bs.modal', event => {
+  build_modal_element.addEventListener('hidden.bs.modal', event => {
 
-    var buildId = build_modal.getAttribute('data-build-id')
+    var buildId = build_modal_element.getAttribute('data-build-id')
 
     build_event_source.removeEventListener(buildId, buildEvent)
 

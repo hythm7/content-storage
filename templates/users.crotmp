@@ -1,7 +1,7 @@
 <:use 'templates/common.crotmp'>
 <:use 'templates/base.crotmp'>
 
-<|page( :user( .user ), :title( .title ), :script('/js/user.bundle.js') )>
+<|page( :user( .user ), :title( .title ) )>
   <div class="page-content">
     <h2><.title></h2>
     <&user-table( :api( .api ) )>

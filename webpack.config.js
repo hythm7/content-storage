@@ -8,9 +8,6 @@ module.exports = {
   mode: 'development',
   entry: {
     'main':         './frontend/js/main.js',
-    'distribution': './frontend/js/distribution.js',
-    'build':        './frontend/js/build.js',
-    'user':         './frontend/js/user.js'
   },
   output: {
     filename: 'js/[name].bundle.js',

@@ -1,5 +1,5 @@
 
-export const build_status = Object.freeze({
+const build_status = Object.freeze({
 
   SUCCESS: 0,
   ERROR:   1,
@@ -15,7 +15,7 @@ const iconXHTML                   = '<i class="bi bi-x text-danger"></i>';
 const iconExclamationTriangleHTML = '<i class="bi bi-exclamation-triangle text-warning"></i>';
 const spinnerGrowHTML             = '<div class="spinner-grow spinner-grow-sm text-primary"></div>';
 
-export const build_status_to_HTML = function ( value ) {
+const build_status_to_HTML = function ( value ) {
 
   if      ( value === build_status.SUCCESS ) { return iconCheckHTML                }
   else if ( value === build_status.ERROR   ) { return iconXHTML                    }
@@ -30,26 +30,26 @@ const table_head = document.getElementsByTagName('thead')[0];
 
 const table_head_ths = Array.from(table_head.getElementsByTagName('th')).map( (elem) => { return elem.innerText.toLowerCase() } );
 
-export const searchDistribution = function ( name ) {
+const searchDistribution = function ( name ) {
 
   updateDistributionTable( new URLSearchParams( { name: name, page: 1 } ) )
 
 }
 
-export const searchBuild = function ( name ) {
+const searchBuild = function ( name ) {
 
   updateBuildTable( new URLSearchParams( { name: name, page: 1 } ) )
 
 }
 
-export const searchUser = function ( name ) {
+const searchUser = function ( name ) {
 
   updateUserTable( new URLSearchParams( { name: name, page: 1 } ) )
 
 }
 
 
-export const updateDistributionTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
+const updateDistributionTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
 
   if ( ! query.has('page') ) { return false }
 
@@ -83,7 +83,7 @@ export const updateDistributionTable = function ( query = new URLSearchParams( {
 
 }
 
-export const updateBuildTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
+const updateBuildTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
 
   if ( ! query.has('page') ) { return false }
 
@@ -118,7 +118,7 @@ export const updateBuildTable = function ( query = new URLSearchParams( { page: 
 
 }
 
-export const updateUserTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
+const updateUserTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
 
   if ( ! query.has('page') ) { return false }
 
@@ -243,7 +243,7 @@ const createBuildTableRow = function (data) {
 
 }
 
-export const updateBuildTableRow = function (id, data) {
+const updateBuildTableRow = function (id, data) {
 
   const row = table_body.querySelector('[data-build-id="' + id + '"]');
 

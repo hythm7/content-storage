@@ -1,5 +1,5 @@
 <:use 'templates/common.crotmp'>
-<:macro page( :$title, :$script, :$user )>
+<:macro page( :$title, :$user )>
 <!doctype html>
 
 <html lang="en">
@@ -10,7 +10,6 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <title><$title></title>
   <script src="/js/main.bundle.js"></script>
-  <?$script> <@$script : $src> <script type="module" src="<$src>"></script> </@> </?>
 </head>
 
 <body>

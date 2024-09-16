@@ -4,6 +4,11 @@ import '../scss/style.scss'
 // Import all of Bootstrap's JS
 import * as bootstrap from 'bootstrap'
 
+import DOMPurify from 'dompurify';
+import { marked } from 'marked';
+import { AnsiUp } from 'ansi_up';
+
+
 /*!
  * Color mode toggler for Bootstrap's docs (https://getbootstrap.com/)
  * Copyright 2011-2024 The Bootstrap Authors
@@ -90,9 +95,403 @@ import * as bootstrap from 'bootstrap'
         })
       })
   })
-})()
+})();
+
+
+const build_status = Object.freeze({
+
+  SUCCESS: 0,
+  ERROR:   1,
+  RUNNING: 2,
+  UNKNOWN: 3,
+
+});
+
+const iconDownloadHTML            = '<i class="bi bi-download text-primary"></i>';
+const iconEyeHTML                 = '<i class="bi bi-eye text-primary"></i>';
+const iconCheckHTML               = '<i class="bi bi-check text-success"></i>';
+const iconXHTML                   = '<i class="bi bi-x text-danger"></i>';
+const iconExclamationTriangleHTML = '<i class="bi bi-exclamation-triangle text-warning"></i>';
+const spinnerGrowHTML             = '<div class="spinner-grow spinner-grow-sm text-primary"></div>';
+
+const build_status_to_HTML = function ( value ) {
+
+  if      ( value === build_status.SUCCESS ) { return iconCheckHTML                }
+  else if ( value === build_status.ERROR   ) { return iconXHTML                    }
+  else if ( value === build_status.UNKNOWN ) { return iconExclamationTriangleHTML  }
+  else if ( value === build_status.RUNNING ) { return spinnerGrowHTML              }
+
+}
+
+
+
+const searchDistribution = function ( name ) {
+
+  updateDistributionTable( new URLSearchParams( { name: name, page: 1 } ) )
+
+}
+
+const searchBuild = function ( name ) {
+
+  updateBuildTable( new URLSearchParams( { name: name, page: 1 } ) )
+
+}
+
+const searchUser = function ( name ) {
+
+  updateUserTable( new URLSearchParams( { name: name, page: 1 } ) )
+
+}
+
+
+const updateDistributionTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
+
+  const distribution_table = document.getElementById('distribution-table');
+  const table_body = document.getElementsByTagName('tbody')[0];
+  const table_head = document.getElementsByTagName('thead')[0];
+  const api                = distribution_table.dataset.api;
+
+  if ( ! query.has('page') ) { return false }
+
+  fetch( api + '?' + query.toString() )
+    .then( (response) => {
+
+      updateTablePagination( query, response.headers );
+
+      return response.json();
+
+    } )
+    .then(data => {
+
+      table_body.innerHTML = '';
+
+      data.forEach( function( obj ) {
+
+        const row = createDistributionTableRow( obj );
+
+        table_body.appendChild( row )
+
+      } );
+
+    })
+    .catch(error => {
+      console.error('Error Processing:', error);
+    });
+
+}
+
+const updateBuildTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
+
+  const build_table = document.getElementById('build-table');
+  const table_body = document.getElementsByTagName('tbody')[0];
+  const table_head = document.getElementsByTagName('thead')[0];
+  const api         = build_table.dataset.api;
+
+  if ( ! query.has('page') ) { return false }
+
+
+  fetch( api + '?' + query.toString() )
+    .then( (response) => {
+
+      updateTablePagination( query, response.headers );
+
+      return response.json();
+
+    } )
+    .then(data => {
+
+      table_body.innerHTML = '';
+
+      data.forEach( function( obj ) {
+
+        const row = createBuildTableRow( obj );
+
+        table_body.appendChild( row )
+
+      } );
+
+    })
+    .catch(error => {
+      console.error('Error Processing:', error);
+    });
+
+
+}
+
+const updateUserTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
+
+  const user_table = document.getElementById('user-table');
+  const table_body = document.getElementsByTagName('tbody')[0];
+  const table_head = document.getElementsByTagName('thead')[0];
+
+  const api        = user_table.dataset.api;
+
+  if ( ! query.has('page') ) { return false }
+
+
+  fetch( api + '?' + query.toString() )
+    .then( (response) => {
+
+      updateTablePagination( query, response.headers );
+
+      return response.json();
+
+    } )
+    .then(data => {
+
+      table_body.innerHTML = '';
+
+      data.forEach( function( obj ) {
+
+        const row = createUserTableRow( obj );
+
+        table_body.appendChild( row )
+
+      } );
+
+    })
+    .catch(error => {
+      console.error('Error Processing:', error);
+    });
+
+}
+
+
+const createDistributionTableRow = function (data) {
+
+  const row = document.createElement("tr")
+
+  row.dataset.distributionId = data.id;
+
+  const name     = document.createElement('td');
+  const version  = document.createElement('td');
+  const auth     = document.createElement('td');
+  const api      = document.createElement('td');
+  const created  = document.createElement('td');
+  const download = document.createElement('td');
+
+  name.dataset.bsToggle = 'modal';
+  name.dataset.bsTarget = '#distribution-modal';
+
+  name.className  = "text-primary";
+
+  created.className  = "text-center";
+  download.className = "text-center";
+
+  name.innerText     = data.name;
+  version.innerText  = data.version;
+  auth.innerText     = data.auth;
+  api.innerText      = data.api;
+  created.innerText  = formatDate( data.created );
+  download.innerHTML = iconDownloadHTML;
+
+  row.appendChild( name );
+  row.appendChild( version );
+  row.appendChild( auth );
+  row.appendChild( api );
+  row.appendChild( created );
+  row.appendChild( download );
+
+  return row;
+
+}
+
+const createBuildTableRow = function (data) {
+
+  const row = document.createElement("tr")
+
+  row.dataset.buildId = data.id;
+
+
+  const build_status = document.createElement('td');
+  const user         = document.createElement('td');
+  const identity     = document.createElement('td');
+  const meta         = document.createElement('td');
+  const test         = document.createElement('td');
+  const started      = document.createElement('td');
+  const completed    = document.createElement('td');
+
+  identity.dataset.bsToggle = 'modal';
+  identity.dataset.bsTarget = '#build-modal';
+
+  identity.className = "text-primary";
+
+  build_status.className = "text-center";
+  meta.className         = "text-center";
+  test.className         = "text-center";
+  started.className      = "text-center";
+  completed.className    = "text-center";
+
+  build_status.innerHTML = build_status_to_HTML( data.status );
+
+  user.innerText = data.user;
+  identity.innerText = data.identity;
+  meta.innerHTML = build_status_to_HTML( data.meta );
+  test.innerHTML = build_status_to_HTML( data.test );
+  if ( data.started ) {
+    started.innerText   = formatDate( data.started   );
+  }
+  if ( data.completed ) {
+    completed.innerText = formatDate( data.completed );
+  }
+
+  row.appendChild( build_status );
+  row.appendChild( user );
+  row.appendChild( identity );
+  row.appendChild( meta );
+  row.appendChild( test );
+  row.appendChild( started );
+  row.appendChild( completed );
+
+  return row;
+
+}
+
+const updateBuildTableRow = function (id, data) {
+
+const table_body = document.getElementsByTagName('tbody')[0];
+const table_head = document.getElementsByTagName('thead')[0];
+
+const table_head_ths = Array.from(table_head.getElementsByTagName('th')).map( (elem) => { return elem.innerText.toLowerCase() } );
+
+  const row = table_body.querySelector('[data-build-id="' + id + '"]');
+
+  if ( row ) {
+
+    const tds  = row.getElementsByTagName('td');
+
+    Object.keys(data).forEach( (key) => {
+
+      const td = tds[table_head_ths.indexOf(key)];
+
+      const value = data[key];
+
+      if      ( typeof value === 'number'    ) { td.innerHTML = build_status_to_HTML( value ) }
+      else if (        key    == 'started'   ) { td.innerText = formatDate( value )           }
+      else if (        key    == 'completed' ) { td.innerText = formatDate( value )           }
+      else if ( typeof value === 'string'    ) { td.innerText = value                         }
+      else { console.error( 'Invalid ' + value ) }
+
+    } );
+  }
+
+}
+
+const createUserTableRow = function (data) {
+
+  const row = document.createElement("tr")
+
+
+  const username  = document.createElement('td');
+  const firstname = document.createElement('td');
+  const lastname  = document.createElement('td');
+  const email     = document.createElement('td');
+  const admin     = document.createElement('td');
+  const created   = document.createElement('td');
+
+  username.dataset.userId = data.id;
+  username.dataset.bsToggle = 'modal';
+  username.dataset.bsTarget = '#user-modal';
+
+  username.className = "text-primary";
+  admin.className    = "text-center";
+  created.className  = "text-center";
+
+  username.innerText  = data.username;
+  firstname.innerText = data.firstname;
+  lastname.innerText  = data.lastname;
+  email.innerText     = data.email;
+  created.innerText   = formatDate( data.created );
+
+  if ( data.admin ) { admin.innerHTML = iconCheckHTML }
+
+  row.appendChild( username );
+  row.appendChild( firstname );
+  row.appendChild( lastname );
+  row.appendChild( email );
+  row.appendChild( admin );
+  row.appendChild( created );
+
+  return row;
+
+}
+
+
+const updateTablePagination = function ( query, headers ) {
+
+  const elementFirstPage    = document.getElementById('first-page');
+  const elementPreviousPage = document.getElementById('previous-page');
+  const elementCurrentPage  = document.getElementById('current-page');
+  const elementNextPage     = document.getElementById('next-page');
+  const elementLastPage     = document.getElementById('last-page');
+
+  query.delete( 'page' );
+
+  let entries = Object.fromEntries( query )
+
+  const first    = headers.get('x-first');
+  const previous = headers.get('x-previous');
+  const current  = headers.get('x-current');
+  const next     = headers.get('x-next');
+  const last     = headers.get('x-last');
+
+  elementFirstPage.dataset.query    = new URLSearchParams( { ...entries, page:  first    } );
+
+  elementPreviousPage.dataset.query = new URLSearchParams( { ...entries, page:  previous } );
+
+  elementCurrentPage.dataset.query  = new URLSearchParams( { ...entries, page:  current  } );
+
+  elementNextPage.dataset.query     = new URLSearchParams( { ...entries, page:  next     } );
+
+  elementLastPage.dataset.query     = new URLSearchParams( { ...entries, page:  last     } );
+
+  if ( first == current ) {
+    elementFirstPage.classList.add( "disabled" );
+  } else {
+
+    elementFirstPage.classList.remove( "disabled" );
+  }
+
+  if ( previous == current ) {
+    elementPreviousPage.classList.add( "disabled" );
+  } else {
+
+    elementPreviousPage.classList.remove( "disabled" );
+  }
+
+  if ( next == current ) {
+    elementNextPage.classList.add( "disabled" );
+  } else {
+
+    elementNextPage.classList.remove( "disabled" );
+  }
+
+  if ( last == current ) {
+    elementLastPage.classList.add( "disabled" );
+  } else {
+
+    elementLastPage.classList.remove( "disabled" );
+  }
+
+}
+
+const formatDate = (dateString) => {
+
+    const date = dateString.split('T')[0];
+    const time = dateString.split('T')[1].split('.')[0];
+
+    return date + ' ' + time;
+}
 
 document.addEventListener('DOMContentLoaded', function () {
+
+  const search_input = document.getElementById("search-input");
+  const search_clear = document.getElementById("search-clear");
+
+  const table    = document.getElementsByTagName('table')[0];
+  const table_id = table.getAttribute('id');
+
+  const table_pagination = document.getElementById( 'table-pagination' );
 
   const user_modal_alert_element    = document.getElementById("user-modal-alert");
 
@@ -104,8 +503,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const logout_alert_element        = document.getElementById("logout-alert");
   const delete_alert_element        = document.getElementById("delete-alert");
 
-  const search_input = document.getElementById("search-input");
-  const search_clear = document.getElementById("search-clear");
 
   const user_info_form_element     = document.getElementById('user-info-form');
   const user_password_form_element = document.getElementById('user-password-form');
@@ -115,13 +512,21 @@ document.addEventListener('DOMContentLoaded', function () {
   const logout_form_element        = document.getElementById('logout-form');
   const delete_form_element        = document.getElementById('delete-form');
 
-  const user_modal_element     = document.getElementById('user-modal');
-  const register_modal_element = document.getElementById('register-modal');
-  const login_modal_element    = document.getElementById('login-modal');
-  const logout_modal_element   = document.getElementById('logout-modal');
-  const delete_modal_element   = document.getElementById('delete-modal');
+  const register_modal_element     = document.getElementById('register-modal');
+  const login_modal_element        = document.getElementById('login-modal');
+  const logout_modal_element       = document.getElementById('logout-modal');
+  const delete_modal_element       = document.getElementById('delete-modal');
+  const distribution_modal_element = document.getElementById('distribution-modal')
+  const build_modal_element        = document.getElementById('build-modal')
+  const user_modal_element         = document.getElementById('user-modal');
 
-  const user_modal_badge = document.getElementById('user-modal-badge');
+  const distribution_modal_badge  = document.getElementById('distribution-modal-badge')
+  const build_modal_badge         = document.getElementById('build-modal-badge')
+  const user_modal_badge          = document.getElementById('user-modal-badge');
+
+  const distribution_modal_delete = document.getElementById('distribution-modal-delete');
+  const build_modal_delete        = document.getElementById('build-modal-delete');
+  const user_modal_delete         = document.getElementById('user-modal-delete');
 
   const delete_modal_target_badge = document.getElementById('delete-modal-target-badge');
   const delete_modal_name_badge   = document.getElementById('delete-modal-name-badge');
@@ -135,14 +540,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const user_admin = document.getElementById('user-admin');
 
-  const user_modal     = new bootstrap.Modal( user_modal_element );
   const register_modal = new bootstrap.Modal( register_modal_element );
   const login_modal    = new bootstrap.Modal( login_modal_element );
   const logout_modal   = new bootstrap.Modal( logout_modal_element );
   const delete_modal   = new bootstrap.Modal( delete_modal_element );
 
+  const distribution_modal = new bootstrap.Modal( distribution_modal_element );
+  const build_modal        = new bootstrap.Modal( build_modal_element );
+  const user_modal         = new bootstrap.Modal( user_modal_element );
 
-  const user_modal_delete = document.getElementById('user-modal-delete');
 
   const dropzone_modal_element = document.getElementById('dropzone-modal');
 
@@ -150,6 +556,43 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const drop_area = document.getElementById('drop-area');
   const drop_area_input = document.getElementById('drop-area-input');
+
+  const build_log = document.getElementById('build-log')
+
+  const build_event_source = new EventSource('/server-sent-events');
+
+  const ansi = new AnsiUp;
+
+  let timeout;
+
+  //build_event_source.onerror = (err) => {
+  //  console.error("EventSource failed:", err);
+  //}
+
+
+  build_event_source.addEventListener('message',  (event) => {
+
+    var message = JSON.parse(event.data);
+
+    if ( message.target == 'BUILD' ) {
+
+      if ( message.operation == 'UPDATE' ) {
+        updateBuildTableRow( message.ID, message.build );
+      }
+    }
+  });
+
+  var buildEvent = function (event) {
+
+    const element = document.createElement('div');
+
+    element.innerHTML = ansi.ansi_to_html( event.data );
+    build_log.appendChild(element);
+
+  }
+
+
+
 
   search_clear.addEventListener('click', function (e) { search_input.value = '' });
 
@@ -715,5 +1158,203 @@ document.addEventListener('DOMContentLoaded', function () {
       } );
 
   });
+
+
+  const distribution_readme  = document.getElementById('distribution-readme')
+  const distribution_changes = document.getElementById('distribution-changes')
+
+
+  if ( distribution_modal_delete ) {
+
+        distribution_modal_delete.setAttribute('data-delete-target', 'distribution' );
+  }
+
+  distribution_modal_element.addEventListener('show.bs.modal', event => {
+
+    const distribution_row = event.relatedTarget.parentNode;
+
+    const distribution_id = distribution_row.getAttribute('data-distribution-id')
+
+    const distribution_modal_body = distribution_modal_element.querySelector('.modal-body')
+
+    distribution_modal_element.setAttribute('data-distribution-id', distribution_id)
+
+    fetch( '/api/v1/distribution/' + distribution_id )
+      .then(response => response.json())
+      .then(data => {
+
+        distribution_modal_badge.innerText = data.identity;
+
+        if ( distribution_modal_delete ) {
+              distribution_modal_delete.setAttribute('data-delete-id', data.id )
+              distribution_modal_delete.setAttribute('data-delete-name', data.identity )
+        }
+
+
+        const readme  = data.readme;
+        const changes = data.changes;
+
+        if ( readme ) {
+          distribution_readme.innerHTML = DOMPurify.sanitize( marked.parse( data.readme ) );
+        }
+
+        if ( changes ) {
+          distribution_changes.innerHTML = DOMPurify.sanitize( data.changes.replace(/(?:\n)/g, '<br>') );
+        }
+
+      })
+      .catch(error => {
+        console.error('Error Processing:', error);
+      });
+
+  });
+
+  distribution_modal_element.addEventListener('hidden.bs.modal', event => {
+
+    distribution_modal_badge.innerHTML = '';
+
+    distribution_readme.innerHTML  = '';
+    distribution_changes.innerHTML = '';
+
+  });
+
+  if ( build_modal_delete ) {
+    build_modal_delete.setAttribute('data-delete-target', 'build' );
+  }
+
+
+  build_modal_element.addEventListener('show.bs.modal', event => {
+
+    const buildRow = event.relatedTarget.parentNode;;
+
+    const buildId = buildRow.getAttribute('data-build-id')
+
+    const build_modal_body = build_modal_element.querySelector('.modal-body')
+
+
+    build_modal_element.setAttribute('data-build-id', buildId)
+
+    fetch( '/api/v1/build/' + buildId )
+      .then(response => response.json())
+      .then(data => {
+
+        if ( data.identity ) {
+          build_modal_badge.innerText = data.identity
+        }
+
+        if ( build_modal_delete ) {
+
+          build_modal_delete.setAttribute('data-delete-id', data.id )
+          build_modal_delete.setAttribute('data-delete-name', data.identity )
+
+        }
+
+        if ( data.status == build_status.RUNNING ) {
+
+          build_modal_body.classList.add('autoscrollable-wrapper');
+
+          build_event_source.addEventListener(buildId, buildEvent)
+
+        } else {
+
+          build_modal_body.classList.remove('autoscrollable-wrapper');
+
+          const element = document.createElement('div');
+
+          const log = ansi.ansi_to_html( data.log ).replace(/(?:\n)/g, '<br>')
+
+          element.innerHTML = log;
+
+          build_log.appendChild(element);
+        }
+
+      })
+      .catch(error => {
+        console.error('Error Processing:', error);
+      });
+
+  });
+
+  build_modal_element.addEventListener('hidden.bs.modal', event => {
+
+    var buildId = build_modal_element.getAttribute('data-build-id')
+
+    build_event_source.removeEventListener(buildId, buildEvent)
+
+    build_modal_badge.innerHTML = '';
+    build_log.innerHTML         = '';
+
+  });
+
+
+  if ( table_id == 'distribution-table' ) {
+
+    search_input.addEventListener("input", (event) => {
+
+      clearTimeout(timeout);
+
+      timeout = setTimeout(function() {
+
+        const name = event.target.value.trim();
+
+        searchDistribution( name )
+
+      }, 800);
+
+    });
+
+    table_pagination.addEventListener('click', function (event) {
+      updateDistributionTable( new URLSearchParams( event.target.getAttribute('data-query') ) )
+    });
+
+    updateDistributionTable( )
+
+  } else if ( table_id == 'build-table' ) {
+
+
+    search_input.addEventListener("input", (event) => {
+
+      clearTimeout(timeout);
+
+      timeout = setTimeout(function() {
+
+        const name = event.target.value.trim();
+
+        searchBuild( name )
+
+      }, 800);
+
+    });
+
+    table_pagination.addEventListener('click', function (event) { 
+      updateBuildTable( new URLSearchParams( event.target.getAttribute('data-query') ) )
+    });
+
+    updateBuildTable( )
+
+
+  } else if ( table_id == 'user-table' ) {
+
+    search_input.addEventListener("input", (event) => {
+
+      clearTimeout(timeout);
+
+      timeout = setTimeout(function() {
+
+        const name = event.target.value.trim();
+
+        searchUser( name )
+
+      }, 800);
+
+    });
+
+    table_pagination.addEventListener('click', function (event) {
+      updateUserTable( new URLSearchParams( event.target.getAttribute('data-query') ) )
+    });
+
+    updateUserTable( )
+
+  }
 
 });
