@@ -116,6 +116,13 @@ multi method select-user-build( Str:D :$username!, UInt :$offset!, UInt :$limit!
 
 }
 
+multi method select-user-build( 'count', Str:D :$username!, Str:D :$name! ) {
+
+  my $user = select-userid-by-username $!pg, :$username;
+
+  select-user-build-by-name-count $!pg, :$user, name => $name ~ '%';
+}
+
 multi method select-user-build( 'count', Str:D :$username! ) {
 
   my $user = select-userid-by-username $!pg, :$username;
@@ -123,12 +130,6 @@ multi method select-user-build( 'count', Str:D :$username! ) {
   select-user-build-count $!pg, :$user 
 }
 
-multi method select-user-build( 'count', Str:D :$username!, Str:D :$name! ) {
-
-  my $user = select-userid-by-username $!pg, :$username;
-
-  select-user-build-by-name-count $!pg, :$user, name => $name ~ '%';
-}
 
 
 method insert-build( UUID:D :$user ) {

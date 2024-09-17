@@ -130,6 +130,7 @@ sub api-routes(
       if %distribution {
 
         $db.delete-distribution: :$id;
+        # TODO: Delete archive as well
 
         content 'application/json', %distribution;
 
@@ -210,11 +211,11 @@ sub api-routes(
 
         my $build = ContentStorage::Build.new: :$db, :$event-supplier, user => $user.id, archive => $file.body-blob;
 
-        start $build.build;
-
         my %data = %( id => $build.id );
 
         content 'application/json', %data;
+
+        start $build.build;
 
       }
     }

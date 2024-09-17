@@ -6,7 +6,7 @@
   },
   "api": {
     "page": {
-      "limit": 5
+      "limit": 3
     }
   },
   "build": {

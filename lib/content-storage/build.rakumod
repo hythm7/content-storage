@@ -64,8 +64,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
   has UUID:D     $.id             is required;
   has Supplier:D $!event-supplier is required;
 
-  my enum Target    <BUILD DISTRIBUTION>;
-  my enum Operation <ADD UPDATE DELETE>;
+  my enum Operation <ADD UPDATE>;
 
   submethod BUILD( ContentStorage::Database:D :$!db!, Supplier:D :$!event-supplier!, UUID:D :$!user!, :$!archive! ) {
 
@@ -74,6 +73,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
     $!id = $!db.insert-build: :$!user;
 
+
     $!log-file = $!work-directory.add( $!id ).extension( 'log' );
 
     $!logger = Log::Dispatch.new;
@@ -81,12 +81,20 @@ class ContentStorage::Build does Log::Dispatch::Source {
     $!logger.add: self;
     $!logger.add: Log::Dispatch::TTY,          max-level => LOG-LEVEL::DEBUG, :console, tty => $!log-file.open( :create, :rw ), color => config.get( 'build.log.color' );
     $!logger.add: ServerSentEventsDestination, max-level => LOG-LEVEL::DEBUG, :$!event-supplier, type => $!id.Str;
+
+    my $event = EventSource::Server::Event.new( data => to-json %( :operation<ADD>,  ID => ~$!id ) );
+
+    $!event-supplier.emit( $event );
+
   }
 
 
   method build ( ) {
 
     LEAVE $!logger.shutdown;
+
+    # TODO: wait if max number of builds are running
+    sleep (1 .. 2).rand.Int;
 
     my $source-archive = $!work-directory.add: 'source-archive.tar.gz';
 
@@ -414,7 +422,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
     my sub server-message ( :%build! ) {
 
-      my $event = EventSource::Server::Event.new( data => to-json %( :target<BUILD>, :operation<UPDATE>,  ID => ~$!id, :%build ) );
+      my $event = EventSource::Server::Event.new( data => to-json %( :operation<UPDATE>,  ID => ~$!id, :%build ) );
 
       $!event-supplier.emit( $event );
 

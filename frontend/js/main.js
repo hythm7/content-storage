@@ -349,14 +349,18 @@ const createBuildTableRow = function (data) {
 
 const updateBuildTableRow = function (id, data) {
 
-const table_body = document.getElementsByTagName('tbody')[0];
-const table_head = document.getElementsByTagName('thead')[0];
+  // TODO: refactor without ths
+  const table_body = document.getElementsByTagName('tbody')[0];
+  const table_head = document.getElementsByTagName('thead')[0];
 
-const table_head_ths = Array.from(table_head.getElementsByTagName('th')).map( (elem) => { return elem.innerText.toLowerCase() } );
+  const table_head_ths = Array.from(table_head.getElementsByTagName('th')).map( (elem) => { return elem.innerText.toLowerCase() } );
 
   const row = table_body.querySelector('[data-build-id="' + id + '"]');
 
+  console.log(data);
+  console.log('checking row:');
   if ( row ) {
+  console.log('found');
 
     const tds  = row.getElementsByTagName('td');
 
@@ -564,32 +568,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const ansi = new AnsiUp;
 
   let timeout;
-
-
-  build_event_source.addEventListener('message',  (event) => {
-
-    var message = JSON.parse(event.data);
-
-    if ( message.target == 'BUILD' ) {
-
-      if ( message.operation == 'UPDATE' ) {
-        updateBuildTableRow( message.ID, message.build );
-      }
-    }
-  });
-
-  var buildEvent = function (event) {
-
-    const element = document.createElement('div');
-
-    element.innerHTML = ansi.ansi_to_html( event.data );
-    build_log.appendChild(element);
-
-  }
-
-  //build_event_source.onerror = (err) => {
-  //  console.error("EventSource failed:", err);
-  //}
 
   search_clear.addEventListener('click', function (e) { search_input.value = '' });
 
@@ -1118,7 +1096,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     event.preventDefault();
 
-    fetch('/api/v1/' + delete_modal_element.dataset.deleteTarget + '/' + delete_modal_element.dataset.deleteId, {
+    const delete_target = delete_modal_element.dataset.deleteTarget;
+    const delete_id     = delete_modal_element.dataset.deleteId;
+
+    fetch('/api/v1/' + delete_target + '/' + delete_id, {
       method: 'DELETE'
     })
       .then((response) => {
@@ -1130,6 +1111,18 @@ document.addEventListener('DOMContentLoaded', function () {
         return response.json();
       })
       .then( data => {
+
+        if ( table_id == delete_target + '-table' ) {
+
+          const query  = document.getElementById('current-page').dataset.query;
+
+          if      ( delete_target == 'distribution' ) { updateDistributionTable( new URLSearchParams( query ) ) }
+          else if ( delete_target == 'build'        ) { updateBuildTable(        new URLSearchParams( query ) ) }
+          else if ( delete_target == 'user'         ) { updateUserTable(         new URLSearchParams( query ) ) }
+
+        }
+
+
 
         delete_alert_element.classList.remove( 'alert-primary' );
         delete_alert_element.classList.remove( 'alert-danger'  );
@@ -1307,6 +1300,37 @@ document.addEventListener('DOMContentLoaded', function () {
     updateDistributionTable( )
 
   } else if ( table_id == 'build-table' ) {
+
+
+    build_event_source.addEventListener('message',  (event) => {
+
+      var message = JSON.parse(event.data);
+
+      if        ( message.operation == 'UPDATE' ) {
+
+        updateBuildTableRow( message.ID, message.build );
+
+      } else if ( message.operation == 'ADD' && table_id == 'build-table' ) {
+
+        const query  = document.getElementById('current-page').dataset.query;
+
+        updateBuildTable( new URLSearchParams( query ) );
+
+      }
+    });
+
+    var buildEvent = function (event) {
+
+      const element = document.createElement('div');
+
+      element.innerHTML = ansi.ansi_to_html( event.data );
+      build_log.appendChild(element);
+
+    }
+
+    //build_event_source.onerror = (err) => {
+    //  console.error("EventSource failed:", err);
+    //}
 
 
     search_input.addEventListener("input", (event) => {
