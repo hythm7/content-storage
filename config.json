@@ -6,12 +6,15 @@
   },
   "api": {
     "page": {
-      "limit": 3
+      "limit": 10
     }
   },
   "build": {
     "log": {
       "color": true
+    },
+    "concurrent": {
+      "max": 10
     },
     "test": {
       "command":  "pakku nobar nospinner verbose all add ."

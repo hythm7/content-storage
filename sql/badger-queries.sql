@@ -187,6 +187,10 @@ WHERE "b"."name" ILIKE $name
 -- sub select-build-count(--> $)
 SELECT COUNT(*) FROM "build"
 
+-- sub select-build-running-count(--> $)
+SELECT COUNT(*) FROM "build" "b"
+WHERE "b"."status" = 2;
+
 
 -- sub select-distribution(UInt :$offset!, UInt :$limit! --> @)
 SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )

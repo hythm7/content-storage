@@ -147,6 +147,8 @@ multi method select-build( UUID:D :$id! ) { select-build-by-id $!pg, :$id }
 multi method select-build( 'count', Str:D :$name! ) { select-build-by-name-count $!pg, name => $name ~ '%' }
 multi method select-build( 'count' ) { select-build-count $!pg  }
 
+multi method select-build-running( 'count' ) { select-build-running-count $!pg  }
+
 multi method delete-build( UUID:D :$id! ) { delete-build-by-id $!pg, :$id }
 
 method update-build-status( UUID:D :$id!, Int:D :$status! ) {

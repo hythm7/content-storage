@@ -68,10 +68,11 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
   submethod BUILD( ContentStorage::Database:D :$!db!, Supplier:D :$!event-supplier!, UUID:D :$!user!, :$!archive! ) {
 
+    $!id = $!db.insert-build: :$!user;
+
 
     $!work-directory = tempdir.IO;
 
-    $!id = $!db.insert-build: :$!user;
 
 
     $!log-file = $!work-directory.add( $!id ).extension( 'log' );
@@ -82,19 +83,25 @@ class ContentStorage::Build does Log::Dispatch::Source {
     $!logger.add: Log::Dispatch::TTY,          max-level => LOG-LEVEL::DEBUG, :console, tty => $!log-file.open( :create, :rw ), color => config.get( 'build.log.color' );
     $!logger.add: ServerSentEventsDestination, max-level => LOG-LEVEL::DEBUG, :$!event-supplier, type => $!id.Str;
 
-    my $event = EventSource::Server::Event.new( data => to-json %( :operation<ADD>,  ID => ~$!id ) );
-
-    $!event-supplier.emit( $event );
+    $!event-supplier.emit( EventSource::Server::Event.new( data => to-json %( :operation<ADD>, ID => ~$!id ) ) );
 
   }
 
 
   method build ( ) {
 
+
     LEAVE $!logger.shutdown;
 
-    # TODO: wait if max number of builds are running
-    sleep (1 .. 2).rand.Int;
+    sleep 1; # workaround: wait for build sent event
+
+    react {
+      whenever Supply.interval( 10 ) -> $n {
+
+        done if $!db.select-build-running( 'count' ) < config.get( 'build.concurrent.max' );
+
+      }
+    }
 
     my $source-archive = $!work-directory.add: 'source-archive.tar.gz';
 
@@ -125,7 +132,6 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       default {
 
-        .say;
         self.log: :error, .message;
 
         fail-build;
@@ -150,7 +156,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       unless $meta-file.e {
 
-        self.log: :error, "meta: ｢$meta-file｣ not found!";
+        self.log: :error, "meta: ｢META6.json｣ not found!";
 
         $!db.update-build-meta:   :$!id, meta   => +ERROR;
 

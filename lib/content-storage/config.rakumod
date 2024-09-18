@@ -20,6 +20,9 @@ sub config is export {
       log => {
         color => Bool,
       },
+      concurrent => {
+        max => UInt,
+      },
       test => {
         command => Str,
       },
