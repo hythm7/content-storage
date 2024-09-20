@@ -349,32 +349,22 @@ const createBuildTableRow = function (data) {
 
 const updateBuildTableRow = function (id, data) {
 
-  // TODO: refactor without ths
-  const table_body = document.getElementsByTagName('tbody')[0];
-  const table_head = document.getElementsByTagName('thead')[0];
+  const row = document.getElementsByTagName('tbody')[0].querySelector('[data-build-id="' + id + '"]');
 
-  const table_head_ths = Array.from(table_head.getElementsByTagName('th')).map( (elem) => { return elem.innerText.toLowerCase() } );
-
-  const row = table_body.querySelector('[data-build-id="' + id + '"]');
-
-  console.log(data);
-  console.log('checking row:');
   if ( row ) {
-  console.log('found');
 
     const tds  = row.getElementsByTagName('td');
 
     Object.keys(data).forEach( (key) => {
 
-      const td = tds[table_head_ths.indexOf(key)];
-
       const value = data[key];
 
-      if      ( typeof value === 'number'    ) { td.innerHTML = build_status_to_HTML( value ) }
-      else if (        key    == 'started'   ) { td.innerText = formatDate( value )           }
-      else if (        key    == 'completed' ) { td.innerText = formatDate( value )           }
-      else if ( typeof value === 'string'    ) { td.innerText = value                         }
-      else { console.error( 'Invalid ' + value ) }
+      if      ( key == 'status'             ) { tds[0].innerHTML = build_status_to_HTML( value ) }
+      else if ( key == 'identity'           ) { tds[2].innerText =                       value   }
+      else if ( key == 'meta'               ) { tds[3].innerHTML = build_status_to_HTML( value ) }
+      else if ( key == 'test'               ) { tds[4].innerHTML = build_status_to_HTML( value ) }
+      else if ( key == 'started'            ) { tds[5].innerText = formatDate(           value ) }
+      else if ( key == 'completed' && value ) { tds[6].innerText = formatDate(           value ) }
 
     } );
   }
@@ -452,28 +442,24 @@ const updateTablePagination = function ( query, headers ) {
   if ( first == current ) {
     elementFirstPage.classList.add( "disabled" );
   } else {
-
     elementFirstPage.classList.remove( "disabled" );
   }
 
   if ( previous == current ) {
     elementPreviousPage.classList.add( "disabled" );
   } else {
-
     elementPreviousPage.classList.remove( "disabled" );
   }
 
   if ( next == current ) {
     elementNextPage.classList.add( "disabled" );
   } else {
-
     elementNextPage.classList.remove( "disabled" );
   }
 
   if ( last == current ) {
     elementLastPage.classList.add( "disabled" );
   } else {
-
     elementLastPage.classList.remove( "disabled" );
   }
 
@@ -481,10 +467,10 @@ const updateTablePagination = function ( query, headers ) {
 
 const formatDate = (dateString) => {
 
-    const date = dateString.split('T')[0];
-    const time = dateString.split('T')[1].split('.')[0];
+  const date = dateString.split('T')[0];
+  const time = dateString.split('T')[1].split('.')[0];
 
-    return date + ' ' + time;
+  return date + ' ' + time;
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -1306,17 +1292,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
       var message = JSON.parse(event.data);
 
-      if        ( message.operation == 'UPDATE' ) {
+      if ( message.operation == 'UPDATE' ) {
 
         updateBuildTableRow( message.ID, message.build );
 
-      } else if ( message.operation == 'ADD' && table_id == 'build-table' ) {
+      } else if ( message.operation == 'ADD' ) {
 
-        const query  = document.getElementById('current-page').dataset.query;
-
-        updateBuildTable( new URLSearchParams( query ) );
+        updateBuildTable( new URLSearchParams( document.getElementById('current-page').dataset.query ) );
 
       }
+
     });
 
     var buildEvent = function (event) {

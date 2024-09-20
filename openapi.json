@@ -378,6 +378,49 @@
         }
       }
     },
+    "/build/{buildId}/log": {
+      "get": {
+        "tags": [
+          "build log"
+        ],
+        "summary": "Read build log by ID",
+        "description": "Returns a single build log",
+        "operationId": "readBuildLogById",
+        "parameters": [
+          {
+            "name": "buildId",
+            "in": "path",
+            "description": "ID of build to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuildLog"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/user": {
       "get": {
         "summary": "List users",
@@ -1107,6 +1150,22 @@
             "formate": "date",
             "nullable": true,
             "example": "2024-05-19 10:46:51"
+          }
+        }
+      },
+      "BuildLog": {
+        "required": [
+          "id",
+          "log"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "28e3d63e-1abd-4e5e-89c0-757266ef7868"
+          },
+          "log": {
+            "type": "string"
           }
         }
       },

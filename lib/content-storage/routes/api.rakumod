@@ -119,8 +119,13 @@ sub api-routes(
 
       my %distribution = $db.select-distribution: :$id;
 
-      content 'application/json', %distribution;
+      if %distribution {
 
+        content 'application/json', %distribution;
+
+      } else {
+        not-found 'application/json', %( :404code, message => "Distribution ID  ｢$id｣ not found!" );
+      }
     }
 
     operation 'deleteDistributionById', -> Admin $session, UUID:D $id  {
@@ -142,13 +147,17 @@ sub api-routes(
     }
 
 
-
     operation 'readBuildById', -> ContentStorage::Session $session, UUID:D $id  {
 
       my %build = $db.select-build: :$id;
 
-      content 'application/json', %build;
+      if %build {
 
+        content 'application/json', %build;
+
+      } else {
+        not-found 'application/json', %( :404code, message => "Build ID ｢$id｣ not found!" );
+      }
     }
 
     operation 'deleteBuildById', -> Admin $session, UUID:D $id  {
@@ -198,6 +207,20 @@ sub api-routes(
 
         not-found 'application/json', %( :404code, message => "User ID ｢$id｣ not found!" );
 
+      }
+    }
+
+
+    operation 'readBuildLogById', -> ContentStorage::Session $session, UUID:D $id  {
+
+      my %build = $db.select-build-log: :$id;
+
+      if %build {
+
+        content 'application/json', %build;
+
+      } else {
+        not-found 'application/json', %( :404code, message => "Build ID ｢$id｣ not found!" );
       }
     }
 

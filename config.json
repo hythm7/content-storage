@@ -6,7 +6,7 @@
   },
   "api": {
     "page": {
-      "limit": 10
+      "limit": 42
     }
   },
   "build": {
@@ -14,7 +14,8 @@
       "color": true
     },
     "concurrent": {
-      "max": 10
+      "max": 10,
+      "delay": 10
     },
     "test": {
       "command":  "pakku nobar nospinner verbose all add ."

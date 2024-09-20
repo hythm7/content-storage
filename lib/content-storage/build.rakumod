@@ -93,12 +93,13 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
     LEAVE $!logger.shutdown;
 
-    sleep 1; # workaround: wait for build sent event
+    my $build-concurrent-max   = config.get: 'build.concurrent.max';
+    my $build-concurrent-delay = config.get: 'build.concurrent.delay';
 
     react {
-      whenever Supply.interval( 10 ) -> $n {
+      whenever Supply.interval( $build-concurrent-delay ) -> $n {
 
-        done if $!db.select-build-running( 'count' ) < config.get( 'build.concurrent.max' );
+        done if $!db.select-build-running( 'count' ) < $build-concurrent-max;
 
       }
     }
@@ -114,9 +115,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
     $!db.update-build-started: :$!id;
     $!db.update-build-status:  :$!id, status => +RUNNING;
 
-    my $started = $!db.select-build-started: :$!id;
-
-    server-message build => %( status => +RUNNING, :$started );
+    server-message-update;
 
     return fail-build unless extract-archive;
 
@@ -160,7 +159,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
         $!db.update-build-meta:   :$!id, meta   => +ERROR;
 
-        server-message build => %( meta => +ERROR );
+        server-message-update;
 
         return False;
 
@@ -189,7 +188,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
       self.log: "meta: identity ｢$identity｣";
 
 
-      server-message build => %( :$identity );
+      server-message-update;
 
       unless $version {
 
@@ -198,7 +197,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
         self.log: :error, "meta: version not found!";
         self.log: :error, 'meta: failed!';
 
-        server-message build => %( meta => +ERROR );
+        server-message-update;
 
         return False;
       }
@@ -210,7 +209,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
         self.log: :error, "meta: auth not found!";
         self.log: :error, 'meta: failed!';
 
-        server-message build => %( meta => +ERROR );
+        server-message-update;
 
         return False;
       }
@@ -230,7 +229,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
         self.log: :error, "meta: invalid-auth $auth please use $valid-auth";
         self.log: 'meta: failed!';
 
-        server-message build => %( meta => +ERROR );
+        server-message-update;
 
         return False;
       }
@@ -243,7 +242,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
         self.log: :error, "meta: ｢$identity｣ distribution already exists!";
         self.log: :error, "meta: failed!";
 
-        server-message build => %( meta => +ERROR );
+        server-message-update;
 
         return False;
 
@@ -254,7 +253,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       self.log: 'meta: success!';
 
-      server-message build => %( meta => +SUCCESS );
+      server-message-update;
 
       return True;
 
@@ -266,7 +265,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       $!db.update-build-test: :$!id, test => +RUNNING;
 
-      server-message build => %( test => +RUNNING );
+      server-message-update;
 
       my @test-command = config.get( 'build.test.command' ).split: / \s+ /;
 
@@ -292,9 +291,9 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
         $!db.update-build-test:   :$!id, test   => +ERROR;
 
-        server-message build => %( test => +ERROR );
-
         self.log: :error, "test: failed!";
+
+        server-message-update;
 
         return False;
 
@@ -302,9 +301,9 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       $!db.update-build-test:   :$!id, test   => +SUCCESS;
 
-      server-message build => %( test => +SUCCESS );
-
       self.log: "test: success!";
+
+      server-message-update;
 
       return True;
 
@@ -404,9 +403,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       $!db.update-build-completed: :$!id;
 
-      my $completed = $!db.select-build-completed: :$!id;
-
-      server-message build => %( status => +SUCCESS, :$completed );
+      server-message-update;
 
     }
 
@@ -420,13 +417,15 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       $!db.update-build-log: :$!id, log => $!log-file.slurp :close;
 
-      my $completed = $!db.select-build-completed: :$!id;
-
-      server-message build => %( status => +ERROR, :$completed );
+      server-message-update;
 
     }
 
-    my sub server-message ( :%build! ) {
+    my sub server-message-update ( ) {
+
+      my %build = $!db.select-build: :$!id;
+
+      say %build;
 
       my $event = EventSource::Server::Event.new( data => to-json %( :operation<UPDATE>,  ID => ~$!id, :%build ) );
 

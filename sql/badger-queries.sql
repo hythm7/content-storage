@@ -157,7 +157,11 @@ FROM   "build"
 WHERE  "id"        = $id
 
 -- sub select-build(UInt :$offset!, UInt :$limit! --> @)
-SELECT "b".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
+SELECT
+  "b"."id", "b"."status", "b"."meta", "b"."test",
+  "b"."identity", "b"."name", "b"."version", "b"."auth", "b"."api", 
+  "b"."started", "b"."completed",
+  ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
 FROM "build" "b"
 ORDER BY started DESC
 LIMIT $limit OFFSET $offset

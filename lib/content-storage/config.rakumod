@@ -21,7 +21,8 @@ sub config is export {
         color => Bool,
       },
       concurrent => {
-        max => UInt,
+        max   => UInt,
+        delay => UInt,
       },
       test => {
         command => Str,
