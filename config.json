@@ -2,7 +2,8 @@
   "storage": {
     "name": "my-storage",
     "host": "localhost",
-    "port": 20000
+    "port": 20000,
+    "archive-directory": "/tmp/delme/delme/archive"
   },
   "api": {
     "page": {

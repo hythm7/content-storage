@@ -93,8 +93,11 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
     LEAVE $!logger.shutdown;
 
-    my $build-concurrent-max   = config.get: 'build.concurrent.max';
-    my $build-concurrent-delay = config.get: 'build.concurrent.delay';
+    my IO::Path:D $store-archive-directory = config.get( 'storage.archive-directory' ).IO;
+
+    my UInt:D $build-concurrent-max   = config.get: 'build.concurrent.max';
+    my UInt:D $build-concurrent-delay = config.get: 'build.concurrent.delay';
+
 
     react {
       whenever Supply.interval( $build-concurrent-delay ) -> $n {
@@ -328,7 +331,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
       my $name-sha     = sha1-hex $name;
       my $identity-sha = sha1-hex $identity;
 
-      my IO::Path:D $store-archive-directory = 'archive'.IO;
+      my $archive-path = $name-sha.IO.add( $identity-sha);
 
       my $distribution-archive-directory = $store-archive-directory.add( $name-sha );
 
@@ -360,15 +363,14 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       $source-archive.copy( $distribution-archive, :createonly );
 
-      my $archive = $distribution-archive.Str;
+      my $archive = $archive-path.Str;
       my $created = DateTime( now );
 
       my %content-storage = %( :$identity, :$archive, :$created );
 
-      %meta.push: :%content-storage;
+      %meta<content-storage> =  %content-storage;
 
       my $meta = to-json %meta;
-
 
       $!db.insert-distribution(
         build => $!id,
@@ -384,7 +386,6 @@ class ContentStorage::Build does Log::Dispatch::Source {
         :@tags,
         :$readme,
         :$changes,
-        :$archive,
         :$created,
     );
 

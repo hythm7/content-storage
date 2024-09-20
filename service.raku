@@ -11,6 +11,8 @@ use Cro::WebApp::Template;
 
 use EventSource::Server;
 
+use Digest::SHA1::Native;
+
 use content-storage;
 use content-storage-config;
 use content-storage-session;
@@ -23,6 +25,8 @@ use content-storage-routes-user;
 
 my Str:D  $host = config.get( 'storage.host' );
 my UInt:D $port = config.get( 'storage.port' );
+
+my IO::Path:D  $archive-directory = config.get( 'storage.archive-directory' ).IO;
 
 my UInt:D $api-page-limit = config.get( 'api.page.limit' );
 
@@ -49,6 +53,50 @@ my sub routes( ) {
             build    => build-routes(        :$db ),
             user     => user-routes(         :$db ),
             <api v1> => api-routes(          :$db, :$openapi-schema, :$event-supplier );
+
+    get -> 'meta', $identity {
+
+      my Str $meta = $db.select-distribution-meta: :$identity;
+
+      if $meta {
+
+        content 'application/json', $meta;
+
+      } else {
+        not-found 'application/json', %( :404code, message => "Distribution identity ｢$identity｣ not found!" );
+      }
+
+    } 
+
+    get -> 'archive', $identity {
+
+      my Str $meta = $db.select-distribution-meta: :$identity;
+
+      if $meta {
+
+        my %meta = from-json $meta;
+
+        my $archive-path = %meta<content-storage><archive>;
+
+        my $download = $archive-directory.add( $archive-path );
+
+        if $download.f {
+
+          static '/tmp/archive/' ~ $archive-path;
+
+        } else {
+
+          not-found 'application/json', %( :404code, message => "Archive for identity ｢$identity｣ not found!" );
+
+        }
+
+      } else {
+
+        not-found 'application/json', %( :404code, message => "Distribution identity ｢$identity｣ not found!" );
+
+      }
+
+    } 
 
     get -> ContentStorage::Session $session, 'server-sent-events' {
       content 'text/event-stream', $event-source-server.out-supply;

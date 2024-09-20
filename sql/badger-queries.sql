@@ -220,6 +220,11 @@ SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" 
 FROM "distribution" "d"
 WHERE  "d"."identity" = $identity
 
+-- sub select-distribution-meta-by-identity(:$identity! --> $)
+SELECT "d"."meta"
+FROM "distribution" "d"
+WHERE  "d"."identity" = $identity
+
 
 -- sub select-distribution-by-name-count(Str :$name! --> $)
 SELECT COUNT(*) FROM "distribution" "d"

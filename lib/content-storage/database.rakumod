@@ -64,6 +64,7 @@ multi method select-distribution( UUID:D :$id! ) { select-distribution-by-id $!p
 multi method select-distribution( 'count', Str:D :$name! ) { select-distribution-by-name-count $!pg, name => $name ~ '%' }
 multi method select-distribution( 'count' ) { select-distribution-count $!pg  }
 
+multi method select-distribution-meta( Str:D :$identity! ) { select-distribution-meta-by-identity $!pg, :$identity; }
 
 multi method select-user-distribution( Str:D :$username!, Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
 
@@ -191,7 +192,6 @@ method insert-distribution(
            :@tags!,
   Str      :$readme!,
   Str      :$changes!,
-  Str      :$archive!,
   DateTime :$created!,
 ) {
 

@@ -10,6 +10,7 @@ sub config is export {
       name => Str,
       host => Str,
       port => UInt,
+      archive-directory => IO::Path,
     },
     api => {
       page => {
