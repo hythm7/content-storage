@@ -755,23 +755,24 @@
         }
       }
     },
-    "/user/{username}/distribution": {
+    "/user/{userid}/distribution": {
       "get": {
         "tags": [
           "user",
           "distribution"
         ],
-        "summary": "Get distributions by username",
-        "description": "Get distributions by username",
+        "summary": "Get distributions by userid",
+        "description": "Get distributions by userid",
         "operationId": "readUserDistributions",
         "parameters": [
           {
-            "name": "username",
+            "name": "userid",
             "in": "path",
-            "description": "Username. ",
+            "description": "Userid. ",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -828,23 +829,24 @@
         }
       }
     },
-    "/user/{username}/build": {
+    "/user/{userid}/build": {
       "get": {
         "tags": [
           "user",
           "build"
         ],
-        "summary": "Get builds by username",
-        "description": "Get builds by username",
+        "summary": "Get builds by userid",
+        "description": "Get builds by userid",
         "operationId": "readUserBuilds",
         "parameters": [
           {
-            "name": "username",
+            "name": "userid",
             "in": "path",
-            "description": "Username. ",
+            "description": "Userid. ",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {

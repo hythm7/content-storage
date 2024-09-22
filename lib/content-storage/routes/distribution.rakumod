@@ -4,7 +4,7 @@ use Cro::WebApp::Template;
 use content-storage-session;
 use content-storage-database;
 
-sub distribution-routes( ContentStorage::Database:D :$db! ) is export {
+sub distribution-routes( ) is export {
 
   route {
 

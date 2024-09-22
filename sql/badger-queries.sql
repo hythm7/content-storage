@@ -25,7 +25,7 @@ WHERE "u"."username" ILIKE $name
 SELECT COUNT(*) FROM "user"
 
 
--- sub select-userid-by-username(:$username! --> $)
+-- sub select-user-id-by-username(:$username! --> $)
 SELECT "id"
 FROM   "user"
 WHERE  "username" = $username

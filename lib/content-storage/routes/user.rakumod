@@ -1,6 +1,7 @@
 use Cro::HTTP::Router;
 use Cro::WebApp::Template;
 
+use content-storage;
 use content-storage-session;
 use content-storage-database;
 
@@ -18,21 +19,50 @@ sub user-routes( ContentStorage::Database:D :$db! ) is export {
       template 'users.crotmp', { :$user , :$title, :$api };
     }
 
-    get -> ContentStorage::Session $session, $username, 'distribution' {
+    get -> ContentStorage::Session $session, Str:D $id, 'distribution' {
+
+      my UUID $userid;
+      my Str  $username;
+
+      if $id ~~ UUID {
+
+        $userid   = $id;
+        $username = $db.select-user-username: :$id;
+
+      } else {
+
+        $userid   = $db.select-user-id: username => $id;
+        $username = $id;
+      }
 
       my $user  =  $session.user;
       my $title = "$username Distributions";
-      my $api   = '/api/v1/user/' ~ $username ~ '/distribution';
+      my $api   = '/api/v1/user/' ~ $userid ~ '/distribution';
 
       template 'distributions.crotmp', { :$user , :$title, :$api };
 
     }
 
-    get -> ContentStorage::Session $session, $username, 'build' {
+    get -> ContentStorage::Session $session, Str:D $id, 'build' {
+
+      my UUID $userid;
+      my Str  $username;
+
+      if $id ~~ UUID {
+
+        $userid   = $id;
+        $username = $db.select-user-username: :$id;
+
+      } else {
+
+        $userid   = $db.select-user-id: username => $id;
+        $username = $id;
+      }
+
 
       my $user  =  $session.user;
       my $title = "$username Builds";
-      my $api   = '/api/v1/user/' ~ $username ~ '/build';
+      my $api   = '/api/v1/user/' ~ $userid ~ '/build';
 
       template 'builds.crotmp', { :$user , :$title, :$api };
 

@@ -7,7 +7,7 @@
   },
   "api": {
     "page": {
-      "limit": 42
+      "limit": 1
     }
   },
   "build": {

@@ -49,10 +49,12 @@ my sub routes( ) {
 
   route {
 
-    include             distribution-routes( :$db ),
-            build    => build-routes(        :$db ),
-            user     => user-routes(         :$db ),
-            <api v1> => api-routes(          :$db, :$openapi-schema, :$event-supplier );
+    include             distribution-routes( ),
+            build    => build-routes(        ),
+
+            user     => user-routes( :$db ),
+
+            <api v1> => api-routes( :$db, :$openapi-schema, :$event-supplier );
 
     get -> 'meta', $identity {
 

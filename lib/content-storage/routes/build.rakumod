@@ -7,7 +7,7 @@ use content-storage-session;
 use content-storage-database;
 use content-storage-build;
 
-sub build-routes( ContentStorage::Database:D :$db! ) is export {
+sub build-routes( ) is export {
 
   route {
 
