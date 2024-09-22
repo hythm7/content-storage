@@ -137,10 +137,7 @@ sub api-routes(
 
         $db.delete-distribution: :$id;
 
-        say $archive-directory.add( %distribution<archive> ); 
-        say $archive-directory.add( %distribution<archive> ).e; 
         $archive-directory.add( %distribution<archive> ).unlink; 
-        say $archive-directory.add( %distribution<archive> ).e; 
 
         content 'application/json', %distribution;
 
