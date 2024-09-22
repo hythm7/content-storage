@@ -93,7 +93,8 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
     LEAVE $!logger.shutdown;
 
-    my IO::Path:D $store-archive-directory = config.get( 'storage.archive-directory' ).IO;
+    my Str:D      $storage-name              = config.get( 'storage.name' );
+    my IO::Path:D $storage-archive-directory = config.get( 'storage.archive-directory' ).IO;
 
     my UInt:D $build-concurrent-max   = config.get: 'build.concurrent.max';
     my UInt:D $build-concurrent-delay = config.get: 'build.concurrent.delay';
@@ -218,9 +219,8 @@ class ContentStorage::Build does Log::Dispatch::Source {
       }
 
 
-      #my $storage-name = config.get( 'storage.name' );
+      #TODO: validate auth
       #my $username = $!db.select-user-username: id => $!user;
-      my $storage-name = $auth.split( ':' ).head;
       my $username     = $auth.split( ':' ).tail;
 
       my $valid-auth = "$storage-name:$username";
@@ -333,7 +333,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       my $archive-path = $name-sha.IO.add( $identity-sha);
 
-      my $distribution-archive-directory = $store-archive-directory.add( $name-sha );
+      my $distribution-archive-directory = $storage-archive-directory.add( $name-sha );
 
       my $distribution-archive = $distribution-archive-directory.add( $identity-sha );
 
