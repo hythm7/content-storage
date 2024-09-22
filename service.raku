@@ -70,19 +70,17 @@ my sub routes( ) {
 
     get -> 'archive', $identity {
 
-      my Str $meta = $db.select-distribution-meta: :$identity;
+      my Str $archive = $db.select-distribution-archive: :$identity;
 
-      if $meta {
+      if $archive {
 
-        my %meta = from-json $meta;
-
-        my $archive-path = %meta<content-storage><archive>;
-
-        my $download = $archive-directory.add( $archive-path );
+        my $download = $archive-directory.add( $archive );
 
         if $download.f {
 
-          static '/tmp/archive/' ~ $archive-path;
+          #TODO: Specify content-type
+
+          static $download;
 
         } else {
 

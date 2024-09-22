@@ -76,10 +76,10 @@ SET    "admin" = $admin
 WHERE  "id"    = $id
 
 
--- sub insert-into-distribution(:$user!, Str :$name!, :$version!, :$auth!, :$api, :$identity!, Str :$description!, Str :$readme, Str :$changes,  :$provides!, :$tags!, :$meta!, :$build!, :$created! --> +)
+-- sub insert-into-distribution(:$user!, Str :$name!, :$version!, :$auth!, :$api, :$identity!, Str :$description!, Str :$readme, Str :$changes,  :$provides!, :$tags!, :$meta!, :$build!, :$archive!, :$created! --> +)
 INSERT
-INTO   "distribution" ( "user", "name", "version", "auth", "api", "identity", "meta", "description", "readme", "changes", "provides", "tags", "build", "created" )
-VALUES                ( $user,  $name,  $version,  $auth,  $api,  $identity,  $meta,  $description,  $readme,  $changes,  $provides,  $tags,  $build,  $created  )
+INTO   "distribution" ( "user", "name", "version", "auth", "api", "identity", "meta", "description", "readme", "changes", "provides", "tags", "build", "archive", "created" )
+VALUES                ( $user,  $name,  $version,  $auth,  $api,  $identity,  $meta,  $description,  $readme,  $changes,  $provides,  $tags,  $build,  $archive,  $created  )
 
 -- sub insert-into-build(:$user! --> $)
 INSERT
@@ -222,6 +222,11 @@ WHERE  "d"."identity" = $identity
 
 -- sub select-distribution-meta-by-identity(:$identity! --> $)
 SELECT "d"."meta"
+FROM "distribution" "d"
+WHERE  "d"."identity" = $identity
+
+-- sub select-distribution-archive-by-identity(:$identity! --> $)
+SELECT "d"."archive"
 FROM "distribution" "d"
 WHERE  "d"."identity" = $identity
 

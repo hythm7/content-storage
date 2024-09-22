@@ -65,6 +65,7 @@ multi method select-distribution( 'count', Str:D :$name! ) { select-distribution
 multi method select-distribution( 'count' ) { select-distribution-count $!pg  }
 
 multi method select-distribution-meta( Str:D :$identity! ) { select-distribution-meta-by-identity $!pg, :$identity; }
+multi method select-distribution-archive( Str:D :$identity! ) { select-distribution-archive-by-identity $!pg, :$identity; }
 
 multi method select-user-distribution( Str:D :$username!, Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
 
@@ -192,9 +193,10 @@ method insert-distribution(
            :@tags!,
   Str      :$readme!,
   Str      :$changes!,
+  Str      :$archive!,
   DateTime :$created!,
 ) {
 
-  insert-into-distribution $!pg, :$user, :$name, :$version, :$auth, :$api, :$identity, :$meta, :$description, :$readme, :$changes, :@provides, :@tags, :$build, :$created;
+  insert-into-distribution $!pg, :$user, :$name, :$version, :$auth, :$api, :$identity, :$meta, :$description, :$readme, :$changes, :@provides, :@tags, :$build, :$archive, :$created;
 
 }

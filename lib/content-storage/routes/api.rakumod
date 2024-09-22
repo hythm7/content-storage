@@ -17,8 +17,9 @@ sub api-routes(
   Supplier:D                 :$event-supplier!,
 ) is export {
 
-  my $page-limit = config.get( 'api.page.limit' );
-  # TODO: Handle errors
+  my $page-limit        = config.get( 'api.page.limit' );
+  my $archive-directory = config.get( 'storage.archive-directory' ).IO;
+
   openapi $openapi-schema, :validate-responses, {
 
     operation 'readDistribution', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
@@ -135,7 +136,11 @@ sub api-routes(
       if %distribution {
 
         $db.delete-distribution: :$id;
-        # TODO: Delete archive as well
+
+        say $archive-directory.add( %distribution<archive> ); 
+        say $archive-directory.add( %distribution<archive> ).e; 
+        $archive-directory.add( %distribution<archive> ).unlink; 
+        say $archive-directory.add( %distribution<archive> ).e; 
 
         content 'application/json', %distribution;
 

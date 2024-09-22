@@ -386,6 +386,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
         :@tags,
         :$readme,
         :$changes,
+        :$archive,
         :$created,
     );
 
@@ -425,8 +426,6 @@ class ContentStorage::Build does Log::Dispatch::Source {
     my sub server-message-update ( ) {
 
       my %build = $!db.select-build: :$!id;
-
-      say %build;
 
       my $event = EventSource::Server::Event.new( data => to-json %( :operation<UPDATE>,  ID => ~$!id, :%build ) );
 
