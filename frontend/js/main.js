@@ -287,7 +287,14 @@ const createDistributionTableRow = function (data) {
   auth.innerText     = data.auth;
   api.innerText      = data.api;
   created.innerText  = formatDate( data.created );
-  download.innerHTML = iconDownloadHTML;
+
+  const download_link = document.createElement('a');
+
+  download_link.className = 'btn';
+  download_link.href      = 'archive/' + data.identity;
+  download_link.innerHTML = iconDownloadHTML;
+
+  download.appendChild( download_link );
 
   row.appendChild( name );
   row.appendChild( version );
