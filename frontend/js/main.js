@@ -477,6 +477,7 @@ const formatDate = (dateString) => {
   return date + ' ' + time;
 }
 
+
 document.addEventListener('DOMContentLoaded', function () {
 
   const search_input = document.getElementById("search-input");
@@ -553,7 +554,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const build_log = document.getElementById('build-log')
 
-  const build_event_source = new EventSource('/server-sent-events');
 
   const ansi = new AnsiUp;
 
@@ -1140,133 +1140,6 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 
-  const distribution_readme  = document.getElementById('distribution-readme')
-  const distribution_changes = document.getElementById('distribution-changes')
-
-
-  if ( distribution_modal_delete ) {
-
-        distribution_modal_delete.setAttribute('data-delete-target', 'distribution' );
-  }
-
-  distribution_modal_element.addEventListener('show.bs.modal', event => {
-
-    const distribution_row = event.relatedTarget.parentNode;
-
-    const distribution_id = distribution_row.getAttribute('data-distribution-id')
-
-    const distribution_modal_body = distribution_modal_element.querySelector('.modal-body')
-
-    distribution_modal_element.setAttribute('data-distribution-id', distribution_id)
-
-    fetch( '/api/v' + api_version + '/distribution/' + distribution_id )
-      .then(response => response.json())
-      .then(data => {
-
-        distribution_modal_badge.innerText = data.identity;
-
-        if ( distribution_modal_delete ) {
-              distribution_modal_delete.setAttribute('data-delete-id', data.id )
-              distribution_modal_delete.setAttribute('data-delete-name', data.identity )
-        }
-
-
-        const readme  = data.readme;
-        const changes = data.changes;
-
-        if ( readme ) {
-          distribution_readme.innerHTML = DOMPurify.sanitize( marked.parse( data.readme ) );
-        }
-
-        if ( changes ) {
-          distribution_changes.innerHTML = DOMPurify.sanitize( data.changes.replace(/(?:\n)/g, '<br>') );
-        }
-
-      })
-      .catch(error => {
-        console.error('Error Processing:', error);
-      });
-
-  });
-
-  distribution_modal_element.addEventListener('hidden.bs.modal', event => {
-
-    distribution_modal_badge.innerHTML = '';
-
-    distribution_readme.innerHTML  = '';
-    distribution_changes.innerHTML = '';
-
-  });
-
-  if ( build_modal_delete ) {
-    build_modal_delete.setAttribute('data-delete-target', 'build' );
-  }
-
-
-  build_modal_element.addEventListener('show.bs.modal', event => {
-
-    const buildRow = event.relatedTarget.parentNode;;
-
-    const buildId = buildRow.getAttribute('data-build-id')
-
-    const build_modal_body = build_modal_element.querySelector('.modal-body')
-
-
-    build_modal_element.setAttribute('data-build-id', buildId)
-
-    fetch( '/api/v' + api_version + '/build/' + buildId )
-      .then(response => response.json())
-      .then(data => {
-
-        if ( data.identity ) {
-          build_modal_badge.innerText = data.identity
-        }
-
-        if ( build_modal_delete ) {
-
-          build_modal_delete.setAttribute('data-delete-id', data.id )
-          build_modal_delete.setAttribute('data-delete-name', data.identity )
-
-        }
-
-        if ( data.status == build_status.RUNNING ) {
-
-          build_modal_body.classList.add('autoscrollable-wrapper');
-
-          build_event_source.addEventListener(buildId, buildEvent)
-
-        } else {
-
-          build_modal_body.classList.remove('autoscrollable-wrapper');
-
-          const element = document.createElement('div');
-
-          const log = ansi.ansi_to_html( data.log ).replace(/(?:\n)/g, '<br>')
-
-          element.innerHTML = log;
-
-          build_log.appendChild(element);
-        }
-
-      })
-      .catch(error => {
-        console.error('Error Processing:', error);
-      });
-
-  });
-
-  build_modal_element.addEventListener('hidden.bs.modal', event => {
-
-    var buildId = build_modal_element.getAttribute('data-build-id')
-
-    build_event_source.removeEventListener(buildId, buildEvent)
-
-    build_modal_badge.innerHTML = '';
-    build_log.innerHTML         = '';
-
-  });
-
-
   if ( table_id == 'distribution-table' ) {
 
     search_input.addEventListener("input", (event) => {
@@ -1287,40 +1160,64 @@ document.addEventListener('DOMContentLoaded', function () {
       updateDistributionTable( new URLSearchParams( event.target.getAttribute('data-query') ) )
     });
 
-    updateDistributionTable( )
 
-  } else if ( table_id == 'build-table' ) {
+    const distribution_readme  = document.getElementById('distribution-readme')
+    const distribution_changes = document.getElementById('distribution-changes')
 
 
-    build_event_source.addEventListener('message',  (event) => {
+    distribution_modal_element.addEventListener('show.bs.modal', event => {
 
-      var message = JSON.parse(event.data);
+      const distribution_row = event.relatedTarget.parentNode;
 
-      if ( message.operation == 'UPDATE' ) {
+      const distribution_id = distribution_row.getAttribute('data-distribution-id')
 
-        updateBuildTableRow( message.ID, message.build );
+      const distribution_modal_body = distribution_modal_element.querySelector('.modal-body')
 
-      } else if ( message.operation == 'ADD' ) {
+      distribution_modal_element.setAttribute('data-distribution-id', distribution_id)
 
-        updateBuildTable( new URLSearchParams( document.getElementById('current-page').dataset.query ) );
+      fetch( '/api/v' + api_version + '/distribution/' + distribution_id )
+        .then(response => response.json())
+        .then(data => {
 
-      }
+          distribution_modal_badge.innerText = data.identity;
+
+          if ( distribution_modal_delete ) {
+            distribution_modal_delete.setAttribute('data-delete-target', 'distribution' );
+            distribution_modal_delete.setAttribute('data-delete-id', data.id )
+            distribution_modal_delete.setAttribute('data-delete-name', data.identity )
+          }
+
+
+          const readme  = data.readme;
+          const changes = data.changes;
+
+          if ( readme ) {
+            distribution_readme.innerHTML = DOMPurify.sanitize( marked.parse( readme ) );
+          }
+
+          if ( changes ) {
+            distribution_changes.innerHTML = DOMPurify.sanitize( changes.replace(/(?:\n)/g, '<br>') );
+          }
+
+        })
+        .catch(error => {
+          console.error('Error Processing:', error);
+        });
 
     });
 
-    var buildEvent = function (event) {
+    distribution_modal_element.addEventListener('hidden.bs.modal', event => {
 
-      const element = document.createElement('div');
+      distribution_modal_badge.innerHTML = '';
 
-      element.innerHTML = ansi.ansi_to_html( event.data );
-      build_log.appendChild(element);
+      distribution_readme.innerHTML  = '';
+      distribution_changes.innerHTML = '';
 
-    }
+    });
 
-    //build_event_source.onerror = (err) => {
-    //  console.error("EventSource failed:", err);
-    //}
+    updateDistributionTable( )
 
+  } else if ( table_id == 'build-table' ) {
 
     search_input.addEventListener("input", (event) => {
 
@@ -1340,8 +1237,105 @@ document.addEventListener('DOMContentLoaded', function () {
       updateBuildTable( new URLSearchParams( event.target.getAttribute('data-query') ) )
     });
 
-    updateBuildTable( )
 
+    const event_source = new EventSource('/server-sent-events');
+
+    build_modal_element.addEventListener('show.bs.modal', event => {
+
+      const buildRow = event.relatedTarget.parentNode;;
+
+      const buildId = buildRow.getAttribute('data-build-id')
+
+      const build_modal_body = build_modal_element.querySelector('.modal-body')
+
+
+      build_modal_element.setAttribute('data-build-id', buildId)
+
+      fetch( '/api/v' + api_version + '/build/' + buildId )
+        .then(response => response.json())
+        .then(data => {
+
+          if ( data.identity ) {
+            build_modal_badge.innerText = data.identity
+          }
+
+          if ( build_modal_delete ) {
+
+            build_modal_delete.setAttribute('data-delete-target', 'build' );
+            build_modal_delete.setAttribute('data-delete-id', data.id )
+            build_modal_delete.setAttribute('data-delete-name', data.identity )
+
+          }
+
+          if ( data.status == build_status.RUNNING ) {
+
+            build_modal_body.classList.add('autoscrollable-wrapper');
+
+            event_source.addEventListener(buildId, buildEvent)
+
+          } else {
+
+            build_modal_body.classList.remove('autoscrollable-wrapper');
+
+            const element = document.createElement('div');
+
+            const log = ansi.ansi_to_html( data.log ).replace(/(?:\n)/g, '<br>')
+
+            element.innerHTML = log;
+
+            build_log.appendChild(element);
+          }
+
+        })
+        .catch(error => {
+          console.error('Error Processing:', error);
+        });
+
+    });
+
+    build_modal_element.addEventListener('hidden.bs.modal', event => {
+
+      const buildId = build_modal_element.getAttribute('data-build-id')
+
+      event_source.removeEventListener(buildId, buildEvent)
+
+      build_modal_badge.innerHTML = '';
+      build_log.innerHTML         = '';
+
+     });
+
+
+    event_source.addEventListener('message',  (event) => {
+
+      const message = JSON.parse(event.data);
+
+      if ( message.operation == 'UPDATE' ) {
+
+        updateBuildTableRow( message.ID, message.build );
+
+      } else if ( message.operation == 'ADD' ) {
+
+        updateBuildTable( new URLSearchParams( document.getElementById('current-page').dataset.query ) );
+
+      }
+
+    });
+
+    const buildEvent = function (event) {
+
+      const element = document.createElement('div');
+
+      element.innerHTML = ansi.ansi_to_html( event.data );
+      build_log.appendChild(element);
+
+    }
+
+    event_source.onerror = (err) => {
+      console.error("EventSource failed:", err);
+    }
+
+
+    updateBuildTable( )
 
   } else if ( table_id == 'user-table' ) {
 
