@@ -221,6 +221,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       #TODO: validate auth
       #my $username = $!db.select-user-username: id => $!user;
+      $storage-name    = $auth.split( ':' ).head;
       my $username     = $auth.split( ':' ).tail;
 
       my $valid-auth = "$storage-name:$username";

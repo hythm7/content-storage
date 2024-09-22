@@ -28,6 +28,8 @@ my UInt:D $port = config.get( 'storage.port' );
 
 my IO::Path:D  $archive-directory = config.get( 'storage.archive-directory' ).IO;
 
+my UInt:D $api-version = config.get( 'api.version' );
+
 my UInt:D $api-page-limit = config.get( 'api.page.limit' );
 
 my Str:D $build-test-command = config.get( 'build.test.command' );
@@ -54,7 +56,7 @@ my sub routes( ) {
 
             user     => user-routes( :$db ),
 
-            <api v1> => api-routes( :$db, :$openapi-schema, :$event-supplier );
+            <api v1> => api-v1-routes( :$db, :$openapi-schema, :$event-supplier );
 
     get -> 'meta', $identity {
 

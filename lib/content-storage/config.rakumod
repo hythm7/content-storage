@@ -13,6 +13,7 @@ sub config is export {
       archive-directory => IO::Path,
     },
     api => {
+      version => UInt,
       page => {
         limit => UInt,
       },

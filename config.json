@@ -6,8 +6,9 @@
     "archive-directory": "/tmp/delme/delme/archive"
   },
   "api": {
+    "version": 1,
     "page": {
-      "limit": 1
+      "limit": 20 
     }
   },
   "build": {

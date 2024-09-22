@@ -1,8 +1,10 @@
+// Import config
+import config from '../../config.json';
 // Import our custom CSS
-import '../scss/style.scss'
+import '../scss/style.scss';
 
 // Import all of Bootstrap's JS
-import * as bootstrap from 'bootstrap'
+import * as bootstrap from 'bootstrap';
 
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
@@ -97,6 +99,8 @@ import { AnsiUp } from 'ansi_up';
   })
 })();
 
+
+const api_version = config.api.version;
 
 const build_status = Object.freeze({
 
@@ -604,7 +608,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Use Fetch API to send files to the server
-    fetch('/api/v1/build', {
+    fetch('/api/v' + api_version + '/build', {
       method: 'POST',
       body: formData
     })
@@ -683,7 +687,7 @@ document.addEventListener('DOMContentLoaded', function () {
     user_password.value         = '';
     user_confirm_password.value = '';
 
-    fetch( '/api/v1/user/' + userid )
+    fetch( '/api/v' + api_version + '/user/' + userid )
       .then((response) => {
         if (!response.ok) {
           return response.json().then(data => {
@@ -757,7 +761,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const body = new URLSearchParams({ 'firstname': firstname, 'lastname': lastname, 'email': email })
 
-    fetch('/api/v1/user/' + userid + '/info', {
+    fetch('/api/v' + api_version + '/user/' + userid + '/info', {
       method: 'PUT',
       body: body,
     })
@@ -812,7 +816,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const body = new URLSearchParams({ 'password': password })
 
-    fetch('/api/v1/user/' + userid + '/password', {
+    fetch('/api/v' + api_version + '/user/' + userid + '/password', {
       method: 'PUT',
       body: body,
     })
@@ -857,7 +861,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const body = new URLSearchParams({ 'admin': Number( admin ) })
 
-    fetch('/api/v1/user/' + userid + '/admin', {
+    fetch('/api/v' + api_version + '/user/' + userid + '/admin', {
       method: 'PUT',
       body: body,
     })
@@ -909,7 +913,7 @@ document.addEventListener('DOMContentLoaded', function () {
       'email':     email
     })
 
-    fetch('/api/v1/auth/register', {
+    fetch('/api/v' + api_version + '/auth/register', {
       method: 'POST',
       body: body,
     })
@@ -969,7 +973,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const body = new URLSearchParams({ 'username': username.value, 'password': password.value })
 
-    fetch('/api/v1/auth/login', {
+    fetch('/api/v' + api_version + '/auth/login', {
       method: 'POST',
       body: body,
     })
@@ -1020,7 +1024,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     event.preventDefault();
 
-    fetch( '/api/v1/auth/logout' )
+    fetch( '/api/v' + api_version + '/auth/logout' )
       .then((response) => {
         if (!response.ok) {
           return response.json().then(data => {
@@ -1085,7 +1089,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const delete_target = delete_modal_element.dataset.deleteTarget;
     const delete_id     = delete_modal_element.dataset.deleteId;
 
-    fetch('/api/v1/' + delete_target + '/' + delete_id, {
+    fetch('/api/v' + api_version + '/' + delete_target + '/' + delete_id, {
       method: 'DELETE'
     })
       .then((response) => {
@@ -1155,7 +1159,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     distribution_modal_element.setAttribute('data-distribution-id', distribution_id)
 
-    fetch( '/api/v1/distribution/' + distribution_id )
+    fetch( '/api/v' + api_version + '/distribution/' + distribution_id )
       .then(response => response.json())
       .then(data => {
 
@@ -1210,7 +1214,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     build_modal_element.setAttribute('data-build-id', buildId)
 
-    fetch( '/api/v1/build/' + buildId )
+    fetch( '/api/v' + api_version + '/build/' + buildId )
       .then(response => response.json())
       .then(data => {
 

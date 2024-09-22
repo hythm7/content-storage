@@ -11,7 +11,7 @@ use content-storage-database;
 use content-storage-build;
 use content-storage-model-build;
 
-sub api-routes(
+sub api-v1-routes (
   IO::Path:D                 :$openapi-schema!,
   ContentStorage::Database:D :$db!,
   Supplier:D                 :$event-supplier!,

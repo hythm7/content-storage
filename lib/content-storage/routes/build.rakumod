@@ -2,12 +2,14 @@ use JSON::Fast;
 use Cro::HTTP::Router;
 use Cro::WebApp::Template;
 
-use content-storage;
+use content-storage-config;
 use content-storage-session;
 use content-storage-database;
 use content-storage-build;
 
 sub build-routes( ) is export {
+
+  my Str:D $api-version = Version.new( config.get( 'api.version' ) ).raku;
 
   route {
 
@@ -15,7 +17,7 @@ sub build-routes( ) is export {
 
       my $user  =  $session.user;
       my $title = 'Builds';
-      my $api   = '/api/v1/build';
+      my $api   = "/api/$api-version/build";
 
       template 'builds.crotmp', { :$user , :$title, :$api };
 
