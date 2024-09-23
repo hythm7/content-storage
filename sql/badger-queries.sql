@@ -158,16 +158,20 @@ WHERE  "id"        = $id
 
 -- sub select-build(UInt :$offset!, UInt :$limit! --> @)
 SELECT
-  "b"."id", "b"."status", "b"."meta", "b"."test",
-  "b"."identity", "b"."name", "b"."version", "b"."auth", "b"."api", 
-  "b"."started", "b"."completed",
+  "b"."id",       "b"."status",   "b"."meta",    "b"."test",
+  "b"."identity", "b"."name",     "b"."version", "b"."auth", "b"."api", 
+  "b"."started",  "b"."completed",
   ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
 FROM "build" "b"
 ORDER BY started DESC
 LIMIT $limit OFFSET $offset
 
 -- sub select-build-by-name(Str :$name, UInt :$offset!, UInt :$limit! --> @)
-SELECT "b".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
+SELECT
+  "b"."id",       "b"."status",   "b"."meta",    "b"."test",
+  "b"."identity", "b"."name",     "b"."version", "b"."auth", "b"."api", 
+  "b"."started",  "b"."completed",
+  ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
 FROM "build" "b"
 WHERE "b"."name" ILIKE $name
 ORDER BY started DESC
@@ -197,13 +201,21 @@ WHERE "b"."status" = 2;
 
 
 -- sub select-distribution(UInt :$offset!, UInt :$limit! --> @)
-SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
+SELECT 
+  "d"."id",       "d"."meta",     "d"."archive", "d"."description",
+  "d"."identity", "d"."name",     "d"."version", "d"."auth", "d"."api", 
+  "d"."created",
+  ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
 FROM "distribution" "d"
 ORDER BY "d"."created" DESC
 LIMIT $limit OFFSET $offset
 
 -- sub select-distribution-by-name(Str :$name!, UInt :$offset!, UInt :$limit! --> @)
-SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
+SELECT 
+  "d"."id",       "d"."meta",     "d"."archive", "d"."description",
+  "d"."identity", "d"."name",     "d"."version", "d"."auth", "d"."api", 
+  "d"."created",
+  ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
 FROM "distribution" "d"
 WHERE "d"."name" ILIKE $name
 ORDER BY "d"."created" DESC
@@ -239,14 +251,22 @@ WHERE "d"."name" ILIKE $name
 SELECT COUNT(*) FROM "distribution"
 
 -- sub select-user-distribution(:$user!, UInt :$offset!, UInt :$limit! --> @)
-SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
+SELECT 
+  "d"."id",       "d"."meta",     "d"."archive", "d"."description",
+  "d"."identity", "d"."name",     "d"."version", "d"."auth", "d"."api", 
+  "d"."created",
+  ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
 FROM "distribution" "d"
 WHERE "d"."user" = $user
 ORDER BY "d"."created" DESC
 LIMIT $limit OFFSET $offset
 
 -- sub select-user-distribution-by-name(:$user!, Str :$name!, UInt :$offset!, UInt :$limit! --> @)
-SELECT "d".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
+SELECT 
+  "d"."id",       "d"."meta",     "d"."archive", "d"."description",
+  "d"."identity", "d"."name",     "d"."version", "d"."auth", "d"."api", 
+  "d"."created",
+  ( SELECT "username" AS "user" FROM "user" WHERE "id" = "d"."user" )
 FROM "distribution" "d"
 WHERE "d"."user" = $user AND "d"."name" ILIKE $name
 ORDER BY "d"."created" DESC
@@ -267,14 +287,22 @@ FROM "distribution" "d"
 WHERE  "d"."id" = $id
 
 -- sub select-user-build(:$user!, UInt :$offset!, UInt :$limit! --> @)
-SELECT "b".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
+SELECT
+  "b"."id",       "b"."status",   "b"."meta",    "b"."test",
+  "b"."identity", "b"."name",     "b"."version", "b"."auth", "b"."api", 
+  "b"."started",  "b"."completed",
+  ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
 FROM "build" "b"
 WHERE "b"."user" = $user
 ORDER BY "b"."started" DESC
 LIMIT $limit OFFSET $offset
 
 -- sub select-user-build-by-name(:$user!, Str :$name!, UInt :$offset!, UInt :$limit! --> @)
-SELECT "b".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
+SELECT
+  "b"."id",       "b"."status",   "b"."meta",    "b"."test",
+  "b"."identity", "b"."name",     "b"."version", "b"."auth", "b"."api", 
+  "b"."started",  "b"."completed",
+  ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
 FROM "build" "b"
 WHERE "b"."user" = $user AND "b"."name" ILIKE $name
 ORDER BY "b"."started" DESC
