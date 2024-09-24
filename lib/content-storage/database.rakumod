@@ -18,7 +18,7 @@ method insert-user( Str:D :$username!,  Str:D :$password!, Str :$firstname!, Str
 multi method select-user( UUID:D :$id! ) { select-user-by-id $!pg, :$id }
 
 
-multi method select-user( --> Seq:D ) { select-user $!pg }
+#multi method select-users( --> Seq:D ) { select-users $!pg }
 
 multi method select-user-username( UUID:D :$id! ) { select-user-username-by-id $!pg, :$id }
 
@@ -42,13 +42,13 @@ multi method update-user-admin( UUID:D :$id!, Bool:D :$admin! ) {
   update-user-admin-by-id $!pg, :$id, :$admin;
 }
 
-multi method select-user( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
-  select-user-by-name $!pg, name => $name ~ '%', :$offset, :$limit
+multi method select-users( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
+  select-users-by-name $!pg, name => $name ~ '%', :$offset, :$limit
 }
-multi method select-user( UInt :$offset!, UInt :$limit! ) { select-user $!pg, :$offset, :$limit  }
+multi method select-users( UInt :$offset!, UInt :$limit! ) { select-users $!pg, :$offset, :$limit  }
 multi method select-user( UUID:D :$id! ) { select-user-by-id $!pg, :$id }
-multi method select-user( 'count', Str:D :$name! ) { select-user-by-name-count $!pg, name => $name ~ '%' }
-multi method select-user( 'count' ) { select-user-count $!pg  }
+multi method select-users( 'count', Str:D :$name! ) { select-users-by-name-count $!pg, name => $name ~ '%' }
+multi method select-users( 'count' ) { select-users-count $!pg  }
 
 multi method select-user( Str:D :$id!       ) { select-user-by-id       $!pg, :$id       }
 multi method select-user( Str:D :$username! ) { select-user-by-username $!pg, :$username }
@@ -56,68 +56,64 @@ multi method select-user( Str:D :$username! ) { select-user-by-username $!pg, :$
 multi method delete-user( UUID:D :$id! ) { delete-user-by-id $!pg, :$id }
 
 
-multi method select-distribution( Str:D :$identity! ) { select-distribution-by-identity $!pg, :$identity; }
-
-multi method select-distribution( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
-  select-distribution-by-name $!pg, name => $name ~ '%', :$offset, :$limit
+multi method select-distributions( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
+  select-distributions-by-name $!pg, name => $name ~ '%', :$offset, :$limit
 }
-multi method select-distribution( UInt :$offset!, UInt :$limit! ) { select-distribution $!pg, :$offset, :$limit  }
-multi method select-distribution( UUID:D :$id! ) { select-distribution-by-id $!pg, :$id }
-multi method select-distribution( 'count', Str:D :$name! ) { select-distribution-by-name-count $!pg, name => $name ~ '%' }
-multi method select-distribution( 'count' ) { select-distribution-count $!pg  }
+multi method select-distributions( UInt :$offset!, UInt :$limit! ) { select-distributions $!pg, :$offset, :$limit  }
+multi method select-distributions( 'count', Str:D :$name! ) { select-distributions-by-name-count $!pg, name => $name ~ '%' }
+multi method select-distributions( 'count' ) { select-distributions-count $!pg  }
+
+multi method select-user-distributions( UUID:D :$user!, Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
+  select-user-distributions-by-name $!pg, :$user, name => $name ~ '%', :$offset, :$limit;
+}
+
+multi method select-user-distributions( UUID:D :$user!, UInt :$offset!, UInt :$limit! ) {
+  select-user-distributions $!pg, :$user, :$offset, :$limit;
+}
+
+
+multi method select-distribution( Str:D  :$identity! ) { select-distribution-by-identity $!pg, :$identity; }
+multi method select-distribution( UUID:D :$id!       ) { select-distribution-by-id $!pg, :$id }
 
 multi method select-distribution-meta( Str:D :$identity! ) { select-distribution-meta-by-identity $!pg, :$identity; }
 multi method select-distribution-archive( Str:D :$identity! ) { select-distribution-archive-by-identity $!pg, :$identity; }
 
-multi method select-user-distribution( UUID:D :$user!, Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
 
-  select-user-distribution-by-name $!pg, :$user, name => $name ~ '%', :$offset, :$limit;
+multi method select-user-distributions( 'count', UUID:D :$user!, Str:D :$name! ) {
 
-}
-
-multi method select-user-distribution( UUID:D :$user!, UInt :$offset!, UInt :$limit! ) {
-
-  select-user-distribution $!pg, :$user, :$offset, :$limit;
+  select-user-distributions-by-name-count $!pg, :$user, name => $name ~ '%'; 
 
 }
 
+multi method select-user-distributions( 'count', UUID:D :$user! ) {
 
-multi method select-user-distribution( 'count', UUID:D :$user!, Str:D :$name! ) {
-
-  select-user-distribution-by-name-count $!pg, :$user, name => $name ~ '%'; 
-
-}
-
-multi method select-user-distribution( 'count', UUID:D :$user! ) {
-
-  select-user-distribution-count $!pg, :$user;
+  select-user-distributions-count $!pg, :$user;
 }
 
 multi method delete-distribution( UUID:D :$id! ) { delete-distribution-by-id $!pg, :$id }
 
-multi method select-user-build( UUID:D :$user!, Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
+multi method select-user-builds( UUID:D :$user!, Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
 
-  select-user-build-by-name $!pg, :$user, name => $name ~ '%', :$offset, :$limit;
-
-}
-
-
-multi method select-user-build( UUID:D :$user!, UInt :$offset!, UInt :$limit! ) {
-
-  select-user-build $!pg, :$user, :$offset, :$limit;
+  select-user-builds-by-name $!pg, :$user, name => $name ~ '%', :$offset, :$limit;
 
 }
 
-multi method select-user-build( 'count', UUID:D :$user!, Str:D :$name! ) {
 
-  select-user-build-by-name-count $!pg, :$user, name => $name ~ '%';
+multi method select-user-builds( UUID:D :$user!, UInt :$offset!, UInt :$limit! ) {
+
+  select-user-builds $!pg, :$user, :$offset, :$limit;
+
 }
 
-multi method select-user-build( 'count', UUID:D :$user! ) {
+multi method select-user-builds( 'count', UUID:D :$user!, Str:D :$name! ) {
 
-  select-user-build-count $!pg, :$user 
+  select-user-builds-by-name-count $!pg, :$user, name => $name ~ '%';
 }
 
+multi method select-user-builds( 'count', UUID:D :$user! ) {
+
+  select-user-builds-count $!pg, :$user 
+}
 
 
 method insert-build( UUID:D :$user ) {
@@ -127,15 +123,15 @@ method insert-build( UUID:D :$user ) {
 }
 
 
-multi method select-build( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
-  select-build-by-name $!pg, name => $name ~ '%', :$offset, :$limit
+multi method select-builds( Str:D :$name!, UInt :$offset!, UInt :$limit! ) {
+  select-builds-by-name $!pg, name => $name ~ '%', :$offset, :$limit
 }
-multi method select-build( UInt :$offset!, UInt :$limit! ) { select-build $!pg, :$offset, :$limit  }
+multi method select-builds( UInt :$offset!, UInt :$limit! ) { select-builds $!pg, :$offset, :$limit  }
 multi method select-build( UUID:D :$id! ) { select-build-by-id $!pg, :$id }
-multi method select-build( 'count', Str:D :$name! ) { select-build-by-name-count $!pg, name => $name ~ '%' }
-multi method select-build( 'count' ) { select-build-count $!pg  }
+multi method select-builds( 'count', Str:D :$name! ) { select-builds-by-name-count $!pg, name => $name ~ '%' }
+multi method select-builds( 'count' ) { select-builds-count $!pg  }
 
-multi method select-build-running( 'count' ) { select-build-running-count $!pg  }
+multi method select-builds-running( 'count' ) { select-builds-running-count $!pg  }
 
 multi method delete-build( UUID:D :$id! ) { delete-build-by-id $!pg, :$id }
 

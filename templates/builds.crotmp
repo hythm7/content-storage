@@ -4,7 +4,7 @@
 <|page( :user( .user ), :title( .title ) )>
 <div class="page-content">
   <h2><.title></h2>
-  <&build-table( :api( .api ) )>
+  <&builds-table( :api( .api ) )>
 </div>
 </|>
 

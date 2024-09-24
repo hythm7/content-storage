@@ -17,7 +17,7 @@ sub build-routes( ) is export {
 
       my $user  =  $session.user;
       my $title = 'Builds';
-      my $api   = "/api/$api-version/build";
+      my $api   = "/api/$api-version/builds";
 
       template 'builds.crotmp', { :$user , :$title, :$api };
 

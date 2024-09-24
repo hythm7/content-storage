@@ -15,7 +15,7 @@ sub distribution-routes( ) is export {
 
       my $user  =  $session.user;
       my $title = 'Distributions';
-      my $api   = "/api/$api-version/distribution";
+      my $api   = "/api/$api-version/distributions";
 
 
       template 'distributions.crotmp', { :$user , :$title, :$api };

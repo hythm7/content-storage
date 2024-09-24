@@ -1,5 +1,5 @@
-<:sub distribution-table( :$api )>
-<table id="distribution-table" class="table" data-api="<$api>">
+<:sub distributions-table( :$api )>
+<table id="distributions-table" class="table" data-api="<$api>">
   <thead class="table-bordered border-primary">
     <tr>
       <th scope="col">Name</th>
@@ -22,8 +22,8 @@
 </table>
 </:>
 
-<:sub build-table( :$api )>
-<table id='build-table' class="table" data-api="<$api>">
+<:sub builds-table( :$api )>
+<table id='builds-table' class="table" data-api="<$api>">
   <thead class="table-bordered border-primary">
     <tr>
       <th scope="col" class="text-center">Status</th>
@@ -47,8 +47,8 @@
 </table>
 </:>
 
-<:sub user-table( :$api )>
-<table id="user-table" class="table" data-api="<$api>">
+<:sub users-table( :$api )>
+<table id="users-table" class="table" data-api="<$api>">
   <thead class="table-bordered border-primary">
     <tr>
       <th scope="col">Username</th>

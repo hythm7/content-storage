@@ -150,7 +150,7 @@ const searchUser = function ( name ) {
 
 const updateDistributionTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
 
-  const distribution_table = document.getElementById('distribution-table');
+  const distribution_table = document.getElementById('distributions-table');
   const table_body = document.getElementsByTagName('tbody')[0];
   const table_head = document.getElementsByTagName('thead')[0];
   const api                = distribution_table.dataset.api;
@@ -186,7 +186,7 @@ const updateDistributionTable = function ( query = new URLSearchParams( { page: 
 
 const updateBuildTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
 
-  const build_table = document.getElementById('build-table');
+  const build_table = document.getElementById('builds-table');
   const table_body = document.getElementsByTagName('tbody')[0];
   const table_head = document.getElementsByTagName('thead')[0];
   const api         = build_table.dataset.api;
@@ -224,7 +224,7 @@ const updateBuildTable = function ( query = new URLSearchParams( { page: 1 } ) )
 
 const updateUserTable = function ( query = new URLSearchParams( { page: 1 } ) ) {
 
-  const user_table = document.getElementById('user-table');
+  const user_table = document.getElementById('users-table');
   const table_body = document.getElementsByTagName('tbody')[0];
   const table_head = document.getElementsByTagName('thead')[0];
 
@@ -615,7 +615,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Use Fetch API to send files to the server
-    fetch('/api/v' + api_version + '/build', {
+    fetch('/api/v' + api_version + '/builds', {
       method: 'POST',
       body: formData
     })
@@ -694,7 +694,7 @@ document.addEventListener('DOMContentLoaded', function () {
     user_password.value         = '';
     user_confirm_password.value = '';
 
-    fetch( '/api/v' + api_version + '/user/' + userid )
+    fetch( '/api/v' + api_version + '/users/' + userid )
       .then((response) => {
         if (!response.ok) {
           return response.json().then(data => {
@@ -722,7 +722,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if ( user_modal_delete ) {
-          user_modal_delete.setAttribute('data-delete-target', 'user' )
+          user_modal_delete.setAttribute('data-delete-target', 'users' )
           user_modal_delete.setAttribute('data-delete-id', id )
           user_modal_delete.setAttribute('data-delete-name', username )
         }
@@ -768,7 +768,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const body = new URLSearchParams({ 'firstname': firstname, 'lastname': lastname, 'email': email })
 
-    fetch('/api/v' + api_version + '/user/' + userid + '/info', {
+    fetch('/api/v' + api_version + '/users/' + userid + '/info', {
       method: 'PUT',
       body: body,
     })
@@ -823,7 +823,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const body = new URLSearchParams({ 'password': password })
 
-    fetch('/api/v' + api_version + '/user/' + userid + '/password', {
+    fetch('/api/v' + api_version + '/users/' + userid + '/password', {
       method: 'PUT',
       body: body,
     })
@@ -868,7 +868,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const body = new URLSearchParams({ 'admin': Number( admin ) })
 
-    fetch('/api/v' + api_version + '/user/' + userid + '/admin', {
+    fetch('/api/v' + api_version + '/users/' + userid + '/admin', {
       method: 'PUT',
       body: body,
     })
@@ -1113,9 +1113,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
           const query  = document.getElementById('current-page').dataset.query;
 
-          if      ( delete_target == 'distribution' ) { updateDistributionTable( new URLSearchParams( query ) ) }
-          else if ( delete_target == 'build'        ) { updateBuildTable(        new URLSearchParams( query ) ) }
-          else if ( delete_target == 'user'         ) { updateUserTable(         new URLSearchParams( query ) ) }
+          if      ( delete_target == 'distributions' ) { updateDistributionTable( new URLSearchParams( query ) ) }
+          else if ( delete_target == 'builds'        ) { updateBuildTable(        new URLSearchParams( query ) ) }
+          else if ( delete_target == 'users'         ) { updateUserTable(         new URLSearchParams( query ) ) }
 
         }
 
@@ -1147,7 +1147,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 
-  if ( table_id == 'distribution-table' ) {
+  if ( table_id == 'distributions-table' ) {
 
     search_input.addEventListener("input", (event) => {
 
@@ -1182,14 +1182,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
       distribution_modal_element.setAttribute('data-distribution-id', distribution_id)
 
-      fetch( '/api/v' + api_version + '/distribution/' + distribution_id )
+      fetch( '/api/v' + api_version + '/distributions/' + distribution_id )
         .then(response => response.json())
         .then(data => {
 
           distribution_modal_badge.innerText = data.identity;
 
           if ( distribution_modal_delete ) {
-            distribution_modal_delete.setAttribute('data-delete-target', 'distribution' );
+            distribution_modal_delete.setAttribute('data-delete-target', 'distributions' );
             distribution_modal_delete.setAttribute('data-delete-id', data.id )
             distribution_modal_delete.setAttribute('data-delete-name', data.identity )
           }
@@ -1224,7 +1224,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     updateDistributionTable( )
 
-  } else if ( table_id == 'build-table' ) {
+  } else if ( table_id == 'builds-table' ) {
 
     search_input.addEventListener("input", (event) => {
 
@@ -1258,7 +1258,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       build_modal_element.setAttribute('data-build-id', buildId)
 
-      fetch( '/api/v' + api_version + '/build/' + buildId )
+      fetch( '/api/v' + api_version + '/builds/' + buildId )
         .then(response => response.json())
         .then(data => {
 
@@ -1268,7 +1268,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
           if ( build_modal_delete ) {
 
-            build_modal_delete.setAttribute('data-delete-target', 'build' );
+            build_modal_delete.setAttribute('data-delete-target', 'builds' );
             build_modal_delete.setAttribute('data-delete-id', data.id )
             build_modal_delete.setAttribute('data-delete-name', data.identity )
 
@@ -1344,7 +1344,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     updateBuildTable( )
 
-  } else if ( table_id == 'user-table' ) {
+  } else if ( table_id == 'users-table' ) {
 
     search_input.addEventListener("input", (event) => {
 

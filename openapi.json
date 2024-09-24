@@ -19,33 +19,33 @@
   ],
   "tags": [
     {
-      "name": "distribution",
-      "description": "Everything about distribution",
+      "name": "distributions",
+      "description": "Everything about distributions",
       "externalDocs": {
         "description": "Find out more",
         "url": "http://swagger.io"
       }
     },
     {
-      "name": "build",
+      "name": "builds",
       "description": "Build",
       "externalDocs": {
-        "description": "Find out more about our build",
+        "description": "Find out more about our builds",
         "url": "http://swagger.io"
       }
     },
     {
-      "name": "user",
-      "description": "Operations about user"
+      "name": "users",
+      "description": "Operations about users"
     }
   ],
   "paths": {
-    "/distribution": {
+    "/distributions": {
       "get": {    
         "summary": "List distributions",
-        "operationId": "readDistribution",
+        "operationId": "readDistributions",
         "tags": [
-          "distribution"
+          "distributions"
         ],
         "parameters": [
           {
@@ -110,7 +110,7 @@
         }   
       }
     },
-    "/distribution/{distributionId}": {
+    "/distributions/{distributionId}": {
       "get": {
         "tags": [
           "distribution"
@@ -194,12 +194,12 @@
         }
       }
     },
-    "/build": {
+    "/builds": {
       "get": {    
         "summary": "List all builds",
-        "operationId": "readBuild",
+        "operationId": "readBuilds",
         "tags": [
-          "build"
+          "builds"
         ],
         "parameters": [
           {
@@ -294,7 +294,7 @@
         }
       }
     },
-    "/build/{buildId}": {
+    "/builds/{buildId}": {
       "get": {
         "tags": [
           "build"
@@ -378,7 +378,7 @@
         }
       }
     },
-    "/build/{buildId}/log": {
+    "/builds/{buildId}/log": {
       "get": {
         "tags": [
           "build log"
@@ -421,12 +421,12 @@
         }
       }
     },
-    "/user": {
+    "/users": {
       "get": {
         "summary": "List users",
-        "operationId": "readUser",
+        "operationId": "readUsers",
         "tags": [
-          "user"
+          "users"
         ],
         "parameters": [
           {
@@ -491,7 +491,7 @@
         }   
       }
     },
-    "/user/{userId}": {
+    "/users/{userId}": {
       "get": {
         "tags": [
           "user"
@@ -575,7 +575,7 @@
         }
       }
     },
-    "/user/{userId}/info": {
+    "/users/{userId}/info": {
       "put": {
         "tags": [
           "user",
@@ -635,7 +635,7 @@
         }
       }
     },
-    "/user/{userId}/password": {
+    "/users/{userId}/password": {
       "put": {
         "tags": [
           "user",
@@ -695,7 +695,7 @@
         }
       }
     },
-    "/user/{userId}/admin": {
+    "/users/{userId}/admin": {
       "put": {
         "tags": [
           "user",
@@ -755,11 +755,11 @@
         }
       }
     },
-    "/user/{userid}/distribution": {
+    "/users/{userid}/distributions": {
       "get": {
         "tags": [
           "user",
-          "distribution"
+          "distributions"
         ],
         "summary": "Get distributions by userid",
         "description": "Get distributions by userid",
@@ -829,11 +829,11 @@
         }
       }
     },
-    "/user/{userid}/build": {
+    "/users/{userid}/builds": {
       "get": {
         "tags": [
           "user",
-          "build"
+          "builds"
         ],
         "summary": "Get builds by userid",
         "description": "Get builds by userid",
@@ -842,7 +842,7 @@
           {
             "name": "userid",
             "in": "path",
-            "description": "Userid. ",
+            "description": "User ID. ",
             "required": true,
             "schema": {
               "type": "string",

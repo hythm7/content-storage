@@ -52,9 +52,9 @@ my sub routes( ) {
   route {
 
     include             distribution-routes( ),
-            build    => build-routes(        ),
+            builds    => build-routes(        ),
 
-            user     => user-routes( :$db ),
+            users     => user-routes( :$db ),
 
             <api v1> => api-v1-routes( :$db, :$openapi-schema, :$event-supplier );
 

@@ -4,6 +4,6 @@
 <|page( :user( .user ), :title( .title ) )>
   <div class="page-content">
     <h2><.title></h2>
-    <&user-table( :api( .api ) )>
+    <&users-table( :api( .api ) )>
   </div>
 </|>

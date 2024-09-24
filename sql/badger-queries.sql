@@ -1,10 +1,10 @@
--- sub select-user(UInt :$offset!, UInt :$limit! --> @)
+-- sub select-users(UInt :$offset!, UInt :$limit! --> @)
 SELECT "u"."id", "u"."username", "u"."firstname", "u"."lastname", "u"."email", "u"."admin", "u"."created"
 FROM "user" "u"
 ORDER BY "u"."created" DESC
 LIMIT $limit OFFSET $offset
 
--- sub select-user-by-name(Str :$name!, UInt :$offset!, UInt :$limit! --> @)
+-- sub select-users-by-name(Str :$name!, UInt :$offset!, UInt :$limit! --> @)
 SELECT "u"."id", "u"."username", "u"."firstname", "u"."lastname", "u"."email", "u"."admin", "u"."created"
 FROM "user" "u"
 WHERE "u"."username" ILIKE $name
@@ -17,11 +17,11 @@ SELECT "u"."id", "u"."username", "u"."firstname", "u"."lastname", "u"."email", "
 FROM "user" "u"
 WHERE  "u"."id" = $id
 
--- sub select-user-by-name-count(Str :$name! --> $)
+-- sub select-users-by-name-count(Str :$name! --> $)
 SELECT COUNT(*) FROM "user" "u"
 WHERE "u"."username" ILIKE $name
 
--- sub select-user-count(--> $)
+-- sub select-users-count(--> $)
 SELECT COUNT(*) FROM "user"
 
 
@@ -156,7 +156,7 @@ SELECT "completed"
 FROM   "build"
 WHERE  "id"        = $id
 
--- sub select-build(UInt :$offset!, UInt :$limit! --> @)
+-- sub select-builds(UInt :$offset!, UInt :$limit! --> @)
 SELECT
   "b"."id",       "b"."status",   "b"."meta",    "b"."test",
   "b"."identity", "b"."name",     "b"."version", "b"."auth", "b"."api", 
@@ -166,7 +166,7 @@ FROM "build" "b"
 ORDER BY started DESC
 LIMIT $limit OFFSET $offset
 
--- sub select-build-by-name(Str :$name, UInt :$offset!, UInt :$limit! --> @)
+-- sub select-builds-by-name(Str :$name, UInt :$offset!, UInt :$limit! --> @)
 SELECT
   "b"."id",       "b"."status",   "b"."meta",    "b"."test",
   "b"."identity", "b"."name",     "b"."version", "b"."auth", "b"."api", 
@@ -188,19 +188,19 @@ SELECT "id", "log"
 FROM   "build"
 WHERE  "id" = $id
 
--- sub select-build-by-name-count(Str :$name! --> $)
+-- sub select-builds-by-name-count(Str :$name! --> $)
 SELECT COUNT(*) FROM "build" "b"
 WHERE "b"."name" ILIKE $name
 
--- sub select-build-count(--> $)
+-- sub select-builds-count(--> $)
 SELECT COUNT(*) FROM "build"
 
--- sub select-build-running-count(--> $)
+-- sub select-builds-running-count(--> $)
 SELECT COUNT(*) FROM "build" "b"
 WHERE "b"."status" = 2;
 
 
--- sub select-distribution(UInt :$offset!, UInt :$limit! --> @)
+-- sub select-distributions(UInt :$offset!, UInt :$limit! --> @)
 SELECT 
   "d"."id",       "d"."meta",     "d"."archive", "d"."description",
   "d"."identity", "d"."name",     "d"."version", "d"."auth", "d"."api", 
@@ -210,7 +210,7 @@ FROM "distribution" "d"
 ORDER BY "d"."created" DESC
 LIMIT $limit OFFSET $offset
 
--- sub select-distribution-by-name(Str :$name!, UInt :$offset!, UInt :$limit! --> @)
+-- sub select-distributions-by-name(Str :$name!, UInt :$offset!, UInt :$limit! --> @)
 SELECT 
   "d"."id",       "d"."meta",     "d"."archive", "d"."description",
   "d"."identity", "d"."name",     "d"."version", "d"."auth", "d"."api", 
@@ -243,14 +243,14 @@ FROM "distribution" "d"
 WHERE  "d"."identity" = $identity
 
 
--- sub select-distribution-by-name-count(Str :$name! --> $)
+-- sub select-distributions-by-name-count(Str :$name! --> $)
 SELECT COUNT(*) FROM "distribution" "d"
 WHERE "d"."name" ILIKE $name
 
--- sub select-distribution-count(--> $)
+-- sub select-distributions-count(--> $)
 SELECT COUNT(*) FROM "distribution"
 
--- sub select-user-distribution(:$user!, UInt :$offset!, UInt :$limit! --> @)
+-- sub select-user-distributions(:$user!, UInt :$offset!, UInt :$limit! --> @)
 SELECT 
   "d"."id",       "d"."meta",     "d"."archive", "d"."description",
   "d"."identity", "d"."name",     "d"."version", "d"."auth", "d"."api", 
@@ -261,7 +261,7 @@ WHERE "d"."user" = $user
 ORDER BY "d"."created" DESC
 LIMIT $limit OFFSET $offset
 
--- sub select-user-distribution-by-name(:$user!, Str :$name!, UInt :$offset!, UInt :$limit! --> @)
+-- sub select-user-distributions-by-name(:$user!, Str :$name!, UInt :$offset!, UInt :$limit! --> @)
 SELECT 
   "d"."id",       "d"."meta",     "d"."archive", "d"."description",
   "d"."identity", "d"."name",     "d"."version", "d"."auth", "d"."api", 
@@ -273,11 +273,11 @@ ORDER BY "d"."created" DESC
 LIMIT $limit OFFSET $offset
 
 
--- sub select-user-distribution-count(:$user! --> $)
+-- sub select-user-distributions-count(:$user! --> $)
 SELECT COUNT(*) FROM "distribution" "d"
 WHERE "d"."user" = $user
 
--- sub select-user-distribution-by-name-count(:$user!, Str :$name! --> $)
+-- sub select-user-distributions-by-name-count(:$user!, Str :$name! --> $)
 SELECT COUNT(*) FROM "distribution" "d"
 WHERE "d"."user" = $user AND "d"."name" ILIKE $name
 
@@ -286,7 +286,7 @@ DELETE
 FROM "distribution" "d"
 WHERE  "d"."id" = $id
 
--- sub select-user-build(:$user!, UInt :$offset!, UInt :$limit! --> @)
+-- sub select-user-builds(:$user!, UInt :$offset!, UInt :$limit! --> @)
 SELECT
   "b"."id",       "b"."status",   "b"."meta",    "b"."test",
   "b"."identity", "b"."name",     "b"."version", "b"."auth", "b"."api", 
@@ -297,7 +297,7 @@ WHERE "b"."user" = $user
 ORDER BY "b"."started" DESC
 LIMIT $limit OFFSET $offset
 
--- sub select-user-build-by-name(:$user!, Str :$name!, UInt :$offset!, UInt :$limit! --> @)
+-- sub select-user-builds-by-name(:$user!, Str :$name!, UInt :$offset!, UInt :$limit! --> @)
 SELECT
   "b"."id",       "b"."status",   "b"."meta",    "b"."test",
   "b"."identity", "b"."name",     "b"."version", "b"."auth", "b"."api", 
@@ -309,11 +309,11 @@ ORDER BY "b"."started" DESC
 LIMIT $limit OFFSET $offset
 
 
--- sub select-user-build-count(:$user! --> $)
+-- sub select-user-builds-count(:$user! --> $)
 SELECT COUNT(*) FROM "build" "b"
 WHERE "b"."user" = $user
 
--- sub select-user-build-by-name-count(:$user!, Str :$name! --> $)
+-- sub select-user-builds-by-name-count(:$user!, Str :$name! --> $)
 SELECT COUNT(*) FROM "build" "b"
 WHERE "b"."user" = $user AND "b"."name" ILIKE $name
 

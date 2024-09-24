@@ -22,9 +22,9 @@ sub api-v1-routes (
 
   openapi $openapi-schema, :validate-responses, {
 
-    operation 'readDistribution', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
+    operation 'readDistributions', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
 
-      my Int:D $total = $db.select-distribution: 'count', :$name;
+      my Int:D $total = $db.select-distributions: 'count', :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 
@@ -35,14 +35,14 @@ sub api-v1-routes (
       response.append-header: 'x-last',     $pager.last;
 
 
-      my @distribution = $db.select-distribution: :$name, offset => $pager.offset, limit => $pager.limit;
+      my @distribution = $db.select-distributions: :$name, offset => $pager.offset, limit => $pager.limit;
 
       content 'application/json', @distribution;
 
     }
 
-    operation 'readBuild', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
-      my Int:D $total = $db.select-build: 'count', :$name;
+    operation 'readBuilds', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
+      my Int:D $total = $db.select-builds: 'count', :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 
@@ -53,13 +53,13 @@ sub api-v1-routes (
       response.append-header: 'x-last',     $pager.last;
 
 
-      my @build = $db.select-build: :$name, offset => $pager.offset, limit => $pager.limit;
+      my @build = $db.select-builds: :$name, offset => $pager.offset, limit => $pager.limit;
 
       content 'application/json', @build;
     }
 
-    operation 'readUser', -> Admin $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
-      my Int:D $total = $db.select-user: 'count', :$name;
+    operation 'readUsers', -> Admin $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
+      my Int:D $total = $db.select-users: 'count', :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 
@@ -70,7 +70,7 @@ sub api-v1-routes (
       response.append-header: 'x-last',     $pager.last;
 
 
-      my @user = $db.select-user: :$name, offset => $pager.offset, limit => $pager.limit;
+      my @user = $db.select-users: :$name, offset => $pager.offset, limit => $pager.limit;
 
       content 'application/json', @user;
 
@@ -79,7 +79,7 @@ sub api-v1-routes (
 
     operation 'readUserDistributions', -> ContentStorage::Session $session, UUID:D $user, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
 
-      my Int:D $total = $db.select-user-distribution: 'count', :$user, :$name;
+      my Int:D $total = $db.select-user-distributions: 'count', :$user, :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 
@@ -90,7 +90,7 @@ sub api-v1-routes (
       response.append-header: 'x-last',     $pager.last;
 
 
-      my @distribution = $db.select-user-distribution: :$user, :$name, offset => $pager.offset, limit => $pager.limit;
+      my @distribution = $db.select-user-distributions: :$user, :$name, offset => $pager.offset, limit => $pager.limit;
 
       content 'application/json', @distribution;
 
@@ -98,7 +98,7 @@ sub api-v1-routes (
 
     operation 'readUserBuilds', -> ContentStorage::Session $session, UUID:D $user, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
 
-      my Int:D $total = $db.select-user-build: 'count', :$user, :$name;
+      my Int:D $total = $db.select-user-builds: 'count', :$user, :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 
@@ -109,7 +109,7 @@ sub api-v1-routes (
       response.append-header: 'x-last',     $pager.last;
 
 
-      my @build = $db.select-user-build: :$user, :$name, offset => $pager.offset, limit => $pager.limit;
+      my @build = $db.select-user-builds: :$user, :$name, offset => $pager.offset, limit => $pager.limit;
 
       content 'application/json', @build;
 

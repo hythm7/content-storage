@@ -26,8 +26,8 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarToggler">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item"> <a class="nav-link" href="/build">Builds</a> </li>
-        <?$user><?$user.admin><li class="nav-item"> <a class="nav-link" href="/user">Users</a></li></?></?>
+        <li class="nav-item"> <a class="nav-link" href="/builds">Builds</a> </li>
+        <?$user><?$user.admin><li class="nav-item"> <a class="nav-link" href="/users">Users</a></li></?></?>
       </ul>
       <div class="input-group px-4">
         <input id="search-input" class="form-control" type="text" placeholder="⌕" arla-label="Search">
@@ -44,8 +44,8 @@
         <ul class="dropdown-menu dropdown-menu-lg-end">
           <li><button class="btn dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#user-modal" data-user-id="<$user.id>" aria-expanded="false"><$user.username></button><li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="/user/<$user.username>/distribution">My Distributions</a></li>
-          <li><a class="dropdown-item" href="/user/<$user.username>/build">My Builds</a></li>
+          <li><a class="dropdown-item" href="/users/<$user.username>/distributions">My Distributions</a></li>
+          <li><a class="dropdown-item" href="/users/<$user.username>/builds">My Builds</a></li>
           <li><hr class="dropdown-divider"></li>
           <li><button class="btn dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#logout-modal" aria-expanded="false">Logout</button><li>
         </ul>
