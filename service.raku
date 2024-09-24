@@ -26,7 +26,7 @@ use content-storage-routes-user;
 my Str:D  $host = config.get( 'storage.host' );
 my UInt:D $port = config.get( 'storage.port' );
 
-my IO::Path:D  $archive-directory = config.get( 'storage.archive-directory' ).IO;
+my IO::Path:D  $archives-directory = config.get( 'storage.archives-directory' ).IO;
 
 my UInt:D $api-version = config.get( 'api.version' );
 
@@ -72,13 +72,13 @@ my sub routes( ) {
 
     } 
 
-    get -> 'archive', $identity {
+    get -> 'archives', $identity {
 
       my Str $archive = $db.select-distribution-archive: :$identity;
 
       if $archive {
 
-        my $download = $archive-directory.add( $archive );
+        my $download = $archives-directory.add( $archive );
 
         if $download.f {
 

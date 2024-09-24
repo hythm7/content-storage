@@ -5,7 +5,7 @@ unit module ContentStorage::Config;
 
 sub config is export {
 
-  Config.new(
+  Config.new( {
     storage => {
       name => Str,
       host => Str,
@@ -29,8 +29,8 @@ sub config is export {
       test => {
         command => Str,
       },
-    },
-  ).read: from-json slurp 'config.json';
+    }
+  } ).read: from-json slurp 'config.json';
 
 }
 

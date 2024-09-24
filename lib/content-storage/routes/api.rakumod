@@ -24,7 +24,7 @@ sub api-v1-routes (
 
     operation 'readDistributions', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
 
-      my Int:D $total = $db.select-distributions: 'count', :$name;
+      my Int:D $total = $db.select-distributions-count: :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 
@@ -42,7 +42,7 @@ sub api-v1-routes (
     }
 
     operation 'readBuilds', -> ContentStorage::Session $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
-      my Int:D $total = $db.select-builds: 'count', :$name;
+      my Int:D $total = $db.select-builds-count: :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 
@@ -59,7 +59,7 @@ sub api-v1-routes (
     }
 
     operation 'readUsers', -> Admin $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
-      my Int:D $total = $db.select-users: 'count', :$name;
+      my Int:D $total = $db.select-users-count: :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 
@@ -79,7 +79,7 @@ sub api-v1-routes (
 
     operation 'readUserDistributions', -> ContentStorage::Session $session, UUID:D $user, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
 
-      my Int:D $total = $db.select-user-distributions: 'count', :$user, :$name;
+      my Int:D $total = $db.select-user-distributions-count: :$user, :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 
@@ -98,7 +98,7 @@ sub api-v1-routes (
 
     operation 'readUserBuilds', -> ContentStorage::Session $session, UUID:D $user, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
 
-      my Int:D $total = $db.select-user-builds: 'count', :$user, :$name;
+      my Int:D $total = $db.select-user-builds-count: :$user, :$name;
 
       my $pager = ContentStorage::Pager.new: :$total, :$page, :$limit;
 

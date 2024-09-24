@@ -103,7 +103,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
     react {
       whenever Supply.interval( $build-concurrent-delay ) -> $n {
 
-        done if $!db.select-builds-running( 'count' ) < $build-concurrent-max;
+        done if $!db.select-builds-running-count( ) < $build-concurrent-max;
 
       }
     }

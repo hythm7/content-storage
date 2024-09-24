@@ -291,7 +291,7 @@ const createDistributionTableRow = function (data) {
   const download_link = document.createElement('a');
 
   download_link.className = 'btn';
-  download_link.href      = 'archive/' + data.identity;
+  download_link.href      = '/archives/' + data.identity;
   download_link.innerHTML = iconDownloadHTML;
 
   download.appendChild( download_link );
