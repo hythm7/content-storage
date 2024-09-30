@@ -1096,7 +1096,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const delete_target = delete_modal_element.dataset.deleteTarget;
     const delete_id     = delete_modal_element.dataset.deleteId;
 
-    fetch('/api/v' + api_version + '/' + delete_target + '/' + delete_id, {
+    let params = {};
+
+    params[ delete_target.slice(0, -1) ] =  delete_id;
+
+    const query = new URLSearchParams( params );
+
+    fetch('/api/v' + api_version + '/' + delete_target + '?' + query.toString(), {
       method: 'DELETE'
     })
       .then((response) => {

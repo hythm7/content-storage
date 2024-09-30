@@ -18,7 +18,7 @@ sub api-v1-routes (
 ) is export {
 
   my $page-limit        = config.get( 'api.page.limit' );
-  my $archive-directory = config.get( 'storage.archive-directory' ).IO;
+  my $archives-directory = config.get( 'storage.archives-directory' ).IO;
 
   openapi $openapi-schema, :validate-responses, {
 
@@ -116,98 +116,100 @@ sub api-v1-routes (
     }
 
 
-    operation 'readDistributionById', -> ContentStorage::Session $session, UUID:D $id  {
+    operation 'readDistribution', -> ContentStorage::Session $session, Str:D $distribution {
 
-      my %distribution = $db.select-distribution: :$id;
+      my %distribution = $db.select-distribution: $distribution;
 
       if %distribution {
 
         content 'application/json', %distribution;
 
       } else {
-        not-found 'application/json', %( :404code, message => "Distribution ID  ｢$id｣ not found!" );
+        not-found 'application/json', %( :404code, message => "Distribution ｢$distribution｣ not found!" );
       }
     }
 
-    operation 'deleteDistributionById', -> Admin $session, UUID:D $id  {
+    operation 'deleteDistribution', -> Admin $session, Str:D :$distribution! is query {
 
-      my %distribution = $db.select-distribution: :$id;
+      dd $distribution;
+      dd $distribution ~~ Identity;
+
+      my %distribution = $db.select-distribution: $distribution;
 
       if %distribution {
 
-        $db.delete-distribution: :$id;
+        $db.delete-distribution: id => %distribution<id>;
 
-        $archive-directory.add( %distribution<archive> ).unlink; 
+        $archives-directory.add( %distribution<archive> ).unlink; 
 
         content 'application/json', %distribution;
 
       } else {
-        not-found 'application/json', %( :404code, message => "Distribution ID  ｢$id｣ not found!" );
+        not-found 'application/json', %( :404code, message => "Distribution ｢$distribution｣ not found!" );
       }
 
 
     }
 
 
-    operation 'readBuildById', -> ContentStorage::Session $session, UUID:D $id  {
+    operation 'readBuild', -> ContentStorage::Session $session, UUID:D $build  {
 
-      my %build = $db.select-build: :$id;
+      my %build = $db.select-build: $build;
 
       if %build {
 
         content 'application/json', %build;
 
       } else {
-        not-found 'application/json', %( :404code, message => "Build ID ｢$id｣ not found!" );
+        not-found 'application/json', %( :404code, message => "Build ｢$build｣ not found!" );
       }
     }
 
-    operation 'deleteBuildById', -> Admin $session, UUID:D $id  {
+    operation 'deleteBuild', -> Admin $session, UUID:D :$build! is query  {
 
-      my %build = $db.select-build: :$id;
+      my %build = $db.select-build: $build;
 
       if %build {
 
-        $db.delete-build: :$id;
+        $db.delete-build: id => %build<id>;
 
         content 'application/json', %build;
 
       } else {
-        not-found 'application/json', %( :404code, message => "Build ID ｢$id｣ not found!" );
+        not-found 'application/json', %( :404code, message => "Build ｢$build｣ not found!" );
       }
 
 
     }
 
-    operation 'deleteUserById', -> Admin $session, UUID:D $id  {
+    operation 'deleteUser', -> Admin $session, Str:D :$user! is query  {
 
-      my %user = $db.select-user: :$id;
+      my %user = $db.select-user: $user;
 
       if %user {
 
-        $db.delete-user: :$id;
+        $db.delete-user: id => %user<id>;
 
         content 'application/json', %user;
 
       } else {
-        not-found 'application/json', %( :404code, message => "User ID ｢$id｣ not found!" );
+        not-found 'application/json', %( :404code, message => "User ｢$user｣ not found!" );
       }
-
 
     }
 
 
-    operation 'readUserById', -> LoggedIn $session, UUID:D $id  {
+    operation 'readUser', -> LoggedIn $session, Str:D $user  {
 
-      my %user = $db.select-user: :$id;
+      my %user = $db.select-user: $user;
 
-      if ( %user and  ( ( $id eq $session.user.id ) or $session.admin ) ) {
+      if ( %user and  ( ( %user<id> eq $session.user.id ) or $session.admin ) ) {
 
         content 'application/json', %user;
 
       } else {
 
-        not-found 'application/json', %( :404code, message => "User ID ｢$id｣ not found!" );
+        not-found 'application/json', %( :404code, message => "User ｢$user｣ not found!" );
 
       }
     }
@@ -222,7 +224,7 @@ sub api-v1-routes (
         content 'application/json', %build;
 
       } else {
-        not-found 'application/json', %( :404code, message => "Build ID ｢$id｣ not found!" );
+        not-found 'application/json', %( :404code, message => "Build ｢$id｣ not found!" );
       }
     }
 
@@ -256,7 +258,7 @@ sub api-v1-routes (
 
           if ( argon2-verify( %password<password>, $password ) ) {
 
-            my %user = $db.select-user( :$username );
+            my %user = $db.select-user( $username );
 
             my $user = ContentStorage::Model::User.new: |%user;
 
@@ -277,7 +279,7 @@ sub api-v1-routes (
 
       request-body -> ( :$username!, :$firstname!, :$lastname!, :$email!, :$password! ) {
 
-        if $db.select-user( :$username ) {
+        if $db.select-user( $username ) {
 
           conflict 'application/json', %( :409code, message => "User ｢$username｣ is already registered!" );
 
@@ -293,12 +295,17 @@ sub api-v1-routes (
 
     operation 'logoutUser', -> ContentStorage::Session $session {
 
-      my $user = $session.user;
+      if $session.user {
 
-      $session.set-logged-in-user( Nil );
+        my $user = $session.user;
 
-      content 'application/json', { id => $user.id, username => $user.username };
+        $session.set-logged-in-user( Nil );
 
+        content 'application/json', { id => $user.id, username => $user.username };
+      } else {
+
+        not-found 'application/json', %( :404code, message => "No active session!" );
+      }
     }
 
     operation 'updateUserInfo', -> LoggedIn $session, UUID:D $id {
@@ -324,7 +331,7 @@ sub api-v1-routes (
 
     operation 'updateUserPassword', -> LoggedIn $session, UUID:D $id {
 
-      my %user = $db.select-user( :$id );
+      my %user = $db.select-user( $id );
 
       request-body -> ( :$password! ) {
         
@@ -347,11 +354,11 @@ sub api-v1-routes (
 
       request-body -> ( Bool(Int()):$admin! ) {
 
-        if $db.select-user( :$id ) and $session.admin {
+        if $db.select-user( $id ) and $session.admin {
 
           $db.update-user-admin( :$id, :$admin );
 
-          my %user = $db.select-user( :$id );
+          my %user = $db.select-user( $id );
 
           content 'application/json', %user;
 

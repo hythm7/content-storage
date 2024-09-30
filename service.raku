@@ -51,12 +51,11 @@ my sub routes( ) {
 
   route {
 
-    include             distribution-routes( ),
-            builds    => build-routes(        ),
-
-            users     => user-routes( :$db ),
-
-            <api v1> => api-v1-routes( :$db, :$openapi-schema, :$event-supplier );
+    include
+                  distribution-routes( ),
+      builds   => build-routes( ),
+      users    => user-routes( :$db ),
+      <api v1> => api-v1-routes( :$db, :$openapi-schema, :$event-supplier );
 
     get -> 'meta', $identity {
 
@@ -153,7 +152,7 @@ my Cro::Service $http = Cro::HTTP::Server.new(
     SessionStore.new(
       db => $pg,
       sessions-table => 'session',
-      cookie-name => 'SESSION_CONTENT_STORAGE'
+      cookie-name => 'session'
     )
   ], 
   after => [

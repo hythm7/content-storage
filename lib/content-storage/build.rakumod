@@ -94,7 +94,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
     LEAVE $!logger.shutdown;
 
     my Str:D      $storage-name              = config.get( 'storage.name' );
-    my IO::Path:D $storage-archive-directory = config.get( 'storage.archive-directory' ).IO;
+    my IO::Path:D $storage-archives-directory = config.get( 'storage.archives-directory' ).IO;
 
     my UInt:D $build-concurrent-max   = config.get: 'build.concurrent.max';
     my UInt:D $build-concurrent-delay = config.get: 'build.concurrent.delay';
@@ -239,7 +239,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
       }
 
 
-      if $!db.select-distribution( :$identity ) {
+      if $!db.select-distribution( $identity ) {
 
         $!db.update-build-meta: :$!id,   meta => +ERROR;
 
@@ -334,7 +334,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       my $archive-path = $name-sha.IO.add( $identity-sha);
 
-      my $distribution-archive-directory = $storage-archive-directory.add( $name-sha );
+      my $distribution-archive-directory = $storage-archives-directory.add( $name-sha );
 
       my $distribution-archive = $distribution-archive-directory.add( $identity-sha );
 
@@ -426,7 +426,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
     my sub server-message-update ( ) {
 
-      my %build = $!db.select-build: :$!id;
+      my %build = $!db.select-build: $!id;
 
       my $event = EventSource::Server::Event.new( data => to-json %( :operation<UPDATE>,  ID => ~$!id, :%build ) );
 

@@ -15,11 +15,6 @@ method insert-user( Str:D :$username!,  Str:D :$password!, Str :$firstname!, Str
 
 }
 
-multi method select-user( UUID:D :$id! ) { select-user-by-id $!pg, :$id }
-
-
-#multi method select-users( --> Seq:D ) { select-users $!pg }
-
 multi method select-user-username( UUID:D :$id! ) { select-user-username-by-id $!pg, :$id }
 
 multi method select-user-id( Str:D :$username! ) { select-user-id-by-username $!pg, :$username }
@@ -50,8 +45,8 @@ multi method select-users( UInt :$offset!, UInt :$limit! ) { select-users $!pg, 
 multi method select-users-count( Str:D :$name! ) { select-users-by-name-count $!pg, name => $name ~ '%' }
 multi method select-users-count( ) { select-users-count $!pg  }
 
-multi method select-user( UUID:D :$id! ) { select-user-by-id $!pg, :$id }
-multi method select-user( Str:D :$username! ) { select-user-by-username $!pg, :$username }
+multi method select-user( UUID:D       $id ) { select-user-by-id $!pg, :$id }
+multi method select-user( Str:D  $username ) { select-user-by-username $!pg, :$username }
 
 multi method delete-user( UUID:D :$id! ) { delete-user-by-id $!pg, :$id }
 
@@ -80,8 +75,8 @@ multi method select-user-distributions-count( UUID:D :$user! ) {
   select-user-distributions-count $!pg, :$user;
 }
 
-multi method select-distribution( Str:D  :$identity! ) { select-distribution-by-identity $!pg, :$identity; }
-multi method select-distribution( UUID:D :$id!       ) { select-distribution-by-id $!pg, :$id }
+multi method select-distribution( UUID:D      $id       ) { select-distribution-by-id $!pg, :$id }
+multi method select-distribution( Identity:D  $identity ) { select-distribution-by-identity $!pg, :$identity; }
 
 multi method select-distribution-meta( Str:D :$identity! ) { select-distribution-meta-by-identity $!pg, :$identity; }
 multi method select-distribution-archive( Str:D :$identity! ) { select-distribution-archive-by-identity $!pg, :$identity; }
@@ -119,9 +114,9 @@ multi method select-user-builds-count( UUID:D :$user! ) {
 }
 
 
-multi method select-build( UUID:D :$id! ) { select-build-by-id $!pg, :$id }
+multi method select-build( UUID:D $id ) { select-build-by-id $!pg, :$id }
 
-multi method select-builds-running-count( ) { select-builds-running-count $!pg  }
+multi method select-builds-running-count( ) { select-builds-running-count $!pg }
 
 method insert-build( UUID:D :$user ) {
 

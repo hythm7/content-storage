@@ -13,3 +13,6 @@ subset UUID is export of Str where /^
   <[0..9 a..f A..F]> ** 12
 $/;
 
+# TODO: use better regex
+subset Identity is export of Str where / ^ [ <-[ : ]>* ]+ %% ":" $ /;
+

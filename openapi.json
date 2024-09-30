@@ -108,21 +108,19 @@
             }
           }
         }   
-      }
-    },
-    "/distributions/{distributionId}": {
-      "get": {
+      },
+      "delete": {
         "tags": [
           "distribution"
         ],
-        "summary": "Find distribution by ID",
-        "description": "Returns a single distribution",
-        "operationId": "readDistributionById",
+        "summary": "Deletes a distribution",
+        "description": "delete a distribution",
+        "operationId": "deleteDistribution",
         "parameters": [
           {
-            "name": "distributionId",
-            "in": "path",
-            "description": "ID of distribution to return",
+            "name": "distribution",
+            "in": "query",
+            "description": "Distribution to delete",
             "required": true,
             "schema": {
               "type": "string"
@@ -151,19 +149,21 @@
             }
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/distributions/{distribution}": {
+      "get": {
         "tags": [
           "distribution"
         ],
-        "summary": "Deletes a distribution",
-        "description": "delete a distribution",
-        "operationId": "deleteDistributionById",
+        "summary": "Find distribution",
+        "description": "Returns a single distribution",
+        "operationId": "readDistribution",
         "parameters": [
           {
-            "name": "distributionId",
+            "name": "distribution",
             "in": "path",
-            "description": "Distribution id to delete",
+            "description": "distribution to return",
             "required": true,
             "schema": {
               "type": "string"
@@ -292,24 +292,23 @@
             }
           }
         }
-      }
-    },
-    "/builds/{buildId}": {
-      "get": {
+      },
+      "delete": {
         "tags": [
           "build"
         ],
-        "summary": "Read build by ID",
-        "description": "Returns a single build",
-        "operationId": "readBuildById",
+        "summary": "Deletes a build",
+        "description": "delete a build",
+        "operationId": "deleteBuild",
         "parameters": [
           {
-            "name": "buildId",
-            "in": "path",
-            "description": "ID of build to return",
+            "name": "build",
+            "in": "query",
+            "description": "Build to delete",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -335,19 +334,21 @@
             }
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/builds/{build}": {
+      "get": {
         "tags": [
           "build"
         ],
-        "summary": "Deletes a build",
-        "description": "delete a build",
-        "operationId": "deleteBuildById",
+        "summary": "Read build by ID",
+        "description": "Returns a single build",
+        "operationId": "readBuild",
         "parameters": [
           {
-            "name": "buildId",
+            "name": "build",
             "in": "path",
-            "description": "Build id to delete",
+            "description": "build to return",
             "required": true,
             "schema": {
               "type": "string"
@@ -489,21 +490,19 @@
             }
           }
         }   
-      }
-    },
-    "/users/{userId}": {
-      "get": {
+      },
+      "delete": {
         "tags": [
           "user"
         ],
-        "summary": "Get user by user id",
-        "description": "",
-        "operationId": "readUserById",
+        "summary": "Deletes a user",
+        "description": "delete a user",
+        "operationId": "deleteUser",
         "parameters": [
           {
-            "name": "userId",
-            "in": "path",
-            "description": "The id that needs to be fetched.",
+            "name": "user",
+            "in": "query",
+            "description": "User to delete",
             "required": true,
             "schema": {
               "type": "string"
@@ -532,19 +531,21 @@
             }
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/users/{user}": {
+      "get": {
         "tags": [
           "user"
         ],
-        "summary": "Deletes a user",
-        "description": "delete a user",
-        "operationId": "deleteUserById",
+        "summary": "Get user by user id",
+        "description": "",
+        "operationId": "readUser",
         "parameters": [
           {
-            "name": "userId",
+            "name": "user",
             "in": "path",
-            "description": "User id to delete",
+            "description": "The id that needs to be fetched.",
             "required": true,
             "schema": {
               "type": "string"
