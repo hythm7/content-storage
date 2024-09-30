@@ -131,9 +131,6 @@ sub api-v1-routes (
 
     operation 'deleteDistribution', -> Admin $session, Str:D :$distribution! is query {
 
-      dd $distribution;
-      dd $distribution ~~ Identity;
-
       my %distribution = $db.select-distribution: $distribution;
 
       if %distribution {
