@@ -1284,7 +1284,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             build_modal_body.classList.add('autoscrollable-wrapper');
 
-            event_source.addEventListener(buildId, buildEvent)
+            event_source.addEventListener(buildId, build_log_event)
 
           } else {
 
@@ -1310,7 +1310,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const buildId = build_modal_element.getAttribute('data-build-id')
 
-      event_source.removeEventListener(buildId, buildEvent)
+      event_source.removeEventListener(buildId, build_log_event)
 
       build_modal_badge.innerHTML = '';
       build_log.innerHTML         = '';
@@ -1334,11 +1334,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
-    const buildEvent = function (event) {
+    const build_log_event = function (event) {
 
       const element = document.createElement('div');
 
-      element.innerHTML = ansi.ansi_to_html( event.data );
+      const data = JSON.parse(event.data);
+
+      element.innerHTML = ansi.ansi_to_html( data.log );
+
       build_log.appendChild(element);
 
     }

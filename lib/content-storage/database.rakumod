@@ -115,6 +115,7 @@ multi method select-user-builds-count( UUID:D :$user! ) {
 
 
 multi method select-build( UUID:D $id ) { select-build-by-id $!pg, :$id }
+multi method select-build-current-state( UUID:D $id ) { select-build-current-state-by-id $!pg, :$id }
 
 multi method select-builds-running-count( ) { select-builds-running-count $!pg }
 

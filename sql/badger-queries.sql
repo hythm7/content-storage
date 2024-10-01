@@ -183,6 +183,16 @@ SELECT "b".*, ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" 
 FROM "build" "b"
 WHERE  "b"."id" = $id
 
+-- sub select-build-current-state-by-id(:$id! --> %)
+SELECT
+  "b"."id",       "b"."status",   "b"."meta",    "b"."test",
+  "b"."identity", "b"."name",     "b"."version", "b"."auth", "b"."api", 
+  "b"."started",  "b"."completed",
+  ( SELECT "username" AS "user" FROM "user" WHERE "id" = "b"."user" )
+FROM "build" "b"
+WHERE  "b"."id" = $id
+
+
 -- sub select-build-log-by-id(:$id! --> %)
 SELECT "id", "log"
 FROM   "build"

@@ -39,7 +39,7 @@ class ServerSentEventsDestination does Log::Dispatch::Destination {
     }
 
     $message.fmt-lines.map( -> $line {
-      my $event = EventSource::Server::Event.new( :$!type, data => $prefix ~ $line ~ $suffix );
+      my $event = EventSource::Server::Event.new( :$!type, data => to-json %( log => $prefix ~ $line ~ $suffix ) );
 
       $!event-supplier.emit( $event );
 
@@ -50,6 +50,7 @@ class ServerSentEventsDestination does Log::Dispatch::Destination {
 }
 
 class ContentStorage::Build does Log::Dispatch::Source {
+
 
 
   has IO::Path $!work-directory;
@@ -72,8 +73,6 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
 
     $!work-directory = tempdir.IO;
-
-
 
     $!log-file = $!work-directory.add( $!id ).extension( 'log' );
 
@@ -101,6 +100,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
 
     react {
+
       whenever Supply.interval( $build-concurrent-delay ) -> $n {
 
         done if $!db.select-builds-running-count( ) < $build-concurrent-max;
@@ -426,7 +426,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
     my sub server-message-update ( ) {
 
-      my %build = $!db.select-build: $!id;
+      my %build = $!db.select-build-current-state: $!id;
 
       my $event = EventSource::Server::Event.new( data => to-json %( :operation<UPDATE>,  ID => ~$!id, :%build ) );
 
