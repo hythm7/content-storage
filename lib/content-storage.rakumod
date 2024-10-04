@@ -16,3 +16,4 @@ $/;
 # TODO: use better regex
 subset Identity is export of Str where / ^ [ <-[ : ]>* ]+ %% ":" $ /;
 
+subset ID is export where any( UUID, Identity );

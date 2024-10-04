@@ -56,6 +56,7 @@ sub api-v1-routes (
       my @build = $db.select-builds: :$name, offset => $pager.offset, limit => $pager.limit;
 
       content 'application/json', @build;
+
     }
 
     operation 'readUsers', -> Admin $session, Str :$name, UInt:D :$page = 1, UInt :$limit = $page-limit {
@@ -305,63 +306,71 @@ sub api-v1-routes (
       }
     }
 
-    operation 'updateUserInfo', -> LoggedIn $session, UUID:D $id {
+    operation 'updateUserInfo', -> LoggedIn $session, Str:D $user {
+
 
 
       request-body -> ( :$firstname, :$lastname, :$email ) {
         
+        my %user = $db.select-user( $user );
+
+        my $id = %user<id>;
+
         if $id eq $session.user.id {
 
           $db.update-user-info( :$id, :$firstname, :$lastname, :$email );
 
-          my %user = $db.select-user( :$id );
-
           content 'application/json', %user;
 
         } else {
 
-          forbidden 'application/json', %( :403code, message => "Not authorized to modify user ｢$id｣ info!" );
+          forbidden 'application/json', %( :403code, message => "Not authorized to modify user ｢$user｣ info!" );
         }
       }
     }
 
 
-    operation 'updateUserPassword', -> LoggedIn $session, UUID:D $id {
+    operation 'updateUserPassword', -> LoggedIn $session, Str:D $user {
 
-      my %user = $db.select-user( $id );
 
       request-body -> ( :$password! ) {
         
-        if ( %user and  ( ( $id eq $session.user.id ) or $session.admin ) ) {
+        my %user = $db.select-user( $user );
 
-          $db.update-user-password( :$id, password => argon2-hash( $password ) );
+        if ( %user and  ( ( %user<id> eq $session.user.id ) or $session.admin ) ) {
+
+          $db.update-user-password( id => %user<id>, password => argon2-hash( $password ) );
 
           content 'application/json', %user;
 
         } else {
 
-          not-found 'application/json', %( :404code, message => "User ID ｢$id｣ not found!" );
+          not-found 'application/json', %( :404code, message => "User ID ｢$user｣ not found!" );
 
         }
       }
     }
 
-    operation 'updateUserAdmin', -> LoggedIn $session, UUID:D $id {
+    operation 'updateUserAdmin', -> LoggedIn $session, Str:D $user {
+
+      request-body -> ( Bool(Int()) :$admin! ) {
+
+        say $admin;
+
+        my %user = $db.select-user( $user );
 
 
-      request-body -> ( Bool(Int()):$admin! ) {
+        if %user and $session.admin {
 
-        if $db.select-user( $id ) and $session.admin {
+          my $id = %user<id>;
 
           $db.update-user-admin( :$id, :$admin );
 
-          my %user = $db.select-user( $id );
-
-          content 'application/json', %user;
+          content 'application/json', %( :$id, :$admin );
 
         } else {
 
-          not-found 'application/json', %( :404code, message => "User ID ｢$id｣ not found!" );
+          not-found 'application/json', %( :404code, message => "User ID ｢$user｣ not found!" );
 
         }
       }
