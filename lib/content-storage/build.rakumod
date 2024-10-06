@@ -23,7 +23,7 @@ class ServerSentEventsDestination does Log::Dispatch::Destination {
 
   has Str      $!type           is built;
   has Supplier $!event-supplier is built is required;
-  has Bool:D   $!color = config.get( 'build.log.color' );
+  has Bool:D   $!color = config<build><log><color>;
 
 
   method report( Log::Dispatch::Msg:D $message ) {
@@ -79,7 +79,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
     $!logger = Log::Dispatch.new;
 
     $!logger.add: self;
-    $!logger.add: Log::Dispatch::TTY,          max-level => LOG-LEVEL::DEBUG, :console, tty => $!log-file.open( :create, :rw ), color => config.get( 'build.log.color' );
+    $!logger.add: Log::Dispatch::TTY,          max-level => LOG-LEVEL::DEBUG, :console, tty => $!log-file.open( :create, :rw ), color => config<build><log><color>;
     $!logger.add: ServerSentEventsDestination, max-level => LOG-LEVEL::DEBUG, :$!event-supplier, type => $!id.Str;
 
     $!event-supplier.emit( EventSource::Server::Event.new( data => to-json %( :operation<ADD>, ID => ~$!id ) ) );
@@ -92,11 +92,11 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
     LEAVE $!logger.shutdown;
 
-    my Str:D      $storage-name              = config.get( 'storage.name' );
-    my IO::Path:D $storage-archives-directory = config.get( 'storage.archives-directory' ).IO;
+    my Str:D      $storage-name               = config<storage><name>;
+    my IO::Path:D $storage-archives-directory = config<storage><archives-directory>.IO;
 
-    my UInt:D $build-concurrent-max   = config.get: 'build.concurrent.max';
-    my UInt:D $build-concurrent-delay = config.get: 'build.concurrent.delay';
+    my UInt:D $build-concurrent-max   = config<build><concurrent><max>;
+    my UInt:D $build-concurrent-delay = config<build><concurrent><delay>;
 
 
     react {
@@ -219,10 +219,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
       }
 
 
-      #TODO: validate auth
-      #my $username = $!db.select-user-username: id => $!user;
-      $storage-name    = $auth.split( ':' ).head;
-      my $username     = $auth.split( ':' ).tail;
+      my $username = $!db.select-user-username: id => $!user;
 
       my $valid-auth = "$storage-name:$username";
 
@@ -271,7 +268,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
       server-message-update;
 
-      my @test-command = config.get( 'build.test.command' ).split: / \s+ /;
+      my @test-command = config<build><test><command>.split: / \s+ /;
 
       my $proc = Proc::Async.new: @test-command;
 

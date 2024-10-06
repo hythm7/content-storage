@@ -3,7 +3,7 @@
     "name": "my-storage",
     "host": "localhost",
     "port": 20000,
-    "archives-directory": "/tmp/delme/delme/archives"
+    "archives-directory": "archives"
   },
   "api": {
     "version": 1,
@@ -20,7 +20,7 @@
       "delay": 10
     },
     "test": {
-      "command":  "pakku nobar nospinner verbose all add ."
+      "command":  "true"
     }
   }
 }
