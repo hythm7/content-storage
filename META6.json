@@ -22,7 +22,7 @@
     "Cro::HTTP::Session::Pg",
     "Cro::WebApp",
     "Cro::OpenAPI::RoutesFromDefinition",
-    "Crypt::Argon2",
+    "Crypt::SodiumScrypt",
     "EventSource::Server"
   ],
   "description": "Content Storage for Raku Distributions",

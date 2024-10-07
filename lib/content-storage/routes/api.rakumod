@@ -1,4 +1,4 @@
-use Crypt::Argon2;
+use Crypt::SodiumScrypt;
 use Cro::WebApp::Template;
 use Cro::HTTP::Router;
 use Cro::OpenAPI::RoutesFromDefinition;
@@ -254,7 +254,7 @@ sub api-v1-routes (
 
         if  %password {
 
-          if ( argon2-verify( %password<password>, $password ) ) {
+          if ( scrypt-verify( %password<password>, $password ) ) {
 
             my %user = $db.select-user( $username );
 
@@ -283,7 +283,7 @@ sub api-v1-routes (
 
         } else {
 
-          my %user = $db.insert-user( :$username, :$firstname, :$lastname, :$email, password => argon2-hash( $password ) );
+          my %user = $db.insert-user( :$username, :$firstname, :$lastname, :$email, password => scrypt-hash( $password ) );
 
           content 'application/json', %user;
 
@@ -339,7 +339,7 @@ sub api-v1-routes (
 
         if ( %user and  ( ( %user<id> eq $session.user.id ) or $session.admin ) ) {
 
-          $db.update-user-password( id => %user<id>, password => argon2-hash( $password ) );
+          $db.update-user-password( id => %user<id>, password => scrypt-hash( $password ) );
 
           content 'application/json', %user;
 

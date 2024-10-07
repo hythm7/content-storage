@@ -84,7 +84,7 @@ migration 'Setup', {
 
 
   execute
-          up => sql(q<INSERT INTO "user" ("username", "password", "admin") VALUES ('admin', '$argon2i$v=19$m=65536,t=2,p=2$zOReKe3NJiomMwqJkvrKEg$lI2kx+f7ZUEuj0hGRUXrYw', TRUE)>),
+          up => sql(q<INSERT INTO "user" ("username", "password", "admin") VALUES ('admin', '$7$C6..../....WQxc/8zjOs.XUWKgWedQ56RUbLP.afA9fuxArBk0ZQD$y8KPMYkH4GC7Tj/XPwISARErU1SM7VMzzb10S9nIIU9', TRUE)>),
           down => sql(q<'DELETE FROM "user" WHERE username = "admin">);
 
 }
