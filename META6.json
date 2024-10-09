@@ -5,26 +5,34 @@
   ],
   "build-depends": [
   ],
-  "depends": [
-    "DB::Pg",
-    "Badger",
-    "Config",
-    "DB::Migration::Declare::Applicator",
-    "File::Temp",
-    "Concurrent::File::Find",
-    "JSON::Fast",
-    "Digest::SHA1::Native",
-    "Libarchive",
-    "JSON::Class:auth<zef:vrurg>",
-    "Log::Dispatch",
-    "Dev::ContainerizedService",
-    "Cro::HTTP",
-    "Cro::HTTP::Session::Pg",
-    "Cro::WebApp",
-    "Cro::OpenAPI::RoutesFromDefinition",
-    "Crypt::SodiumScrypt",
-    "EventSource::Server"
-  ],
+  "depends": {
+    "runtime": {
+      "requires": [
+        "DB::Pg",
+        "Badger",
+        "Config",
+        "DB::Migration::Declare::Applicator",
+        "File::Temp",
+        "Concurrent::File::Find",
+        "JSON::Fast",
+        "Digest::SHA1::Native",
+        "Libarchive",
+        "JSON::Class:auth<zef:vrurg>",
+        "Log::Dispatch",
+        "Cro::HTTP",
+        "Cro::HTTP::Session::Pg",
+        "Cro::WebApp",
+        "Cro::OpenAPI::RoutesFromDefinition",
+        "Crypt::SodiumScrypt",
+        "EventSource::Server"
+      ]
+    },
+    "development": {
+      "requires": [
+        "Dev::ContainerizedService"
+      ]
+    }
+  },
   "description": "Content Storage for Raku Distributions",
   "license": "Artistic-2.0",
   "name": "content-storage",

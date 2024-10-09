@@ -1,0 +1,16 @@
+services:
+  database:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=test
+
+  application:
+    build: .
+    ports:
+      - "5000:20000"
+    depends_on:
+      - database
+    environment:
+      - CONTENT_STORAGE_DB_CONN_INFO=postgresql://test:test@database:5432/test

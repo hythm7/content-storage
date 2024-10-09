@@ -2,3 +2,4 @@
 /content-storage-*
 node_modules/
 archive/
+static/
