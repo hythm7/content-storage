@@ -1,3 +1,5 @@
+version: '3.7'
+
 services:
   database:
     image: postgres:latest
@@ -5,12 +7,29 @@ services:
       - POSTGRES_USER=test
       - POSTGRES_PASSWORD=test
       - POSTGRES_DB=test
+    expose:
+      - "5432"
+    restart: always
 
-  application:
+  web:
     build: .
-    ports:
-      - "5000:20000"
+    expose:
+      - "20000"
     depends_on:
       - database
+    links:
+      - database:database
     environment:
       - CONTENT_STORAGE_DB_CONN_INFO=postgresql://test:test@database:5432/test
+    restart: always
+
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    links:
+      - web:web
+    restart: always
+
+
