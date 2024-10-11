@@ -34,7 +34,7 @@
       ]
     }
   },
-  "description": "Content Storage for Raku Distributions",
+  "description": "Raku Distributions Storage",
   "license": "Artistic-2.0",
   "name": "content-storage",
   "perl": "6.d",
