@@ -227,7 +227,7 @@ class ContentStorage::Build does Log::Dispatch::Source {
 
         $!db.update-build-meta: :$!id,   meta => +ERROR;
 
-        self.log: :error, "meta: invalid-auth $auth please use $valid-auth";
+        self.log: :error, "meta: invalid auth ｢$auth｣ please use ｢$valid-auth｣";
         self.log: 'meta: failed!';
 
         server-message-update;
