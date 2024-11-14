@@ -1074,7 +1074,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const delete_name   = related_target.dataset.deleteName;
     const delete_id     = related_target.dataset.deleteId;
 
-    delete_modal_target_badge.innerText = delete_target;
+    delete_modal_target_badge.innerText = delete_target.slice(0, -1);
     delete_modal_name_badge.innerText   = delete_name;
 
     delete_alert_element.innerHTML = 'Are you sure you want to delete!';
