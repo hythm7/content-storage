@@ -20,20 +20,11 @@
   "tags": [
     {
       "name": "distributions",
-      "description": "Everything about distributions",
-      "externalDocs": {
-        "description": "Find out more",
-        "url": "http://swagger.io"
-      }
+      "description": "Everything about distributions"
     },
     {
       "name": "builds",
-      "description": "Build",
-      "externalDocs": {
-        "description": "Find out more about our builds",
-        "url": "http://swagger.io"
-      }
-    },
+      "description": "Everything about builds"    },
     {
       "name": "users",
       "description": "Operations about users"
