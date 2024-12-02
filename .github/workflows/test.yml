@@ -26,7 +26,7 @@ jobs:
         with:
           raku-version: ${{ matrix.raku-version }}
       - name: Install Dependencies
-        run: zef install --exclude="pq docker" --/test --test-depends --deps-only .
+        run: zef install --exclude="pq,docker" --/test --test-depends --deps-only .
       - name: Install App::Prove6
         run: zef install --/test App::Prove6
       - name: Run Tests
